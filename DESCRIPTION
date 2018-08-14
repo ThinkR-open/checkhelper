@@ -1,0 +1,22 @@
+Package: checkhelper
+Title: Deal with check outputs
+Version: 0.0.0.9000
+Authors@R: c(
+            person("Sebastien", "Rochette", email = "sebastien@thinkr.fr", role = c("aut", "cre")),
+            person("Vincent", "Guyader", email = "vincent@thinkr.fr", role = c("aut")))
+Description: A package to help you deal with devtools::check outputs.
+License: GPL-3
+URL: https://github.com/ThinkR-open/checkhelper
+BugReports: https://github.com/ThinkR-open/checkhelper/issues
+Imports: 
+    magrittr,
+    rcmdcheck
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.0
