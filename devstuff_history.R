@@ -39,10 +39,14 @@ usethis::use_travis()
 usethis::use_coverage()
 usethis::use_appveyor()
 
+# Development ----
 attachment::att_to_description() #dir.v = ""
+checkhelper::print_globals()
+usethis::use_r("globals")
 
+# Documentation ----
 usethis::use_vignette("deal-with-check-outputs")
 
 
 devtools::build_vignettes()
-# devtools::load_all(".")
+devtools::load_all(".")

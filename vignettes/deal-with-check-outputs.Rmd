@@ -16,4 +16,54 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Deal with check outputs
+## Packages 
+
+```{r}
+library(checkhelper)
+```
+
+## Deal with check outputs
+
+Create a fake package for examples
+
+```{r, eval=FALSE}
+# Create fake package ----
+tempdir <- tempdir()
+# Create fake package
+usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
+
+# Create function no visible global variables and missing documented functions
+cat("
+#' Function
+#' @importFrom dplyr filter
+#' @export
+my_fun <- function() {
+data %>%
+filter(col == 3) %>%
+mutate(new_col = 1) %>%
+ggplot() +
+  aes(x, y, colour = new_col) +
+  geom_point()
+}
+", file = file.path(tempdir, "checkpackage", "R", "function.R"))
+
+path <- file.path(tempdir, "checkpackage")
+attachment::att_to_description(path = path)
+
+```
+
+Use the package
+
+```{r}
+# Get globals
+globals <- get_no_visible(path)
+globals
+
+# Print globals to copy-paste
+print_globals(globals)
+# Store in package using usethis::use_r("globals")
+
+```
+
+
+
