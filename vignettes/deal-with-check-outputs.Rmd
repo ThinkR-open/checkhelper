@@ -26,7 +26,7 @@ library(checkhelper)
 
 Create a fake package for examples
 
-```{r, eval=FALSE}
+```{r, eval=TRUE}
 # Create fake package ----
 tempdir <- tempdir()
 # Create fake package

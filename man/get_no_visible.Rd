@@ -4,7 +4,7 @@
 \alias{get_no_visible}
 \title{List no visible globals from check and separate by category}
 \usage{
-get_no_visible(path, ...)
+get_no_visible(path = ".", ...)
 }
 \arguments{
 \item{path}{Path to a package tarball or a directory.}

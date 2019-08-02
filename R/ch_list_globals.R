@@ -92,7 +92,7 @@ get_notes <- function(path = ".", ...) {
 #' get_no_visible(path)
 #' }
 
-get_no_visible <- function(path, ...) {
+get_no_visible <- function(path = ".", ...) {
 
   notes <- get_notes(path, ...)
 
