@@ -11,6 +11,8 @@ output: github_document
 # checkhelper
 A package to help you deal with devtools::check outputs
 
+Complete documentation in the {pkgdown} site: https://thinkr-open.github.io/checkhelper/
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
