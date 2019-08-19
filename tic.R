@@ -6,7 +6,3 @@ do_package_checks()
 if (ci_on_travis()) {
   do_pkgdown()
 }
-
-get_stage("deploy") %>%
-  add_step(step_build_pkgdown()) %>%
-  add_step(step_push_deploy(branch = "gh-pages", path = "docs"))
