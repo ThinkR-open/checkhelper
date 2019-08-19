@@ -4,3 +4,8 @@
 ^README\.Rmd$
 ^CODE_OF_CONDUCT\.md$
 ^LICENSE\.md$
+^\.travis\.yml$
+^_pkgdown\.yml$
+^docs$
+^appveyor\.yml$
+^tic\.R$

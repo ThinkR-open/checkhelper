@@ -34,10 +34,17 @@ options(usethis.full_name = "Sébastien Rochette")
 usethis::use_gpl3_license()
 usethis::use_test("checkhelper")
 
-
-usethis::use_travis()
-usethis::use_coverage()
-usethis::use_appveyor()
+# CI ----
+chameleon::build_pkgdown(
+  lazy = TRUE,
+  yml = system.file("pkgdown/_pkgdown.yml", package = "thinkridentity"),
+  favicon = system.file("pkgdown/favicon.ico", package = "thinkridentity"),
+  move = FALSE, clean_before = TRUE
+)
+tic::use_tic()
+travis::travis_set_pat()
+# usethis::use_coverage()
+# usethis::use_appveyor()
 
 # Development ----
 attachment::att_to_description() #dir.v = ""
