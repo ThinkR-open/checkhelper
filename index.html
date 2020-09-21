@@ -6,9 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deal with check outputs • checkhelper</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="cosmo.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Bootstrap --><link href="cosmo.css" rel="stylesheet">
 <link href="thinkr.css" rel="stylesheet">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Deal with check outputs">
 <meta property="og:description" content="A package to help you deal with
@@ -35,8 +37,8 @@
 </script>
 -->
 </head>
-<body>
-    <div class="container template-article">
+<body data-spy="scroll" data-target="#toc">
+    <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -56,7 +58,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -89,8 +91,8 @@
 </div>
         </li>
         <li>
-  <a href="https://github.com/ThinkR-open/checkhelper">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/ThinkR-open/checkhelper/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -103,70 +105,79 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    
 
-    
-    
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- badges: start -->
+      </header><div class="row">
+  <div class="contents col-md-9">
+
 
 <div id="checkhelper" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#checkhelper" class="anchor"></a>checkhelper</h1></div>
-<p>A package to help you deal with devtools::check outputs</p>
+<p>A package to help you deal with <code>devtools::check()</code> outputs</p>
 <p>Complete documentation in the {pkgdown} site: <a href="https://thinkr-open.github.io/checkhelper/" class="uri">https://thinkr-open.github.io/checkhelper/</a></p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the last version of checkhelper from github with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"thinkr-open/checkhelper"</span>)
+</pre></div>
+</div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>Check your current package under development and get all the globals missing: <code>no visible global variable</code> and <code>no visible global function</code></p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Get globals</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">globals &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_no_visible.html">get_no_visible</a></span>()</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">globals</a></code></pre></div>
-<pre><code>#&gt; $globalVariables
-#&gt; # A tibble: 4 x 6
-#&gt;   notes           fun   is_function is_global_varia… variable proposed     
-#&gt;   &lt;chr&gt;           &lt;chr&gt; &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;        
-#&gt; 1 my_fun: no vis… my_f… FALSE       TRUE             data     "  importFro…
-#&gt; 2 my_fun: no vis… my_f… FALSE       TRUE             x        &lt;NA&gt;         
-#&gt; 3 my_fun: no vis… my_f… FALSE       TRUE             y        &lt;NA&gt;         
-#&gt; 4 my_fun: no vis… my_f… FALSE       TRUE             new_col  &lt;NA&gt;         
-#&gt; 
-#&gt; $functions
-#&gt; # A tibble: 5 x 6
-#&gt;   notes               fun    is_function is_global_varia… variable proposed
-#&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   
-#&gt; 1 my_fun: no visible… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    
-#&gt; 2 my_fun: no visible… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    
-#&gt; 3 my_fun: no visible… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    
-#&gt; 4 my_fun: no visible… my_fun TRUE        FALSE            aes      &lt;NA&gt;    
-#&gt; 5 my_fun: no visible… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Print globals to copy-paste</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="reference/print_globals.html">print_globals</a></span>(globals)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co"># Store in package using usethis::use_r("globals")</span></a></code></pre></div>
-<pre><code>#&gt; --- Fonctions to add in NAMESPACE ---
-#&gt; 
-#&gt; %&gt;%, aes, geom_point, ggplot, mutate
-#&gt; 
-#&gt; --- Potential GlobalVariables ---
-#&gt; 
-#&gt; globalVariables(
-#&gt; c(
-#&gt; "data", "x", "y", "new_col"
-#&gt; )
-#&gt; )
-# Store in package using usethis::use_r("globals")</code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Get globals</span>
+<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span>()
+<span class="kw">globals</span>
+</pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#&gt; $globalVariables</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; # A tibble: 4 x 6</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;   notes           fun   is_function is_global_varia… variable proposed     </span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt; &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;        </span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; 1 my_fun: no vis… my_f… FALSE       TRUE             data     "  importFro…</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; 2 my_fun: no vis… my_f… FALSE       TRUE             x        &lt;NA&gt;         </span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; 3 my_fun: no vis… my_f… FALSE       TRUE             y        &lt;NA&gt;         </span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 4 my_fun: no vis… my_f… FALSE       TRUE             new_col  &lt;NA&gt;         </span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; </span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; $functions</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; # A tibble: 5 x 6</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt;   notes               fun    is_function is_global_varia… variable proposed</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 1 my_fun: no visible… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 2 my_fun: no visible… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 3 my_fun: no visible… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; 4 my_fun: no visible… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; 5 my_fun: no visible… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="co"># Print globals to copy-paste</span>
+<span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
+<span class="co"># Store in package using usethis::use_r("globals")</span>
+</pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#&gt; --- Fonctions to add in NAMESPACE ---</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; </span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; %&gt;%, aes, geom_point, ggplot, mutate</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; --- Potential GlobalVariables ---</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; </span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; globalVariables(</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; c(</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; "data", "x", "y", "new_col"</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; )</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; )</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co"># Store in package using usethis::use_r("globals")</span></span></code></pre></div>
 <p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
 </div>
+
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/ThinkR-open/checkhelper">https://​github.com/​ThinkR-open/​checkhelper</a>
+<li>Browse source code at <br><a href="https://github.com/ThinkR-open/checkhelper/">https://​github.com/​ThinkR-open/​checkhelper/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/ThinkR-open/checkhelper/issues">https://​github.com/​ThinkR-open/​checkhelper/​issues</a>
 </li>
@@ -179,6 +190,12 @@
 <li><small><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></small></li>
 </ul>
 </div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -187,14 +204,13 @@
 </ul>
 </div>
 
-      <div class="dev-status">
+  <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/ThinkR-open/checkhelper"><img src="https://travis-ci.org/ThinkR-open/checkhelper.svg?branch=master" alt="Travis build status"></a></li>
+<li><a href="https://github.com/ThinkR-open/checkhelper/actions"><img src="https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 </ul>
 </div>
 </div>
-
 </div>
 
 
@@ -208,10 +224,12 @@
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

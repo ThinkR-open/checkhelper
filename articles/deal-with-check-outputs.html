@@ -6,12 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Deal with check outputs • checkhelper</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="../cosmo.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Bootstrap --><link href="../cosmo.css" rel="stylesheet">
 <link href="../thinkr.css" rel="stylesheet">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Deal with check outputs">
-<meta property="og:description" content="">
+<meta property="og:description" content="checkhelper">
 <meta name="twitter:card" content="summary">
 <!-- mathjax
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -34,7 +36,7 @@
 </script>
 -->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -55,7 +57,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -88,8 +90,8 @@
 </div>
         </li>
         <li>
-  <a href="https://github.com/ThinkR-open/checkhelper">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/ThinkR-open/checkhelper/">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -102,13 +104,14 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
+
+      </header><script src="deal-with-check-outputs_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Deal with check outputs</h1>
+      <h1 data-toc-skip>Deal with check outputs</h1>
                         <h4 class="author">Sébastien Rochette</h4>
             
-            <h4 class="date">2019-08-19</h4>
+            <h4 class="date">2020-09-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/master/vignettes/deal-with-check-outputs.Rmd"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -120,197 +123,202 @@
 <div id="packages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#packages" class="anchor"></a>Packages</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(checkhelper)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://thinkr-open.github.io/checkhelper">checkhelper</a></span>)
+</pre></div>
 </div>
 <div id="deal-with-check-outputs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#deal-with-check-outputs" class="anchor"></a>Deal with check outputs</h2>
 <p>Create a fake package for examples</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Create fake package ----</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">tempdir &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/tempfile">tempdir</a></span>()</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># Create fake package</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">usethis<span class="op">::</span><span class="kw"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(tempdir, <span class="st">"checkpackage"</span>), <span class="dt">open =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; ✔ Creating '/tmp/Rtmp3ie4hY/checkpackage/'</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; ✔ Setting active project to '/tmp/Rtmp3ie4hY/checkpackage'</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; Package: checkpackage</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Version: 0.0.0.9000</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Authors@R (parsed):</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (&lt;https://orcid.org/YOUR-ORCID-ID&gt;)</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Description: What the package does (one paragraph).</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; License: What license it uses</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; Encoding: UTF-8</span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; LazyData: true</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co"># Create function no visible global variables and missing documented functions</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cat">cat</a></span>(<span class="st">"</span></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="st">#' Function</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="st">#' @importFrom dplyr filter</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="st">#' @export</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="st">my_fun &lt;- function() {</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">data %&gt;%</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="st">filter(col == 3) %&gt;%</span></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="st">mutate(new_col = 1) %&gt;%</span></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="st">ggplot() +</span></a>
-<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="st">  aes(x, y, colour = new_col) +</span></a>
-<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="st">  geom_point()</span></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="st">}</span></a>
-<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="st">"</span>, <span class="dt">file =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(tempdir, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span>))</a>
-<a class="sourceLine" id="cb2-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb2-36" data-line-number="36">path &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/file.path">file.path</a></span>(tempdir, <span class="st">"checkpackage"</span>)</a>
-<a class="sourceLine" id="cb2-37" data-line-number="37">attachment<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/attachment/topics/att_to_description">att_to_description</a></span>(<span class="dt">path =</span> path)</a>
-<a class="sourceLine" id="cb2-38" data-line-number="38"><span class="co">#&gt; Updating checkpackage documentation</span></a>
-<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="co">#&gt; Updating roxygen version in /tmp/Rtmp3ie4hY/checkpackage/DESCRIPTION</span></a>
-<a class="sourceLine" id="cb2-40" data-line-number="40"><span class="co">#&gt; Writing NAMESPACE</span></a>
-<a class="sourceLine" id="cb2-41" data-line-number="41"><span class="co">#&gt; Loading checkpackage</span></a>
-<a class="sourceLine" id="cb2-42" data-line-number="42"><span class="co">#&gt; Writing NAMESPACE</span></a>
-<a class="sourceLine" id="cb2-43" data-line-number="43"><span class="co">#&gt; Writing my_fun.Rd</span></a>
-<a class="sourceLine" id="cb2-44" data-line-number="44"><span class="co">#&gt; [+] 1 package(s) added: dplyr.</span></a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Create fake package ----</span>
+<span class="kw">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
+<span class="co"># Create fake package</span>
+<span class="kw">usethis</span>::<span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>), open = <span class="fl">FALSE</span>)
+<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/checkpackage/'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/checkpackage'</span>
+<span class="co">#&gt; ✔ Creating 'R/'</span>
+<span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
+<span class="co">#&gt; Package: checkpackage</span>
+<span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span>
+<span class="co">#&gt; Version: 0.0.0.9000</span>
+<span class="co">#&gt; Authors@R (parsed):</span>
+<span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (YOUR-ORCID-ID)</span>
+<span class="co">#&gt; Description: What the package does (one paragraph).</span>
+<span class="co">#&gt; License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span>
+<span class="co">#&gt;     license</span>
+<span class="co">#&gt; Encoding: UTF-8</span>
+<span class="co">#&gt; LazyData: true</span>
+<span class="co">#&gt; Roxygen: list(markdown = TRUE)</span>
+<span class="co">#&gt; RoxygenNote: 7.1.1</span>
+<span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
+<span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span>
+
+<span class="co"># Create function no visible global variables and missing documented functions</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"
+#' Function
+#' @importFrom dplyr filter
+#' @export
+my_fun &lt;- function() {
+data %&gt;%
+filter(col == 3) %&gt;%
+mutate(new_col = 1) %&gt;%
+ggplot() +
+  aes(x, y, colour = new_col) +
+  geom_point()
+}
+"</span>, file = <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span>))
+
+<span class="kw">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>)
+<span class="kw">attachment</span>::<span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span>(path = <span class="kw">path</span>)
+<span class="co">#&gt; Updating checkpackage documentation</span>
+<span class="co">#&gt; Loading checkpackage</span>
+<span class="co">#&gt; Writing NAMESPACE</span>
+<span class="co">#&gt; Writing NAMESPACE</span>
+<span class="co">#&gt; Writing my_fun.Rd</span>
+<span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
+</pre></div>
 <p>Use the package</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Get globals</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">globals &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_no_visible.html">get_no_visible</a></span>(path)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="co">#&gt; ── R CMD build ────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; * checking for file ‘.../DESCRIPTION’ ... OK</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; * preparing ‘checkpackage’:</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></a>
-<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></a>
-<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt; * checking for empty or unneeded directories</span></a>
-<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; * building ‘checkpackage_0.0.0.9000.tar.gz’</span></a>
-<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; ── R CMD check ────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; * using log directory ‘/tmp/Rtmp3ie4hY/file34db59d98c96/checkpackage.Rcheck’</span></a>
-<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt; * using R version 3.6.1 (2017-01-27)</span></a>
-<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; * using platform: x86_64-pc-linux-gnu (64-bit)</span></a>
-<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt; * using session charset: UTF-8</span></a>
-<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt; * checking for file ‘checkpackage/DESCRIPTION’ ... OK</span></a>
-<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt; * this is package ‘checkpackage’ version ‘0.0.0.9000’</span></a>
-<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt; * package encoding: UTF-8</span></a>
-<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt; * checking package namespace information ... OK</span></a>
-<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt; * checking package dependencies ... OK</span></a>
-<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt; * checking if this is a source package ... OK</span></a>
-<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt; * checking if there is a namespace ... OK</span></a>
-<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; * checking for executable files ... OK</span></a>
-<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; * checking for hidden files and directories ... OK</span></a>
-<a class="sourceLine" id="cb3-25" data-line-number="25"><span class="co">#&gt; * checking for portable file names ... OK</span></a>
-<a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt; * checking for sufficient/correct file permissions ... OK</span></a>
-<a class="sourceLine" id="cb3-27" data-line-number="27"><span class="co">#&gt; * checking whether package ‘checkpackage’ can be installed ... OK</span></a>
-<a class="sourceLine" id="cb3-28" data-line-number="28"><span class="co">#&gt; * checking installed package size ... OK</span></a>
-<a class="sourceLine" id="cb3-29" data-line-number="29"><span class="co">#&gt; * checking package directory ... OK</span></a>
-<a class="sourceLine" id="cb3-30" data-line-number="30"><span class="co">#&gt; * checking DESCRIPTION meta-information ... </span><span class="al">WARNING</span></a>
-<a class="sourceLine" id="cb3-31" data-line-number="31"><span class="co">#&gt; Non-standard license specification:</span></a>
-<a class="sourceLine" id="cb3-32" data-line-number="32"><span class="co">#&gt;   What license it uses</span></a>
-<a class="sourceLine" id="cb3-33" data-line-number="33"><span class="co">#&gt; Standardizable: FALSE</span></a>
-<a class="sourceLine" id="cb3-34" data-line-number="34"><span class="co">#&gt; * checking top-level files ... OK</span></a>
-<a class="sourceLine" id="cb3-35" data-line-number="35"><span class="co">#&gt; * checking for left-over files ... OK</span></a>
-<a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt; * checking index information ... OK</span></a>
-<a class="sourceLine" id="cb3-37" data-line-number="37"><span class="co">#&gt; * checking package subdirectories ... OK</span></a>
-<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; * checking R files for non-ASCII characters ... OK</span></a>
-<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; * checking R files for syntax errors ... OK</span></a>
-<a class="sourceLine" id="cb3-40" data-line-number="40"><span class="co">#&gt; * checking whether the package can be loaded ... OK</span></a>
-<a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co">#&gt; * checking whether the package can be loaded with stated dependencies ... OK</span></a>
-<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; * checking whether the package can be unloaded cleanly ... OK</span></a>
-<a class="sourceLine" id="cb3-43" data-line-number="43"><span class="co">#&gt; * checking whether the namespace can be loaded with stated dependencies ... OK</span></a>
-<a class="sourceLine" id="cb3-44" data-line-number="44"><span class="co">#&gt; * checking whether the namespace can be unloaded cleanly ... OK</span></a>
-<a class="sourceLine" id="cb3-45" data-line-number="45"><span class="co">#&gt; * checking loading without being on the library search path ... OK</span></a>
-<a class="sourceLine" id="cb3-46" data-line-number="46"><span class="co">#&gt; * checking dependencies in R code ... OK</span></a>
-<a class="sourceLine" id="cb3-47" data-line-number="47"><span class="co">#&gt; * checking S3 generic/method consistency ... OK</span></a>
-<a class="sourceLine" id="cb3-48" data-line-number="48"><span class="co">#&gt; * checking replacement functions ... OK</span></a>
-<a class="sourceLine" id="cb3-49" data-line-number="49"><span class="co">#&gt; * checking foreign function calls ... OK</span></a>
-<a class="sourceLine" id="cb3-50" data-line-number="50"><span class="co">#&gt; * checking R code for possible problems ... </span><span class="al">NOTE</span></a>
-<a class="sourceLine" id="cb3-51" data-line-number="51"><span class="co">#&gt; my_fun: no visible global function definition for ‘%&gt;%’</span></a>
-<a class="sourceLine" id="cb3-52" data-line-number="52"><span class="co">#&gt; my_fun: no visible binding for global variable ‘data’</span></a>
-<a class="sourceLine" id="cb3-53" data-line-number="53"><span class="co">#&gt; my_fun: no visible global function definition for ‘mutate’</span></a>
-<a class="sourceLine" id="cb3-54" data-line-number="54"><span class="co">#&gt; my_fun: no visible global function definition for ‘ggplot’</span></a>
-<a class="sourceLine" id="cb3-55" data-line-number="55"><span class="co">#&gt; my_fun: no visible global function definition for ‘aes’</span></a>
-<a class="sourceLine" id="cb3-56" data-line-number="56"><span class="co">#&gt; my_fun: no visible binding for global variable ‘x’</span></a>
-<a class="sourceLine" id="cb3-57" data-line-number="57"><span class="co">#&gt; my_fun: no visible binding for global variable ‘y’</span></a>
-<a class="sourceLine" id="cb3-58" data-line-number="58"><span class="co">#&gt; my_fun: no visible binding for global variable ‘new_col’</span></a>
-<a class="sourceLine" id="cb3-59" data-line-number="59"><span class="co">#&gt; my_fun: no visible global function definition for ‘geom_point’</span></a>
-<a class="sourceLine" id="cb3-60" data-line-number="60"><span class="co">#&gt; Undefined global functions or variables:</span></a>
-<a class="sourceLine" id="cb3-61" data-line-number="61"><span class="co">#&gt;   %&gt;% aes data geom_point ggplot mutate new_col x y</span></a>
-<a class="sourceLine" id="cb3-62" data-line-number="62"><span class="co">#&gt; Consider adding</span></a>
-<a class="sourceLine" id="cb3-63" data-line-number="63"><span class="co">#&gt;   importFrom("utils", "data")</span></a>
-<a class="sourceLine" id="cb3-64" data-line-number="64"><span class="co">#&gt; to your NAMESPACE file.</span></a>
-<a class="sourceLine" id="cb3-65" data-line-number="65"><span class="co">#&gt; * checking Rd files ... OK</span></a>
-<a class="sourceLine" id="cb3-66" data-line-number="66"><span class="co">#&gt; * checking Rd metadata ... OK</span></a>
-<a class="sourceLine" id="cb3-67" data-line-number="67"><span class="co">#&gt; * checking Rd cross-references ... OK</span></a>
-<a class="sourceLine" id="cb3-68" data-line-number="68"><span class="co">#&gt; * checking for missing documentation entries ... OK</span></a>
-<a class="sourceLine" id="cb3-69" data-line-number="69"><span class="co">#&gt; * checking for code/documentation mismatches ... OK</span></a>
-<a class="sourceLine" id="cb3-70" data-line-number="70"><span class="co">#&gt; * checking Rd \usage sections ... OK</span></a>
-<a class="sourceLine" id="cb3-71" data-line-number="71"><span class="co">#&gt; * checking Rd contents ... OK</span></a>
-<a class="sourceLine" id="cb3-72" data-line-number="72"><span class="co">#&gt; * checking for unstated dependencies in examples ... OK</span></a>
-<a class="sourceLine" id="cb3-73" data-line-number="73"><span class="co">#&gt; * checking examples ... NONE</span></a>
-<a class="sourceLine" id="cb3-74" data-line-number="74"><span class="co">#&gt; * checking PDF version of manual ... </span><span class="al">WARNING</span></a>
-<a class="sourceLine" id="cb3-75" data-line-number="75"><span class="co">#&gt; LaTeX errors when creating PDF version.</span></a>
-<a class="sourceLine" id="cb3-76" data-line-number="76"><span class="co">#&gt; This typically indicates Rd problems.</span></a>
-<a class="sourceLine" id="cb3-77" data-line-number="77"><span class="co">#&gt; * checking PDF version of manual without hyperrefs or index ... ERROR</span></a>
-<a class="sourceLine" id="cb3-78" data-line-number="78"><span class="co">#&gt; Re-running with no redirection of stdout/stderr.</span></a>
-<a class="sourceLine" id="cb3-79" data-line-number="79"><span class="co">#&gt; Hmm ... looks like a package</span></a>
-<a class="sourceLine" id="cb3-80" data-line-number="80"><span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span></a>
-<a class="sourceLine" id="cb3-81" data-line-number="81"><span class="co">#&gt;   pdflatex is not available</span></a>
-<a class="sourceLine" id="cb3-82" data-line-number="82"><span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span></a>
-<a class="sourceLine" id="cb3-83" data-line-number="83"><span class="co">#&gt;   pdflatex is not available</span></a>
-<a class="sourceLine" id="cb3-84" data-line-number="84"><span class="co">#&gt; Error in running tools::texi2pdf()</span></a>
-<a class="sourceLine" id="cb3-85" data-line-number="85"><span class="co">#&gt; You may want to clean up by 'rm -Rf /tmp/Rtmpc7j6ve/Rd2pdf3507128e846d'</span></a>
-<a class="sourceLine" id="cb3-86" data-line-number="86"><span class="co">#&gt; * DONE</span></a>
-<a class="sourceLine" id="cb3-87" data-line-number="87"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-88" data-line-number="88"><span class="co">#&gt; Status: 1 ERROR, 2 WARNINGs, 1 </span><span class="al">NOTE</span></a>
-<a class="sourceLine" id="cb3-89" data-line-number="89"><span class="co">#&gt; See</span></a>
-<a class="sourceLine" id="cb3-90" data-line-number="90"><span class="co">#&gt;   ‘/tmp/Rtmp3ie4hY/file34db59d98c96/checkpackage.Rcheck/00check.log’</span></a>
-<a class="sourceLine" id="cb3-91" data-line-number="91"><span class="co">#&gt; for details.</span></a>
-<a class="sourceLine" id="cb3-92" data-line-number="92">globals</a>
-<a class="sourceLine" id="cb3-93" data-line-number="93"><span class="co">#&gt; $globalVariables</span></a>
-<a class="sourceLine" id="cb3-94" data-line-number="94"><span class="co">#&gt; # A tibble: 4 x 6</span></a>
-<a class="sourceLine" id="cb3-95" data-line-number="95"><span class="co">#&gt;   notes           fun   is_function is_global_varia… variable proposed     </span></a>
-<a class="sourceLine" id="cb3-96" data-line-number="96"><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt; &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;        </span></a>
-<a class="sourceLine" id="cb3-97" data-line-number="97"><span class="co">#&gt; 1 my_fun: no vis… my_f… FALSE       TRUE             data     "  importFro…</span></a>
-<a class="sourceLine" id="cb3-98" data-line-number="98"><span class="co">#&gt; 2 my_fun: no vis… my_f… FALSE       TRUE             x        &lt;NA&gt;         </span></a>
-<a class="sourceLine" id="cb3-99" data-line-number="99"><span class="co">#&gt; 3 my_fun: no vis… my_f… FALSE       TRUE             y        &lt;NA&gt;         </span></a>
-<a class="sourceLine" id="cb3-100" data-line-number="100"><span class="co">#&gt; 4 my_fun: no vis… my_f… FALSE       TRUE             new_col  &lt;NA&gt;         </span></a>
-<a class="sourceLine" id="cb3-101" data-line-number="101"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-102" data-line-number="102"><span class="co">#&gt; $functions</span></a>
-<a class="sourceLine" id="cb3-103" data-line-number="103"><span class="co">#&gt; # A tibble: 5 x 6</span></a>
-<a class="sourceLine" id="cb3-104" data-line-number="104"><span class="co">#&gt;   notes               fun    is_function is_global_varia… variable proposed</span></a>
-<a class="sourceLine" id="cb3-105" data-line-number="105"><span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span></a>
-<a class="sourceLine" id="cb3-106" data-line-number="106"><span class="co">#&gt; 1 my_fun: no visible… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span></a>
-<a class="sourceLine" id="cb3-107" data-line-number="107"><span class="co">#&gt; 2 my_fun: no visible… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span></a>
-<a class="sourceLine" id="cb3-108" data-line-number="108"><span class="co">#&gt; 3 my_fun: no visible… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span></a>
-<a class="sourceLine" id="cb3-109" data-line-number="109"><span class="co">#&gt; 4 my_fun: no visible… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span></a>
-<a class="sourceLine" id="cb3-110" data-line-number="110"><span class="co">#&gt; 5 my_fun: no visible… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span></a>
-<a class="sourceLine" id="cb3-111" data-line-number="111"></a>
-<a class="sourceLine" id="cb3-112" data-line-number="112"><span class="co"># Print globals to copy-paste</span></a>
-<a class="sourceLine" id="cb3-113" data-line-number="113"><span class="kw"><a href="../reference/print_globals.html">print_globals</a></span>(globals)</a>
-<a class="sourceLine" id="cb3-114" data-line-number="114"><span class="co">#&gt; --- Fonctions to add in NAMESPACE ---</span></a>
-<a class="sourceLine" id="cb3-115" data-line-number="115"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-116" data-line-number="116"><span class="co">#&gt; %&gt;%, aes, geom_point, ggplot, mutate</span></a>
-<a class="sourceLine" id="cb3-117" data-line-number="117"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-118" data-line-number="118"><span class="co">#&gt; --- Potential GlobalVariables ---</span></a>
-<a class="sourceLine" id="cb3-119" data-line-number="119"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb3-120" data-line-number="120"><span class="co">#&gt; globalVariables(</span></a>
-<a class="sourceLine" id="cb3-121" data-line-number="121"><span class="co">#&gt; c(</span></a>
-<a class="sourceLine" id="cb3-122" data-line-number="122"><span class="co">#&gt; "data", "x", "y", "new_col"</span></a>
-<a class="sourceLine" id="cb3-123" data-line-number="123"><span class="co">#&gt; )</span></a>
-<a class="sourceLine" id="cb3-124" data-line-number="124"><span class="co">#&gt; )</span></a>
-<a class="sourceLine" id="cb3-125" data-line-number="125"><span class="co"># Store in package using usethis::use_r("globals")</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co"># Get globals</span>
+<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>)
+<span class="co">#&gt; ── R CMD build ─────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; * checking for file ‘.../DESCRIPTION’ ... OK</span>
+<span class="co">#&gt; * preparing ‘checkpackage’:</span>
+<span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span>
+<span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span>
+<span class="co">#&gt; * checking for empty or unneeded directories</span>
+<span class="co">#&gt; * building ‘checkpackage_0.0.0.9000.tar.gz’</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── R CMD check ─────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; * using log directory ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/file633209dc962/checkpackage.Rcheck’</span>
+<span class="co">#&gt; * using R version 4.0.2 (2020-06-22)</span>
+<span class="co">#&gt; * using platform: x86_64-apple-darwin17.0 (64-bit)</span>
+<span class="co">#&gt; * using session charset: UTF-8</span>
+<span class="co">#&gt; * checking for file ‘checkpackage/DESCRIPTION’ ... OK</span>
+<span class="co">#&gt; * this is package ‘checkpackage’ version ‘0.0.0.9000’</span>
+<span class="co">#&gt; * package encoding: UTF-8</span>
+<span class="co">#&gt; * checking package namespace information ... OK</span>
+<span class="co">#&gt; * checking package dependencies ... OK</span>
+<span class="co">#&gt; * checking if this is a source package ... OK</span>
+<span class="co">#&gt; * checking if there is a namespace ... OK</span>
+<span class="co">#&gt; * checking for executable files ... OK</span>
+<span class="co">#&gt; * checking for hidden files and directories ... OK</span>
+<span class="co">#&gt; * checking for portable file names ... OK</span>
+<span class="co">#&gt; * checking for sufficient/correct file permissions ... OK</span>
+<span class="co">#&gt; * checking whether package ‘checkpackage’ can be installed ... OK</span>
+<span class="co">#&gt; * checking installed package size ... OK</span>
+<span class="co">#&gt; * checking package directory ... OK</span>
+<span class="co">#&gt; * checking DESCRIPTION meta-information ... WARNING</span>
+<span class="co">#&gt; Non-standard license specification:</span>
+<span class="co">#&gt;   `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span>
+<span class="co">#&gt;   license</span>
+<span class="co">#&gt; Standardizable: FALSE</span>
+<span class="co">#&gt; * checking top-level files ... OK</span>
+<span class="co">#&gt; * checking for left-over files ... OK</span>
+<span class="co">#&gt; * checking index information ... OK</span>
+<span class="co">#&gt; * checking package subdirectories ... OK</span>
+<span class="co">#&gt; * checking R files for non-ASCII characters ... OK</span>
+<span class="co">#&gt; * checking R files for syntax errors ... OK</span>
+<span class="co">#&gt; * checking whether the package can be loaded ... OK</span>
+<span class="co">#&gt; * checking whether the package can be loaded with stated dependencies ... OK</span>
+<span class="co">#&gt; * checking whether the package can be unloaded cleanly ... OK</span>
+<span class="co">#&gt; * checking whether the namespace can be loaded with stated dependencies ... OK</span>
+<span class="co">#&gt; * checking whether the namespace can be unloaded cleanly ... OK</span>
+<span class="co">#&gt; * checking loading without being on the library search path ... OK</span>
+<span class="co">#&gt; * checking dependencies in R code ... OK</span>
+<span class="co">#&gt; * checking S3 generic/method consistency ... OK</span>
+<span class="co">#&gt; * checking replacement functions ... OK</span>
+<span class="co">#&gt; * checking foreign function calls ... OK</span>
+<span class="co">#&gt; * checking R code for possible problems ... NOTE</span>
+<span class="co">#&gt; my_fun: no visible global function definition for ‘%&gt;%’</span>
+<span class="co">#&gt; my_fun: no visible binding for global variable ‘data’</span>
+<span class="co">#&gt; my_fun: no visible global function definition for ‘mutate’</span>
+<span class="co">#&gt; my_fun: no visible global function definition for ‘ggplot’</span>
+<span class="co">#&gt; my_fun: no visible global function definition for ‘aes’</span>
+<span class="co">#&gt; my_fun: no visible binding for global variable ‘x’</span>
+<span class="co">#&gt; my_fun: no visible binding for global variable ‘y’</span>
+<span class="co">#&gt; my_fun: no visible binding for global variable ‘new_col’</span>
+<span class="co">#&gt; my_fun: no visible global function definition for ‘geom_point’</span>
+<span class="co">#&gt; Undefined global functions or variables:</span>
+<span class="co">#&gt;   %&gt;% aes data geom_point ggplot mutate new_col x y</span>
+<span class="co">#&gt; Consider adding</span>
+<span class="co">#&gt;   importFrom("utils", "data")</span>
+<span class="co">#&gt; to your NAMESPACE file.</span>
+<span class="co">#&gt; * checking Rd files ... OK</span>
+<span class="co">#&gt; * checking Rd metadata ... OK</span>
+<span class="co">#&gt; * checking Rd cross-references ... OK</span>
+<span class="co">#&gt; * checking for missing documentation entries ... OK</span>
+<span class="co">#&gt; * checking for code/documentation mismatches ... OK</span>
+<span class="co">#&gt; * checking Rd \usage sections ... OK</span>
+<span class="co">#&gt; * checking Rd contents ... OK</span>
+<span class="co">#&gt; * checking for unstated dependencies in examples ... OK</span>
+<span class="co">#&gt; * checking examples ... NONE</span>
+<span class="co">#&gt; * checking PDF version of manual ... WARNING</span>
+<span class="co">#&gt; LaTeX errors when creating PDF version.</span>
+<span class="co">#&gt; This typically indicates Rd problems.</span>
+<span class="co">#&gt; * checking PDF version of manual without hyperrefs or index ... ERROR</span>
+<span class="co">#&gt; Re-running with no redirection of stdout/stderr.</span>
+<span class="co">#&gt; Hmm ... looks like a package</span>
+<span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span>
+<span class="co">#&gt;   pdflatex is not available</span>
+<span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span>
+<span class="co">#&gt;   pdflatex is not available</span>
+<span class="co">#&gt; Error in running tools::texi2pdf()</span>
+<span class="co">#&gt; You may want to clean up by 'rm -Rf /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpNx8AMM/Rd2pdf65fd3204fd'</span>
+<span class="co">#&gt; * DONE</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Status: 1 ERROR, 2 WARNINGs, 1 NOTE</span>
+<span class="co">#&gt; See</span>
+<span class="co">#&gt;   ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/file633209dc962/checkpackage.Rcheck/00check.log’</span>
+<span class="co">#&gt; for details.</span>
+<span class="kw">globals</span>
+<span class="co">#&gt; $globalVariables</span>
+<span class="co">#&gt; # A tibble: 4 x 6</span>
+<span class="co">#&gt;   notes              fun    is_function is_global_varia… variable proposed      </span>
+<span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;         </span>
+<span class="co">#&gt; 1 my_fun: no visibl… my_fun FALSE       TRUE             data     "  importFrom…</span>
+<span class="co">#&gt; 2 my_fun: no visibl… my_fun FALSE       TRUE             x         &lt;NA&gt;         </span>
+<span class="co">#&gt; 3 my_fun: no visibl… my_fun FALSE       TRUE             y         &lt;NA&gt;         </span>
+<span class="co">#&gt; 4 my_fun: no visibl… my_fun FALSE       TRUE             new_col   &lt;NA&gt;         </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $functions</span>
+<span class="co">#&gt; # A tibble: 5 x 6</span>
+<span class="co">#&gt;   notes                    fun    is_function is_global_varia… variable proposed</span>
+<span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span>
+<span class="co">#&gt; 1 my_fun: no visible glob… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span>
+<span class="co">#&gt; 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span>
+<span class="co">#&gt; 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span>
+<span class="co">#&gt; 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span>
+<span class="co">#&gt; 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span>
+
+<span class="co"># Print globals to copy-paste</span>
+<span class="fu"><a href="../reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
+<span class="co">#&gt; --- Fonctions to add in NAMESPACE ---</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; %&gt;%, aes, geom_point, ggplot, mutate</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; --- Potential GlobalVariables ---</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; globalVariables(</span>
+<span class="co">#&gt; c(</span>
+<span class="co">#&gt; "data", "x", "y", "new_col"</span>
+<span class="co">#&gt; )</span>
+<span class="co">#&gt; )</span>
+<span class="co"># Store in package using usethis::use_r("globals")</span>
+</pre></div>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#packages">Packages</a></li>
-      <li><a href="#deal-with-check-outputs">Deal with check outputs</a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
+
 
 
       <footer><div class="thinkr">
@@ -323,10 +331,12 @@
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>
