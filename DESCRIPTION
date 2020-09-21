@@ -13,7 +13,8 @@ Authors@R:
 Description: A package to help you deal with
     devtools::check outputs.
 License: GPL-3
-URL: https://thinkr-open.github.io/checkhelper/, https://github.com/ThinkR-open/checkhelper
+URL: https://thinkr-open.github.io/checkhelper/,
+    https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Imports: 
     dplyr,
@@ -32,4 +33,4 @@ VignetteBuilder:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1

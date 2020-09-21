@@ -41,10 +41,12 @@ chameleon::build_pkgdown(
   favicon = system.file("pkgdown/favicon.ico", package = "thinkridentity"),
   move = FALSE, clean_before = TRUE
 )
-tic::use_tic()
+# tic::use_tic()
 travis::travis_set_pat()
 # usethis::use_coverage()
 # usethis::use_appveyor()
+usethis::use_github_action_check_standard()
+usethis::use_github_action("pkgdown")
 
 # Development ----
 attachment::att_to_description() #dir.v = ""
