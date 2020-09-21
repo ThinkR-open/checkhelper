@@ -13,7 +13,7 @@ Authors@R:
 Description: A package to help you deal with
     devtools::check outputs.
 License: GPL-3
-URL: https://github.com/ThinkR-open/checkhelper
+URL: https://thinkr-open.github.io/checkhelper/, https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Imports: 
     dplyr,
