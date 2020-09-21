@@ -3,13 +3,13 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://travis-ci.org/ThinkR-open/checkhelper.svg?branch=master)](https://travis-ci.org/ThinkR-open/checkhelper)
+[![R build
+status](https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions)
 <!-- badges: end -->
 
 # checkhelper
 
-A package to help you deal with devtools::check outputs
+A package to help you deal with `devtools::check()` outputs
 
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
