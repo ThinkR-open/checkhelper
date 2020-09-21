@@ -14,6 +14,14 @@ A package to help you deal with devtools::check outputs
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
 
+## Installation
+
+You can install the last version of checkhelper from github with:
+
+``` r
+remotes::install_github("thinkr-open/checkhelper")
+```
+
 ## Examples
 
 Check your current package under development and get all the globals
