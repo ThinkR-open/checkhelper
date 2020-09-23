@@ -5,6 +5,8 @@
 
 [![R build
 status](https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions)
+[![Codecov test
+coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg)](https://codecov.io/gh/ThinkR-open/checkhelper?branch=master)
 <!-- badges: end -->
 
 # checkhelper
@@ -27,50 +29,94 @@ remotes::install_github("thinkr-open/checkhelper")
 Check your current package under development and get all the globals
 missing: `no visible global variable` and `no visible global function`
 
+  - Create a fake package with a function having globalvariables
+
+<!-- end list -->
+
 ``` r
-# Get globals
-globals <- get_no_visible()
+library(checkhelper)
+
+# Create fake package ----
+tempdir <- tempdir()
+# Create fake package
+usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
+#> ✓ Creating '/tmp/RtmpH37TMD/checkpackage/'
+#> ✓ Setting active project to '/tmp/RtmpH37TMD/checkpackage'
+#> ✓ Creating 'R/'
+#> ✓ Writing 'DESCRIPTION'
+#> ✓ Writing 'NAMESPACE'
+#> ✓ Setting active project to '<no active project>'
+
+# Create function no visible global variables and missing documented functions
+cat("
+#' Function
+#' @importFrom dplyr filter
+#' @export
+my_fun <- function() {
+data %>%
+filter(col == 3) %>%
+mutate(new_col = 1) %>%
+ggplot() +
+  aes(x, y, colour = new_col) +
+  geom_point()
+}
+", file = file.path(tempdir, "checkpackage", "R", "function.R"))
+
+path <- file.path(tempdir, "checkpackage")
+attachment::att_to_description(path = path)
+#> Updating checkpackage documentation
+#> Loading checkpackage
+#> [+] 1 package(s) added: dplyr.
+```
+
+  - Get global variables
+
+<!-- end list -->
+
+``` r
+globals <- get_no_visible(path, quiet = TRUE)
 globals
+#> $globalVariables
+#> # A tibble: 4 x 6
+#>   notes              fun    is_function is_global_varia… variable proposed      
+#>   <chr>              <chr>  <lgl>       <lgl>            <chr>    <chr>         
+#> 1 my_fun: no visibl… my_fun FALSE       TRUE             data     "  importFrom…
+#> 2 my_fun: no visibl… my_fun FALSE       TRUE             x         <NA>         
+#> 3 my_fun: no visibl… my_fun FALSE       TRUE             y         <NA>         
+#> 4 my_fun: no visibl… my_fun FALSE       TRUE             new_col   <NA>         
+#> 
+#> $functions
+#> # A tibble: 5 x 6
+#>   notes                    fun    is_function is_global_varia… variable proposed
+#>   <chr>                    <chr>  <lgl>       <lgl>            <chr>    <chr>   
+#> 1 my_fun: no visible glob… my_fun TRUE        FALSE            %>%      <NA>    
+#> 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   <NA>    
+#> 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   <NA>    
+#> 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      <NA>    
+#> 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… <NA>
 ```
 
-    #> $globalVariables
-    #> # A tibble: 4 x 6
-    #>   notes           fun   is_function is_global_varia… variable proposed     
-    #>   <chr>           <chr> <lgl>       <lgl>            <chr>    <chr>        
-    #> 1 my_fun: no vis… my_f… FALSE       TRUE             data     "  importFro…
-    #> 2 my_fun: no vis… my_f… FALSE       TRUE             x        <NA>         
-    #> 3 my_fun: no vis… my_f… FALSE       TRUE             y        <NA>         
-    #> 4 my_fun: no vis… my_f… FALSE       TRUE             new_col  <NA>         
-    #> 
-    #> $functions
-    #> # A tibble: 5 x 6
-    #>   notes               fun    is_function is_global_varia… variable proposed
-    #>   <chr>               <chr>  <lgl>       <lgl>            <chr>    <chr>   
-    #> 1 my_fun: no visible… my_fun TRUE        FALSE            %>%      <NA>    
-    #> 2 my_fun: no visible… my_fun TRUE        FALSE            mutate   <NA>    
-    #> 3 my_fun: no visible… my_fun TRUE        FALSE            ggplot   <NA>    
-    #> 4 my_fun: no visible… my_fun TRUE        FALSE            aes      <NA>    
-    #> 5 my_fun: no visible… my_fun TRUE        FALSE            geom_po… <NA>
+  - Print globals to copy-paste
+
+<!-- end list -->
 
 ``` r
-# Print globals to copy-paste
 print_globals(globals)
-# Store in package using usethis::use_r("globals")
+#> --- Fonctions to add in NAMESPACE (with @importFrom ?) ---
+#> 
+#> my_fun: %>%, aes, geom_point, ggplot, mutate
+#> 
+#> --- Potential GlobalVariables ---
+#> -- code to copy to your globals.R file --
+#> 
+#> globalVariables(c(unique(
+#> # my_fun: 
+#> "data", "new_col", "x", "y"
+#> )))
 ```
 
-    #> --- Fonctions to add in NAMESPACE ---
-    #> 
-    #> %>%, aes, geom_point, ggplot, mutate
-    #> 
-    #> --- Potential GlobalVariables ---
-    #> 
-    #> globalVariables(
-    #> c(
-    #> "data", "x", "y", "new_col"
-    #> )
-    #> )
-    # Store in package using usethis::use_r("globals")
-
-Please note that this project is released with a [Contributor Code of
-Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
-to abide by its terms.
+  - Store in package using `usethis::use_r("globals")`
+    
+    Please note that this project is released with a [Contributor Code
+    of Conduct](CODE_OF_CONDUCT.md). By participating in this project
+    you agree to abide by its terms.

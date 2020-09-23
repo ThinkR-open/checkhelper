@@ -26,7 +26,7 @@ library(checkhelper)
 
 Create a fake package for examples
 
-```{r, eval=TRUE}
+```{r, eval=TRUE, results='hide'}
 # Create fake package ----
 tempdir <- tempdir()
 # Create fake package
@@ -56,13 +56,12 @@ Use the package
 
 ```{r}
 # Get globals
-globals <- get_no_visible(path)
+globals <- get_no_visible(path, quiet = TRUE)
 globals
 
 # Print globals to copy-paste
 print_globals(globals)
 # Store in package using usethis::use_r("globals")
-
 ```
 
 

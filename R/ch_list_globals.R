@@ -119,10 +119,11 @@ get_no_visible <- function(path = ".", ...) {
 #' Print no visible globals from check and separate by category
 #'
 #' @param globals A list as issued from \code{\link{get_no_visible}} or empty
+#' @param print Logical. Whether to print the output in the console (Default) or return as list
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @inheritParams get_notes
 #'
-#' @importFrom dplyr pull
+#' @importFrom dplyr pull mutate group_by summarise
 #' @importFrom glue glue_collapse glue
 #'
 #' @export
@@ -139,9 +140,7 @@ get_no_visible <- function(path = ".", ...) {
 #' #' @export
 #' my_fun <- function() {
 #' data %>%
-#' filter(col == 3) %>%
-#' mutate(new_col = 1) %>%
-#' ggplot() +
+#' ggplot2::ggplot() +
 #'   aes(x, y, colour = new_col) +
 #'   geom_point()
 #' }
@@ -153,7 +152,7 @@ get_no_visible <- function(path = ".", ...) {
 #' print_globals(globals = globals)
 #' }
 
-print_globals <- function(globals, path = ".", ...) {
+print_globals <- function(globals, path = ".", ..., print = TRUE) {
 
   if (missing(globals)) {globals <- get_no_visible(path, ...)}
 
@@ -161,23 +160,47 @@ print_globals <- function(globals, path = ".", ...) {
     stop("globals should be a list as issued from 'get_no_visible()' or empty")
   }
 
-  print(glue("--- Fonctions to add in NAMESPACE ---\n\n"))
-  print(glue_collapse(
-    globals[["functions"]] %>%
-      pull(variable) %>%
-      unique() %>%
-      sort(),
-    sep = ", ")
-  )
+  liste_funs <- globals[["functions"]] %>%
+    group_by(fun) %>%
+    summarise(
+      text = paste(
+        variable %>%
+          unique() %>%
+          sort(),
+        collapse = ", ")
+    ) %>%
+    mutate(
+      text = paste0(fun, ": ", text, "\n")
+    ) %>%
+    pull(text) %>%
+    paste(., collapse = "") %>%
+    paste0("--- Fonctions to add in NAMESPACE (with @importFrom ?) ---\n\n", .)
 
-  print(glue("\n\n--- Potential GlobalVariables ---\n\n"))
-  print(glue_collapse(
-    c("globalVariables(", "c(",
-      paste0(
-        globals[["globalVariables"]] %>%
-          pull(variable) %>%
-          unique() %>% paste0("\"", ., "\""),
-        collapse = ", "),
-      ")", ")"),
-    sep = "\n"))
+  liste_globals <- globals[["globalVariables"]] %>%
+    group_by(fun) %>%
+    summarise(
+      text = paste(
+        variable %>%
+          unique() %>%
+          sort() %>%
+          paste0("\"", ., "\""),
+        collapse = ", ")
+    ) %>%
+    mutate(
+      text = paste0("# ", fun, ": \n", text)
+    ) %>%
+    pull(text) %>%
+    paste(., collapse = ", \n") %>%
+    paste0("--- Potential GlobalVariables ---\n",
+           "-- code to copy to your globals.R file --\n\n",
+           "globalVariables(c(unique(\n", ., "\n)))")
+
+    if (isTRUE(print)) {
+      print(glue(liste_funs, "\n", liste_globals))
+    } else {
+      list(
+        liste_funs = liste_funs,
+        liste_globals = liste_globals
+      )
+    }
 }

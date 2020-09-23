@@ -10,3 +10,4 @@
 ^appveyor\.yml$
 ^tic\.R$
 ^\.github$
+^codecov\.yml$
