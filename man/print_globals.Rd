@@ -4,7 +4,7 @@
 \alias{print_globals}
 \title{Print no visible globals from check and separate by category}
 \usage{
-print_globals(globals, path = ".", ...)
+print_globals(globals, path = ".", ..., print = TRUE)
 }
 \arguments{
 \item{globals}{A list as issued from \code{\link{get_no_visible}} or empty}
@@ -12,6 +12,8 @@ print_globals(globals, path = ".", ...)
 \item{path}{Path to a package tarball or a directory.}
 
 \item{...}{Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}}
+
+\item{print}{Logical. Whether to print the output in the console (Default) or return as list}
 }
 \description{
 Print no visible globals from check and separate by category
@@ -29,9 +31,7 @@ cat("
 #' @export
 my_fun <- function() {
 data \%>\%
-filter(col == 3) \%>\%
-mutate(new_col = 1) \%>\%
-ggplot() +
+ggplot2::ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }
