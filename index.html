@@ -127,18 +127,32 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>Check your current package under development and get all the globals missing: <code>no visible global variable</code> and <code>no visible global function</code></p>
+<div id="directly-in-your-package-in-development" class="section level3">
+<h3 class="hasAnchor">
+<a href="#directly-in-your-package-in-development" class="anchor"></a>Directly in your package in development</h3>
+<ul>
+<li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="kw">checkhelper</span>::<span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(quiet = <span class="fl">TRUE</span>)
+<span class="co">#&gt; There is no globalVariable detected.</span>
+</pre></div>
+</div>
+<div id="reproducible-example" class="section level3">
+<h3 class="hasAnchor">
+<a href="#reproducible-example" class="anchor"></a>Reproducible example</h3>
 <ul>
 <li>Create a fake package with a function having globalvariables</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit">
+<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://thinkr-open.github.io/checkhelper">checkhelper</a></span>)
 
 <span class="co"># Create fake package ----</span>
 <span class="kw">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
 <span class="co"># Create fake package</span>
 <span class="kw">usethis</span>::<span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>), open = <span class="fl">FALSE</span>)
-<span class="co">#&gt; ✓ Creating '/tmp/RtmpH37TMD/checkpackage/'</span>
-<span class="co">#&gt; ✓ Setting active project to '/tmp/RtmpH37TMD/checkpackage'</span>
+<span class="co">#&gt; ✓ Creating '/tmp/Rtmpm7UmMb/checkpackage/'</span>
+<span class="co">#&gt; ✓ Setting active project to '/tmp/Rtmpm7UmMb/checkpackage'</span>
 <span class="co">#&gt; ✓ Creating 'R/'</span>
 <span class="co">#&gt; ✓ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✓ Writing 'NAMESPACE'</span>
@@ -160,6 +174,7 @@ ggplot() +
 "</span>, file = <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span>))
 
 <span class="kw">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>)
+<span class="co"># run roxygen and fill the DESCRIPTION with dependencies</span>
 <span class="kw">attachment</span>::<span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span>(path = <span class="kw">path</span>)
 <span class="co">#&gt; Updating checkpackage documentation</span>
 <span class="co">#&gt; Loading checkpackage</span>
@@ -168,7 +183,7 @@ ggplot() +
 <ul>
 <li>Get global variables</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit">
+<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>, quiet = <span class="fl">TRUE</span>)
 <span class="kw">globals</span>
 <span class="co">#&gt; $globalVariables</span>
@@ -193,7 +208,7 @@ ggplot() +
 <ul>
 <li>Print globals to copy-paste</li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit">
+<!-- end list --><div class="sourceCode" id="cb5"><pre class="downlit">
 <span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
 <span class="co">#&gt; --- Fonctions to add in NAMESPACE (with @importFrom ?) ---</span>
 <span class="co">#&gt; </span>
@@ -213,6 +228,7 @@ ggplot() +
 <p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 
