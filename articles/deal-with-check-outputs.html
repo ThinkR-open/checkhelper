@@ -111,7 +111,7 @@
       <h1 data-toc-skip>Deal with check outputs</h1>
                         <h4 class="author">Sébastien Rochette</h4>
             
-            <h4 class="date">2020-09-21</h4>
+            <h4 class="date">2020-09-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/master/vignettes/deal-with-check-outputs.Rmd"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -136,22 +136,10 @@
 <span class="kw">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
 <span class="co"># Create fake package</span>
 <span class="kw">usethis</span>::<span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>), open = <span class="fl">FALSE</span>)
-<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/checkpackage/'</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/checkpackage'</span>
+<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpU0IIaT/checkpackage/'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpU0IIaT/checkpackage'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
-<span class="co">#&gt; Package: checkpackage</span>
-<span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span>
-<span class="co">#&gt; Version: 0.0.0.9000</span>
-<span class="co">#&gt; Authors@R (parsed):</span>
-<span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (YOUR-ORCID-ID)</span>
-<span class="co">#&gt; Description: What the package does (one paragraph).</span>
-<span class="co">#&gt; License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span>
-<span class="co">#&gt;     license</span>
-<span class="co">#&gt; Encoding: UTF-8</span>
-<span class="co">#&gt; LazyData: true</span>
-<span class="co">#&gt; Roxygen: list(markdown = TRUE)</span>
-<span class="co">#&gt; RoxygenNote: 7.1.1</span>
 <span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
 <span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span>
 
@@ -174,105 +162,12 @@ ggplot() +
 <span class="kw">attachment</span>::<span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span>(path = <span class="kw">path</span>)
 <span class="co">#&gt; Updating checkpackage documentation</span>
 <span class="co">#&gt; Loading checkpackage</span>
-<span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; Writing my_fun.Rd</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 </pre></div>
 <p>Use the package</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="co"># Get globals</span>
-<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>)
-<span class="co">#&gt; ── R CMD build ─────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; * checking for file ‘.../DESCRIPTION’ ... OK</span>
-<span class="co">#&gt; * preparing ‘checkpackage’:</span>
-<span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span>
-<span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span>
-<span class="co">#&gt; * checking for empty or unneeded directories</span>
-<span class="co">#&gt; * building ‘checkpackage_0.0.0.9000.tar.gz’</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── R CMD check ─────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; * using log directory ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/file633209dc962/checkpackage.Rcheck’</span>
-<span class="co">#&gt; * using R version 4.0.2 (2020-06-22)</span>
-<span class="co">#&gt; * using platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; * using session charset: UTF-8</span>
-<span class="co">#&gt; * checking for file ‘checkpackage/DESCRIPTION’ ... OK</span>
-<span class="co">#&gt; * this is package ‘checkpackage’ version ‘0.0.0.9000’</span>
-<span class="co">#&gt; * package encoding: UTF-8</span>
-<span class="co">#&gt; * checking package namespace information ... OK</span>
-<span class="co">#&gt; * checking package dependencies ... OK</span>
-<span class="co">#&gt; * checking if this is a source package ... OK</span>
-<span class="co">#&gt; * checking if there is a namespace ... OK</span>
-<span class="co">#&gt; * checking for executable files ... OK</span>
-<span class="co">#&gt; * checking for hidden files and directories ... OK</span>
-<span class="co">#&gt; * checking for portable file names ... OK</span>
-<span class="co">#&gt; * checking for sufficient/correct file permissions ... OK</span>
-<span class="co">#&gt; * checking whether package ‘checkpackage’ can be installed ... OK</span>
-<span class="co">#&gt; * checking installed package size ... OK</span>
-<span class="co">#&gt; * checking package directory ... OK</span>
-<span class="co">#&gt; * checking DESCRIPTION meta-information ... WARNING</span>
-<span class="co">#&gt; Non-standard license specification:</span>
-<span class="co">#&gt;   `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span>
-<span class="co">#&gt;   license</span>
-<span class="co">#&gt; Standardizable: FALSE</span>
-<span class="co">#&gt; * checking top-level files ... OK</span>
-<span class="co">#&gt; * checking for left-over files ... OK</span>
-<span class="co">#&gt; * checking index information ... OK</span>
-<span class="co">#&gt; * checking package subdirectories ... OK</span>
-<span class="co">#&gt; * checking R files for non-ASCII characters ... OK</span>
-<span class="co">#&gt; * checking R files for syntax errors ... OK</span>
-<span class="co">#&gt; * checking whether the package can be loaded ... OK</span>
-<span class="co">#&gt; * checking whether the package can be loaded with stated dependencies ... OK</span>
-<span class="co">#&gt; * checking whether the package can be unloaded cleanly ... OK</span>
-<span class="co">#&gt; * checking whether the namespace can be loaded with stated dependencies ... OK</span>
-<span class="co">#&gt; * checking whether the namespace can be unloaded cleanly ... OK</span>
-<span class="co">#&gt; * checking loading without being on the library search path ... OK</span>
-<span class="co">#&gt; * checking dependencies in R code ... OK</span>
-<span class="co">#&gt; * checking S3 generic/method consistency ... OK</span>
-<span class="co">#&gt; * checking replacement functions ... OK</span>
-<span class="co">#&gt; * checking foreign function calls ... OK</span>
-<span class="co">#&gt; * checking R code for possible problems ... NOTE</span>
-<span class="co">#&gt; my_fun: no visible global function definition for ‘%&gt;%’</span>
-<span class="co">#&gt; my_fun: no visible binding for global variable ‘data’</span>
-<span class="co">#&gt; my_fun: no visible global function definition for ‘mutate’</span>
-<span class="co">#&gt; my_fun: no visible global function definition for ‘ggplot’</span>
-<span class="co">#&gt; my_fun: no visible global function definition for ‘aes’</span>
-<span class="co">#&gt; my_fun: no visible binding for global variable ‘x’</span>
-<span class="co">#&gt; my_fun: no visible binding for global variable ‘y’</span>
-<span class="co">#&gt; my_fun: no visible binding for global variable ‘new_col’</span>
-<span class="co">#&gt; my_fun: no visible global function definition for ‘geom_point’</span>
-<span class="co">#&gt; Undefined global functions or variables:</span>
-<span class="co">#&gt;   %&gt;% aes data geom_point ggplot mutate new_col x y</span>
-<span class="co">#&gt; Consider adding</span>
-<span class="co">#&gt;   importFrom("utils", "data")</span>
-<span class="co">#&gt; to your NAMESPACE file.</span>
-<span class="co">#&gt; * checking Rd files ... OK</span>
-<span class="co">#&gt; * checking Rd metadata ... OK</span>
-<span class="co">#&gt; * checking Rd cross-references ... OK</span>
-<span class="co">#&gt; * checking for missing documentation entries ... OK</span>
-<span class="co">#&gt; * checking for code/documentation mismatches ... OK</span>
-<span class="co">#&gt; * checking Rd \usage sections ... OK</span>
-<span class="co">#&gt; * checking Rd contents ... OK</span>
-<span class="co">#&gt; * checking for unstated dependencies in examples ... OK</span>
-<span class="co">#&gt; * checking examples ... NONE</span>
-<span class="co">#&gt; * checking PDF version of manual ... WARNING</span>
-<span class="co">#&gt; LaTeX errors when creating PDF version.</span>
-<span class="co">#&gt; This typically indicates Rd problems.</span>
-<span class="co">#&gt; * checking PDF version of manual without hyperrefs or index ... ERROR</span>
-<span class="co">#&gt; Re-running with no redirection of stdout/stderr.</span>
-<span class="co">#&gt; Hmm ... looks like a package</span>
-<span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span>
-<span class="co">#&gt;   pdflatex is not available</span>
-<span class="co">#&gt; Error in texi2dvi(file = file, pdf = TRUE, clean = clean, quiet = quiet,  : </span>
-<span class="co">#&gt;   pdflatex is not available</span>
-<span class="co">#&gt; Error in running tools::texi2pdf()</span>
-<span class="co">#&gt; You may want to clean up by 'rm -Rf /var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T//RtmpNx8AMM/Rd2pdf65fd3204fd'</span>
-<span class="co">#&gt; * DONE</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Status: 1 ERROR, 2 WARNINGs, 1 NOTE</span>
-<span class="co">#&gt; See</span>
-<span class="co">#&gt;   ‘/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpBWYOXF/file633209dc962/checkpackage.Rcheck/00check.log’</span>
-<span class="co">#&gt; for details.</span>
+<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>, quiet = <span class="fl">TRUE</span>)
 <span class="kw">globals</span>
 <span class="co">#&gt; $globalVariables</span>
 <span class="co">#&gt; # A tibble: 4 x 6</span>
@@ -295,17 +190,17 @@ ggplot() +
 
 <span class="co"># Print globals to copy-paste</span>
 <span class="fu"><a href="../reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
-<span class="co">#&gt; --- Fonctions to add in NAMESPACE ---</span>
+<span class="co">#&gt; --- Fonctions to add in NAMESPACE (with @importFrom ?) ---</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; %&gt;%, aes, geom_point, ggplot, mutate</span>
+<span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; --- Potential GlobalVariables ---</span>
+<span class="co">#&gt; -- code to copy to your globals.R file --</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; globalVariables(</span>
-<span class="co">#&gt; c(</span>
-<span class="co">#&gt; "data", "x", "y", "new_col"</span>
-<span class="co">#&gt; )</span>
-<span class="co">#&gt; )</span>
+<span class="co">#&gt; globalVariables(c(unique(</span>
+<span class="co">#&gt; # my_fun: </span>
+<span class="co">#&gt; "data", "new_col", "x", "y"</span>
+<span class="co">#&gt; )))</span>
 <span class="co"># Store in package using usethis::use_r("globals")</span>
 </pre></div>
 </div>

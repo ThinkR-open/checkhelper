@@ -152,7 +152,7 @@
     <p>Print no visible globals from check and separate by category</p>
     </div>
 
-    <pre class="usage"><span class='fu'>print_globals</span>(<span class='kw'>globals</span>, path = <span class='st'>"."</span>, <span class='kw'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>print_globals</span>(<span class='kw'>globals</span>, path = <span class='st'>"."</span>, <span class='kw'>...</span>, print = <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -168,6 +168,10 @@
     <tr>
       <th>...</th>
       <td><p>Other parameters for <code><a href='https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html'>rcmdcheck</a></code></p></td>
+    </tr>
+    <tr>
+      <th>print</th>
+      <td><p>Logical. Whether to print the output in the console (Default) or return as list</p></td>
     </tr>
     </table>
 
@@ -185,9 +189,7 @@
 #' @export
 my_fun &lt;- function() {
 data %&gt;%
-filter(col == 3) %&gt;%
-mutate(new_col = 1) %&gt;%
-ggplot() +
+ggplot2::ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }

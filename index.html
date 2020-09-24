@@ -127,47 +127,92 @@
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
 <p>Check your current package under development and get all the globals missing: <code>no visible global variable</code> and <code>no visible global function</code></p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Get globals</span>
-<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span>()
+<ul>
+<li>Create a fake package with a function having globalvariables</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://thinkr-open.github.io/checkhelper">checkhelper</a></span>)
+
+<span class="co"># Create fake package ----</span>
+<span class="kw">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
+<span class="co"># Create fake package</span>
+<span class="kw">usethis</span>::<span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>), open = <span class="fl">FALSE</span>)
+<span class="co">#&gt; ✓ Creating '/tmp/RtmpH37TMD/checkpackage/'</span>
+<span class="co">#&gt; ✓ Setting active project to '/tmp/RtmpH37TMD/checkpackage'</span>
+<span class="co">#&gt; ✓ Creating 'R/'</span>
+<span class="co">#&gt; ✓ Writing 'DESCRIPTION'</span>
+<span class="co">#&gt; ✓ Writing 'NAMESPACE'</span>
+<span class="co">#&gt; ✓ Setting active project to '&lt;no active project&gt;'</span>
+
+<span class="co"># Create function no visible global variables and missing documented functions</span>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"
+#' Function
+#' @importFrom dplyr filter
+#' @export
+my_fun &lt;- function() {
+data %&gt;%
+filter(col == 3) %&gt;%
+mutate(new_col = 1) %&gt;%
+ggplot() +
+  aes(x, y, colour = new_col) +
+  geom_point()
+}
+"</span>, file = <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span>))
+
+<span class="kw">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>)
+<span class="kw">attachment</span>::<span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span>(path = <span class="kw">path</span>)
+<span class="co">#&gt; Updating checkpackage documentation</span>
+<span class="co">#&gt; Loading checkpackage</span>
+<span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
+</pre></div>
+<ul>
+<li>Get global variables</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>, quiet = <span class="fl">TRUE</span>)
 <span class="kw">globals</span>
+<span class="co">#&gt; $globalVariables</span>
+<span class="co">#&gt; # A tibble: 4 x 6</span>
+<span class="co">#&gt;   notes              fun    is_function is_global_varia… variable proposed      </span>
+<span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;         </span>
+<span class="co">#&gt; 1 my_fun: no visibl… my_fun FALSE       TRUE             data     "  importFrom…</span>
+<span class="co">#&gt; 2 my_fun: no visibl… my_fun FALSE       TRUE             x         &lt;NA&gt;         </span>
+<span class="co">#&gt; 3 my_fun: no visibl… my_fun FALSE       TRUE             y         &lt;NA&gt;         </span>
+<span class="co">#&gt; 4 my_fun: no visibl… my_fun FALSE       TRUE             new_col   &lt;NA&gt;         </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $functions</span>
+<span class="co">#&gt; # A tibble: 5 x 6</span>
+<span class="co">#&gt;   notes                    fun    is_function is_global_varia… variable proposed</span>
+<span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span>
+<span class="co">#&gt; 1 my_fun: no visible glob… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span>
+<span class="co">#&gt; 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span>
+<span class="co">#&gt; 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span>
+<span class="co">#&gt; 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span>
+<span class="co">#&gt; 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span>
 </pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#&gt; $globalVariables</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; # A tibble: 4 x 6</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;   notes           fun   is_function is_global_varia… variable proposed     </span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt; &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;        </span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; 1 my_fun: no vis… my_f… FALSE       TRUE             data     "  importFro…</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; 2 my_fun: no vis… my_f… FALSE       TRUE             x        &lt;NA&gt;         </span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; 3 my_fun: no vis… my_f… FALSE       TRUE             y        &lt;NA&gt;         </span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; 4 my_fun: no vis… my_f… FALSE       TRUE             new_col  &lt;NA&gt;         </span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; </span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; $functions</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; # A tibble: 5 x 6</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt;   notes               fun    is_function is_global_varia… variable proposed</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt;   &lt;chr&gt;               &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; 1 my_fun: no visible… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; 2 my_fun: no visible… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; 3 my_fun: no visible… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; 4 my_fun: no visible… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; 5 my_fun: no visible… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># Print globals to copy-paste</span>
+<ul>
+<li>Print globals to copy-paste</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit">
 <span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
-<span class="co"># Store in package using usethis::use_r("globals")</span>
+<span class="co">#&gt; --- Fonctions to add in NAMESPACE (with @importFrom ?) ---</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; --- Potential GlobalVariables ---</span>
+<span class="co">#&gt; -- code to copy to your globals.R file --</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; globalVariables(c(unique(</span>
+<span class="co">#&gt; # my_fun: </span>
+<span class="co">#&gt; "data", "new_col", "x", "y"</span>
+<span class="co">#&gt; )))</span>
 </pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#&gt; --- Fonctions to add in NAMESPACE ---</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; </span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; %&gt;%, aes, geom_point, ggplot, mutate</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; </span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt; --- Potential GlobalVariables ---</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt; </span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt; globalVariables(</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt; c(</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#&gt; "data", "x", "y", "new_col"</span></span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#&gt; )</span></span>
-<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#&gt; )</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="co"># Store in package using usethis::use_r("globals")</span></span></code></pre></div>
+<ul>
+<li>
+<p>Store in package using <code><a href="https://usethis.r-lib.org/reference/use_r.html">usethis::use_r("globals")</a></code></p>
 <p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
+</li>
+</ul>
 </div>
 </div>
 
@@ -208,6 +253,7 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/ThinkR-open/checkhelper/actions"><img src="https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/gh/ThinkR-open/checkhelper?branch=master"><img src="https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 </div>
