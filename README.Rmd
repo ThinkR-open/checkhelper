@@ -36,6 +36,16 @@ remotes::install_github("thinkr-open/checkhelper")
 
 Check your current package under development and get all the globals missing: `no visible global variable` and `no visible global function`
 
+### Directly in your package in development
+
+- You can directly use `checkhelper::print_globals()` on your package instead of `devtools::check()`. This is a wrapper around `rcmdcheck::rcmdcheck()`. This will run the checks and directly list the potential "globalVariables" to add in a `globals.R` file.
+
+```{r}
+checkhelper::print_globals(quiet = TRUE)
+```
+
+### Reproducible example
+
 - Create a fake package with a function having globalvariables
 ```{r, eval=TRUE, results='hide'}
 library(checkhelper)
@@ -61,6 +71,7 @@ ggplot() +
 ", file = file.path(tempdir, "checkpackage", "R", "function.R"))
 
 path <- file.path(tempdir, "checkpackage")
+# run roxygen and fill the DESCRIPTION with dependencies
 attachment::att_to_description(path = path)
 ```
 

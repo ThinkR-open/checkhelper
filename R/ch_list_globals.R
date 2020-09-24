@@ -38,6 +38,9 @@ get_notes <- function(path = ".", ...) {
 
   checks <- rcmdcheck(path = path, ...)
 
+  if (length(checks[["notes"]]) == 0) {
+    return(NULL)
+  }
   res <- tibble(notes = strsplit(checks[["notes"]], "\n")[[1]]) %>%
     mutate(
       fun = str_extract(notes, ".+(?=:)"),
@@ -95,6 +98,7 @@ get_notes <- function(path = ".", ...) {
 get_no_visible <- function(path = ".", ...) {
 
   notes <- get_notes(path, ...)
+  if (is.null(notes)) {return(NULL)}
 
   # propositions
   proposed <- notes %>%
@@ -119,7 +123,7 @@ get_no_visible <- function(path = ".", ...) {
 #' Print no visible globals from check and separate by category
 #'
 #' @param globals A list as issued from \code{\link{get_no_visible}} or empty
-#' @param print Logical. Whether to print the output in the console (Default) or return as list
+#' @param message Logical. Whether to return message with content (Default) or return as list
 #' @inheritParams rcmdcheck::rcmdcheck
 #' @inheritParams get_notes
 #'
@@ -152,9 +156,17 @@ get_no_visible <- function(path = ".", ...) {
 #' print_globals(globals = globals)
 #' }
 
-print_globals <- function(globals, path = ".", ..., print = TRUE) {
+print_globals <- function(globals, path = ".", ..., message = TRUE) {
 
   if (missing(globals)) {globals <- get_no_visible(path, ...)}
+  if (is.null(globals)) {
+    if (isTRUE(message)) {
+      message("There is no globalVariable detected.")
+      return(invisible())
+    } else {
+      return(NULL)
+    }
+  }
 
   if (!isTRUE(is.list(globals) & length(globals) == 2)) {
     stop("globals should be a list as issued from 'get_no_visible()' or empty")
@@ -195,8 +207,8 @@ print_globals <- function(globals, path = ".", ..., print = TRUE) {
            "-- code to copy to your globals.R file --\n\n",
            "globalVariables(c(unique(\n", ., "\n)))")
 
-    if (isTRUE(print)) {
-      print(glue(liste_funs, "\n", liste_globals))
+    if (isTRUE(message)) {
+      message(glue(liste_funs, "\n", liste_globals))
     } else {
       list(
         liste_funs = liste_funs,

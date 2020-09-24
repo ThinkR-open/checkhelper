@@ -4,7 +4,7 @@
 \alias{print_globals}
 \title{Print no visible globals from check and separate by category}
 \usage{
-print_globals(globals, path = ".", ..., print = TRUE)
+print_globals(globals, path = ".", ..., message = TRUE)
 }
 \arguments{
 \item{globals}{A list as issued from \code{\link{get_no_visible}} or empty}
@@ -13,7 +13,7 @@ print_globals(globals, path = ".", ..., print = TRUE)
 
 \item{...}{Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}}
 
-\item{print}{Logical. Whether to print the output in the console (Default) or return as list}
+\item{message}{Logical. Whether to return message with content (Default) or return as list}
 }
 \description{
 Print no visible globals from check and separate by category
