@@ -35,7 +35,17 @@ attachment::att_amend_desc(path = path)
 
 # get_no_visible ----
 # Get globals
-globals <- get_no_visible(path, quiet = TRUE)
+# globals <- get_no_visible(path, quiet = TRUE)
+
+# Not in this R session
+command <- paste0(Sys.getenv("R_HOME"), "/bin/Rscript -e '",
+       'globals <- checkhelper::get_no_visible("', path, '", quiet = TRUE); ',
+       'saveRDS(globals,"', file.path(tempdir, "checkpackage", "globals.rds"), '")',
+       "'"
+)
+system(command)
+# get globals output
+globals <- readRDS(file.path(tempdir, "checkpackage", "globals.rds"))
 
 test_that("get_no_visible works", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
