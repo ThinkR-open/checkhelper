@@ -120,8 +120,7 @@
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the last version of checkhelper from github with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw">remotes</span>::<span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"thinkr-open/checkhelper"</span>)
-</pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></pre></div>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
@@ -134,9 +133,8 @@
 <li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">checkhelper</span>::<span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(quiet = <span class="fl">TRUE</span>)
-<span class="co">#&gt; There is no globalVariable detected.</span>
-</pre></div>
+<span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/print_globals.html">print_globals</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; There is no globalVariable detected.</span></pre></div>
 </div>
 <div id="reproducible-example" class="section level3">
 <h3 class="hasAnchor">
@@ -145,12 +143,12 @@
 <li>Create a fake package with a function having globalvariables</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://thinkr-open.github.io/checkhelper">checkhelper</a></span>)
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span>
 
 <span class="co"># Create fake package ----</span>
-<span class="kw">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
+<span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co"># Create fake package</span>
-<span class="kw">usethis</span>::<span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>), open = <span class="fl">FALSE</span>)
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"checkpackage"</span><span class="op">)</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; ✓ Creating '/tmp/Rtmpm7UmMb/checkpackage/'</span>
 <span class="co">#&gt; ✓ Setting active project to '/tmp/Rtmpm7UmMb/checkpackage'</span>
 <span class="co">#&gt; ✓ Creating 'R/'</span>
@@ -159,7 +157,7 @@
 <span class="co">#&gt; ✓ Setting active project to '&lt;no active project&gt;'</span>
 
 <span class="co"># Create function no visible global variables and missing documented functions</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"
 #' Function
 #' @importFrom dplyr filter
 #' @export
@@ -171,21 +169,20 @@ ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }
-"</span>, file = <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span>))
+"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"checkpackage"</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="kw">tempdir</span>, <span class="st">"checkpackage"</span>)
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"checkpackage"</span><span class="op">)</span>
 <span class="co"># run roxygen and fill the DESCRIPTION with dependencies</span>
-<span class="kw">attachment</span>::<span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span>(path = <span class="kw">path</span>)
+<span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/attachment/man/att_to_description.html">att_to_description</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span><span class="op">)</span>
 <span class="co">#&gt; Updating checkpackage documentation</span>
 <span class="co">#&gt; Loading checkpackage</span>
-<span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
-</pre></div>
+<span class="co">#&gt; [+] 1 package(s) added: dplyr.</span></pre></div>
 <ul>
 <li>Get global variables</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span>(<span class="kw">path</span>, quiet = <span class="fl">TRUE</span>)
-<span class="kw">globals</span>
+<span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span><span class="op">(</span><span class="va">path</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">globals</span>
 <span class="co">#&gt; $globalVariables</span>
 <span class="co">#&gt; # A tibble: 4 x 6</span>
 <span class="co">#&gt;   notes              fun    is_function is_global_varia… variable proposed      </span>
@@ -203,13 +200,12 @@ ggplot() +
 <span class="co">#&gt; 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span>
 <span class="co">#&gt; 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span>
 <span class="co">#&gt; 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span>
-<span class="co">#&gt; 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span>
-</pre></div>
+<span class="co">#&gt; 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span></pre></div>
 <ul>
 <li>Print globals to copy-paste</li>
 </ul>
 <!-- end list --><div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="reference/print_globals.html">print_globals</a></span>(<span class="kw">globals</span>)
+<span class="fu"><a href="reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span>
 <span class="co">#&gt; --- Fonctions to add in NAMESPACE (with @importFrom ?) ---</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span>
@@ -220,8 +216,7 @@ ggplot() +
 <span class="co">#&gt; globalVariables(c(unique(</span>
 <span class="co">#&gt; # my_fun: </span>
 <span class="co">#&gt; "data", "new_col", "x", "y"</span>
-<span class="co">#&gt; )))</span>
-</pre></div>
+<span class="co">#&gt; )))</span></pre></div>
 <ul>
 <li>
 <p>Store in package using <code><a href="https://usethis.r-lib.org/reference/use_r.html">usethis::use_r("globals")</a></code></p>
