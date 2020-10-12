@@ -46,7 +46,7 @@ get_notes <- function(path = ".", ...) {
       fun = str_extract(notes, ".+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
       is_global_variable = grepl("no visible binding for global variable", notes),
-      variable = str_extract(notes, "(?<=\\u2018).+(?=\\u2019)"),
+      variable = str_extract(notes, "(?<=\\u2018).+(?=\\u2019)|(?<=\\u0027).+(?=\\u0027)"),
       is_importfrom = grepl("importFrom", notes)
     )
 

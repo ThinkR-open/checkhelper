@@ -38,14 +38,28 @@ attachment::att_amend_desc(path = path)
 # globals <- get_no_visible(path, quiet = TRUE)
 
 # Not in this R session
-command <- paste0(Sys.getenv("R_HOME"), "/bin/Rscript -e '",
-       'globals <- checkhelper::get_no_visible("', path, '", quiet = TRUE); ',
-       'saveRDS(globals,"', file.path(tempdir, "checkpackage", "globals.rds"), '")',
-       "'"
-)
-system(command)
-# get globals output
-globals <- readRDS(file.path(tempdir, "checkpackage", "globals.rds"))
+# if (FALSE) {
+# command <- paste0(
+#   Sys.getenv("R_HOME"), "/bin/Rscript -e '",
+#   # 'print("ok")',
+#   'globals <- checkhelper::get_no_visible("', normalizePath(path), '", quiet = TRUE); ',
+#   'saveRDS(globals,"', normalizePath(file.path(tempdir, "checkpackage", "globals.rds"), mustWork = FALSE), '")',
+#   "'"
+# )
+# fileR <- tempfile(fileext = ".R")
+# cat(command, file = fileR)
+# file.edit(fileR)
+# glue::glue(command)
+# system(command)
+# # get globals output
+# globals <- readRDS(file.path(tempdir, "checkpackage", "globals.rds"))
+# }
+
+# withr::local_environment({
+  # test_env({
+  globals <- checkhelper::get_no_visible(path, quiet = TRUE)
+  # saveRDS(globals,"C:\\Users\\seb44\\AppData\\Local\\Temp\\RtmpqI9biW\\checkpackage\\globals.rds")
+# })
 
 test_that("get_no_visible works", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
@@ -84,3 +98,6 @@ test_that("no notes works", {
   expect_null(print_outputs)
   expect_message(print_globals(globals, message = TRUE))
 })
+
+unlink(file.path(tempdir, "checkpackage"), recursive = TRUE)
+
