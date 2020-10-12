@@ -205,7 +205,7 @@ print_globals <- function(globals, path = ".", ..., message = TRUE) {
     paste(., collapse = ", \n") %>%
     paste0("--- Potential GlobalVariables ---\n",
            "-- code to copy to your globals.R file --\n\n",
-           "globalVariables(c(unique(\n", ., "\n)))")
+           "globalVariables(unique(c(\n", ., "\n)))")
 
     if (isTRUE(message)) {
       message(glue(liste_funs, "\n", liste_globals))
