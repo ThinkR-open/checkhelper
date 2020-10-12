@@ -68,7 +68,7 @@ test_that("print_outputs works", {
   )
   expect_equal(
     print_outputs$liste_globals,
-    "--- Potential GlobalVariables ---\n-- code to copy to your globals.R file --\n\nglobalVariables(c(unique(\n# my_fun: \n\"new_col\", \"x\", \"y\", \n# my_median: \n\"data\", \"new_col2\", \"x\", \"y\"\n)))"
+    "--- Potential GlobalVariables ---\n-- code to copy to your globals.R file --\n\nglobalVariables(unique(c(\n# my_fun: \n\"new_col\", \"x\", \"y\", \n# my_median: \n\"data\", \"new_col2\", \"x\", \"y\"\n)))"
   )
   expect_message(print_globals(globals, message = TRUE))
 })
