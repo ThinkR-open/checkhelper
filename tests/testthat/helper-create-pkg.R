@@ -24,7 +24,7 @@ create_pkg <- function(with_functions = TRUE, with_extra_notes = FALSE) {
 #' Function
 #' @importFrom dplyr filter
 #' @export
-my_fun <- function(data) {
+my_long_fun_name_for_multiple_lines_globals <- function(data) {
   data %>%
   filter(col == 3) %>%
   mutate(new_col = 1) %>%

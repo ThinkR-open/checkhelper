@@ -51,7 +51,16 @@ get_notes <- function(path = ".", checks, ...) {
     return(NULL)
   }
 
-  res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
+  notes_with_globals_return <- notes_with_globals %>%
+    stringr::str_replace_all("\\u2019\\n", "\\u2019RETURN") %>% # tick after variable
+    stringr::str_replace_all("\\u0027\\n", "\\u0027RETURN") %>% # other tick after variable
+    stringr::str_replace_all("NOTE\\n", "NOTERETURN") %>% # After NOTE
+    stringr::str_replace_all("importFrom", "RETURN importFrom") %>% # Before importFrom
+    stringr::str_replace_all("to your NAMESPACE file", "RETURN to your NAMESPACE file") %>% # After importFrom
+    stringr::str_replace_all("\\s*\\n\\s*", " ") # No known new line
+
+  res <- tibble(notes = strsplit(notes_with_globals_return, "RETURN")[[1]]) %>%
+  # res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
     mutate(
       fun = str_extract(notes, ".+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
