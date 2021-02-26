@@ -44,7 +44,14 @@ get_notes <- function(path = ".", checks, ...) {
   if (length(checks[["notes"]]) == 0) {
     return(NULL)
   }
-  res <- tibble(notes = strsplit(checks[["notes"]], "\n")[[1]]) %>%
+
+  notes_with_globals <- checks[["notes"]][grep("no visible global|no visible binding", checks[["notes"]])]
+
+  if (length(notes_with_globals) == 0) {
+    return(NULL)
+  }
+
+  res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
     mutate(
       fun = str_extract(notes, ".+(?=:)"),
       is_function = grepl("no visible global function definition", notes),

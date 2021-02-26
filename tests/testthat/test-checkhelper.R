@@ -54,9 +54,11 @@ test_that("print_outputs works", {
   expect_message(print_globals(globals, message = TRUE))
 })
 
-# check no notes ----
-file.remove(file.path(path, "R", "function.R"))
+# Remove path
+unlink(path, recursive = TRUE)
 
+# Test when no notes at all ----
+path <- create_pkg(with_functions = FALSE, with_extra_notes = FALSE)
 globals <- get_no_visible(path, quiet = TRUE)
 print_outputs <- print_globals(globals, message = FALSE)
 
@@ -66,10 +68,20 @@ test_that("no notes works", {
   expect_message(print_globals(globals, message = TRUE))
 })
 
-# Remove path
 unlink(path, recursive = TRUE)
 
-# test when checks done before
+
+# Test when only extra notes ----
+path <- create_pkg(with_functions = FALSE, with_extra_notes = TRUE)
+notes <- get_notes(path = path)
+
+test_that("extra notes only works", {
+  expect_null(notes)
+})
+
+unlink(path, recursive = TRUE)
+
+# Test when checks done before ----
 path <- create_pkg()
 checks <- rcmdcheck::rcmdcheck(path = path)
 notes <- get_notes(path = path, checks = checks)
