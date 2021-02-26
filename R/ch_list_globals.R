@@ -1,6 +1,7 @@
 #' List notes from check and identify global variables
 #'
 #' @inheritParams rcmdcheck::rcmdcheck
+#' @param checks Output of \code{\link[rcmdcheck]{rcmdcheck}} if already computed
 #' @param ... Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}
 #'
 #' @importFrom rcmdcheck rcmdcheck
@@ -34,9 +35,11 @@
 #' get_notes(path)
 #' }
 
-get_notes <- function(path = ".", ...) {
+get_notes <- function(path = ".", checks, ...) {
 
-  checks <- rcmdcheck(path = path, ...)
+  if (missing(checks)) {
+    checks <- rcmdcheck(path = path, ...)
+  }
 
   if (length(checks[["notes"]]) == 0) {
     return(NULL)
@@ -95,9 +98,13 @@ get_notes <- function(path = ".", ...) {
 #' get_no_visible(path)
 #' }
 
-get_no_visible <- function(path = ".", ...) {
+get_no_visible <- function(path = ".", checks, ...) {
 
-  notes <- get_notes(path, ...)
+  if (missing(checks)) {
+    notes <- get_notes(path, ...)
+  } else {
+    notes <- get_notes(path, checks, ...)
+  }
   if (is.null(notes)) {return(NULL)}
 
   # propositions

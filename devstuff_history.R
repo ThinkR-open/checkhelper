@@ -54,7 +54,7 @@ usethis::pr_fetch(10)
 usethis::pr_push()
 
 # Development ----
-attachment::att_to_description() #dir.v = ""
+attachment::att_amend_desc() #dir.v = ""
 checkhelper::print_globals()
 usethis::use_r("globals")
 

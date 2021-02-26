@@ -4,10 +4,12 @@
 \alias{get_notes}
 \title{List notes from check and identify global variables}
 \usage{
-get_notes(path = ".", ...)
+get_notes(path = ".", checks, ...)
 }
 \arguments{
 \item{path}{Path to a package tarball or a directory.}
+
+\item{checks}{Output of \code{\link[rcmdcheck]{rcmdcheck}} if already computed}
 
 \item{...}{Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}}
 }

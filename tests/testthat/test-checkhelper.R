@@ -1,37 +1,4 @@
-# Create fake package ----
-tempdir <- tempdir()
-# Create fake package
-usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
-# on.exit(unlink(file.path(tempdir, "checkpackage"), recursive = TRUE))
-
-# Create function no visible global variables and missing documented functions
-cat("
-#' Function
-#' @importFrom dplyr filter
-#' @export
-my_fun <- function(data) {
-  data %>%
-  filter(col == 3) %>%
-  mutate(new_col = 1) %>%
-  ggplot() +
-    aes(x, y, colour = new_col) +
-    geom_point()
-}
-
-#' Function 2
-#' @export
-my_median <- function() {
-  data %>%
-  filter(col == 3) %>%
-  mutate(new_col2 = 1) %>%
-  ggplot() +
-    aes(x, y, colour = new_col2) +
-    geom_point()
-}
-", file = file.path(tempdir, "checkpackage", "R", "function.R"))
-
-path <- file.path(tempdir, "checkpackage")
-attachment::att_amend_desc(path = path)
+path <- create_pkg()
 
 # get_no_visible ----
 # Get globals
@@ -88,7 +55,7 @@ test_that("print_outputs works", {
 })
 
 # check no notes ----
-file.remove(file.path(tempdir, "checkpackage", "R", "function.R"))
+file.remove(file.path(path, "R", "function.R"))
 
 globals <- get_no_visible(path, quiet = TRUE)
 print_outputs <- print_globals(globals, message = FALSE)
@@ -99,5 +66,32 @@ test_that("no notes works", {
   expect_message(print_globals(globals, message = TRUE))
 })
 
-unlink(file.path(tempdir, "checkpackage"), recursive = TRUE)
+# Remove path
+unlink(path, recursive = TRUE)
 
+# test when checks done before
+path <- create_pkg()
+checks <- rcmdcheck::rcmdcheck(path = path)
+notes <- get_notes(path = path, checks = checks)
+
+test_that("notes from checks works", {
+  expect_equal(nrow(notes), 23)
+  expect_equal(ncol(notes), 7)
+  expect_true(all(notes[["fun"]][2:9] == "my_fun"))
+  expect_true(all(notes[["fun"]][10:18] == "my_median"))
+})
+
+globals <- get_no_visible(path, checks, quiet = TRUE)
+
+test_that("get_no_visible works after checks", {
+  # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
+  expect_equal(globals$globalVariables$fun,
+               c("my_fun", "my_fun", "my_fun",
+                 "my_median", "my_median", "my_median", "my_median"))
+  # glue("\"", paste(globals$globalVariables$variable, collapse = "\", \""), "\"")
+  expect_equal(globals$globalVariables$variable,
+               c("x", "y", "new_col", "data", "x", "y", "new_col2"))
+})
+
+# Remove path
+unlink(path, recursive = TRUE)
