@@ -10,7 +10,8 @@ coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badg
 
 # checkhelper
 
-A package to help you deal with `devtools::check()` outputs
+A package to help you deal with `devtools::check()` outputs and helps
+avoids problems with CRAN submissions
 
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
@@ -28,7 +29,8 @@ remotes::install_github("thinkr-open/checkhelper")
 -   Check your current package under development and get all the globals
     missing: `no visible global variable` and
     `no visible global function`
--   Detect exported functions with missing or empty `@return` tag
+-   Detect exported functions with missing or empty `@return` / `@noRd`
+    tags
 
 ### Directly in your package in development
 
@@ -38,7 +40,9 @@ remotes::install_github("thinkr-open/checkhelper")
     -   CRAN policy asks for every exported function to have a value
         (named `@export` when using {roxygen2}).
     -   This also checks that not exported functions dont have roxygen
-        title, or have `@noRd`
+        title, or have `@noRd` in case you faced
+        `Please add \value to .Rd files` CRAN message for documented but
+        not exported functions.
 -   You can directly use `checkhelper::print_globals()` on your package
     instead of `devtools::check()`. This is a wrapper around
     `rcmdcheck::rcmdcheck()`. This will run the checks and directly list
@@ -67,7 +71,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✓ Setting active project to '/tmp/RtmpgaYnxF/pkg.5db141d26de96'
+#> ✓ Setting active project to '/tmp/Rtmpr5hR9Z/pkg.5ecb790df6c5'
 #> ✓ Creating 'R/'
 #> ✓ Writing 'DESCRIPTION'
 #> ✓ Writing 'NAMESPACE'
@@ -94,9 +98,9 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.5db141d26de96 documentation
+#> Updating pkg.5ecb790df6c5 documentation
 #> First time using roxygen2. Upgrading automatically...
-#> ℹ Loading pkg.5db141d26de96
+#> ℹ Loading pkg.5ecb790df6c5
 #> [+] 1 package(s) added: dplyr.
 
 # Files of the package
@@ -109,7 +113,7 @@ fs::dir_tree(pkg_path, recursive = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.5db141d26de96
+#> ℹ Loading pkg.5ecb790df6c5
 #> Writing NAMESPACE
 #> Missing or empty return value for exported functions: my_fun
 #> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc

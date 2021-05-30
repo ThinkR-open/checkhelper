@@ -10,7 +10,7 @@ output: github_document
 <!-- badges: end -->
   
 # checkhelper
-A package to help you deal with `devtools::check()` outputs
+A package to help you deal with `devtools::check()` outputs and helps avoids problems with CRAN submissions
 
 Complete documentation in the {pkgdown} site: https://thinkr-open.github.io/checkhelper/
 
@@ -35,13 +35,13 @@ remotes::install_github("thinkr-open/checkhelper")
 ## Examples
 
 - Check your current package under development and get all the globals missing: `no visible global variable` and `no visible global function`
-- Detect exported functions with missing or empty `@return` tag
+- Detect exported functions with missing or empty `@return` / `@noRd` tags
 
 ### Directly in your package in development
 
 - Use `checkhelper::find_missing_tags()` on your package in development to find which functions are exported but missing `@export` roxygen2 tag. 
   - CRAN policy asks for every exported function to have a value (named `@export` when using {roxygen2}). 
-  - This also checks that not exported functions dont have roxygen title, or have `@noRd`
+  - This also checks that not exported functions dont have roxygen title, or have `@noRd` in case you faced `Please add \value to .Rd files` CRAN message for documented but not exported functions.
 - You can directly use `checkhelper::print_globals()` on your package instead of `devtools::check()`. This is a wrapper around `rcmdcheck::rcmdcheck()`. This will run the checks and directly list the potential "globalVariables" to add in a `globals.R` file.
 
 ```{r, eval=FALSE}
