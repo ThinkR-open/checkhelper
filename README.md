@@ -32,20 +32,31 @@ remotes::install_github("thinkr-open/checkhelper")
 
 ### Directly in your package in development
 
+-   Use `checkhelper::find_missing_tags()` on your package in
+    development to find which functions are exported but missing
+    `@export` roxygen2 tag.
+    -   CRAN policy asks for every exported function to have a value
+        (named `@export` when using {roxygen2}).
+    -   This also checks that not exported functions dont have roxygen
+        title, or have `@noRd`
 -   You can directly use `checkhelper::print_globals()` on your package
     instead of `devtools::check()`. This is a wrapper around
     `rcmdcheck::rcmdcheck()`. This will run the checks and directly list
     the potential “globalVariables” to add in a `globals.R` file.
 
 ``` r
-checkhelper::find_missing_values()
+checkhelper::find_missing_tags()
 
 checkhelper::print_globals(quiet = TRUE)
 ```
 
 ### Reproducible example with a fake package in tempdir
 
--   Create a fake package with a function having globalvariables
+-   Create a fake package with
+    -   a function having global variables
+    -   a function with `@export` but no `@return`
+    -   a function with title but without `@export` and thus missing
+        `@noRd`
 
 ``` r
 library(checkhelper)
@@ -56,7 +67,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✓ Setting active project to '/tmp/Rtmp2TuqBq/pkg.5690e53275c34'
+#> ✓ Setting active project to '/tmp/RtmpgaYnxF/pkg.5db141d26de96'
 #> ✓ Creating 'R/'
 #> ✓ Writing 'DESCRIPTION'
 #> ✓ Writing 'NAMESPACE'
@@ -75,12 +86,17 @@ ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }
+
+#' Function not exported but with doc
+my_not_exported_doc <- function() {
+  message('Not exported but with title, should have @noRd')
+}
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.5690e53275c34 documentation
+#> Updating pkg.5db141d26de96 documentation
 #> First time using roxygen2. Upgrading automatically...
-#> ℹ Loading pkg.5690e53275c34
+#> ℹ Loading pkg.5db141d26de96
 #> [+] 1 package(s) added: dplyr.
 
 # Files of the package
@@ -88,17 +104,22 @@ fs::dir_tree(pkg_path, recursive = TRUE)
 #> Warning: `recursive` is deprecated, please use `recurse` instead
 ```
 
--   Find missing `@return`
+-   Find missing `@return` and find missing `@noRd` for not exported
+    function with documentation
 
 ``` r
-find_missing_values(pkg_path)
-#> ℹ Loading pkg.5690e53275c34
+find_missing_tags(pkg_path)
+#> ℹ Loading pkg.5db141d26de96
 #> Writing NAMESPACE
-#> Missing or empty return value for functions: my_fun
-#> # A tibble: 1 x 6
-#>   topic  has_export has_return return_value not_empty_return… has_export_and_re…
-#>   <chr>  <lgl>      <lgl>      <chr>        <lgl>             <lgl>             
-#> 1 my_fun TRUE       FALSE      ""           FALSE             FALSE
+#> Missing or empty return value for exported functions: my_fun
+#> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
+#> # A tibble: 2 x 8
+#>   topic          has_export has_return return_value not_empty_return_v… has_nord
+#>   <chr>          <lgl>      <lgl>      <chr>        <lgl>               <lgl>   
+#> 1 my_fun         TRUE       FALSE      ""           FALSE               FALSE   
+#> 2 my_not_export… FALSE      FALSE      ""           FALSE               FALSE   
+#> # … with 2 more variables: test_has_export_and_return <chr>,
+#> #   test_has_export_or_has_nord <chr>
 ```
 
 -   Get global variables

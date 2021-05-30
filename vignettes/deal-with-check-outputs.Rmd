@@ -59,10 +59,10 @@ fs::dir_tree(pkg_path, recursive = TRUE)
 ## Avoid missing return value for exported functions
 
 CRAN does not like when exported functions do not have returned value.
-Using `find_missing_values()`, you can detect exported functions with missing or empty `@return` tag
+Using `find_missing_tags()`, you can detect exported functions with missing or empty `@return` tag
 
 ```{r}
-find_missing_values(pkg_path)
+find_missing_tags(pkg_path)
 ```
 
 

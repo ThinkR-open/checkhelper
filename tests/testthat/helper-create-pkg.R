@@ -35,14 +35,30 @@ my_long_fun_name_for_multiple_lines_globals <- function(data) {
 }
 
 #' Function 2
+#' @return GGplot for data
 #' @export
-my_median <- function() {
+my_plot <- function(data) {
   data %>%
   filter(col == 3) %>%
   mutate(new_col2 = 1) %>%
   ggplot() +
     aes(x, y, colour = new_col2) +
     geom_point()
+}
+
+#' Function not exported but with doc
+my_not_exported_doc <- function() {
+  message('Not exported but with title, should have @noRd')
+}
+
+#' Function not exported but with doc
+#' @noRd
+my_not_exported_nord <- function() {
+  message('Not exported but with title, and @noRd ok')
+}
+
+my_not_exported_nodoc <- function() {
+  message('Not exported but with no roxygen')
 }
 ", file = file.path(pkg_path, "checkpackage", "R", "function.R"))
 

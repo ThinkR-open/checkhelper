@@ -39,17 +39,24 @@ remotes::install_github("thinkr-open/checkhelper")
 
 ### Directly in your package in development
 
+- Use `checkhelper::find_missing_tags()` on your package in development to find which functions are exported but missing `@export` roxygen2 tag. 
+  - CRAN policy asks for every exported function to have a value (named `@export` when using {roxygen2}). 
+  - This also checks that not exported functions dont have roxygen title, or have `@noRd`
 - You can directly use `checkhelper::print_globals()` on your package instead of `devtools::check()`. This is a wrapper around `rcmdcheck::rcmdcheck()`. This will run the checks and directly list the potential "globalVariables" to add in a `globals.R` file.
 
 ```{r, eval=FALSE}
-checkhelper::find_missing_values()
+checkhelper::find_missing_tags()
 
 checkhelper::print_globals(quiet = TRUE)
 ```
 
 ### Reproducible example with a fake package in tempdir
 
-- Create a fake package with a function having globalvariables
+- Create a fake package with 
+  - a function having global variables
+  - a function with `@export` but no `@return`
+  - a function with title but without `@export` and thus missing `@noRd`
+  
 ```{r, eval=TRUE, results='hide'}
 library(checkhelper)
 
@@ -73,6 +80,11 @@ ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }
+
+#' Function not exported but with doc
+my_not_exported_doc <- function() {
+  message('Not exported but with title, should have @noRd')
+}
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
@@ -81,10 +93,10 @@ attachment::att_amend_desc(path = pkg_path)
 fs::dir_tree(pkg_path, recursive = TRUE)
 ```
 
-- Find missing `@return`
+- Find missing `@return` and find missing `@noRd` for not exported function with documentation
 
 ```{r}
-find_missing_values(pkg_path)
+find_missing_tags(pkg_path)
 ```
 
 

@@ -5,8 +5,8 @@ globalVariables(
       "is_function", "notes", "variable", ".",
       # print_globals:
       "fun", "text",
-      # find_missing_values
-      "return_value", "has_export", "has_return", "not_empty_return_value"
+      # find_missing_tags
+      "return_value", "has_export", "has_return", "not_empty_return_value", "has_nord"
     )
   )
 )

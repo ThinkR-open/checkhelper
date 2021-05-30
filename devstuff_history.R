@@ -57,8 +57,8 @@ usethis::pr_push()
 attachment::att_amend_desc() #dir.v = ""
 checkhelper::print_globals()
 usethis::use_r("globals")
-usethis::use_r("find_missing_values")
-usethis::use_test("find_missing_values")
+usethis::use_r("find_missing_tags")
+usethis::use_test("find_missing_tags")
 
 # Documentation ----
 usethis::use_vignette("deal-with-check-outputs")
@@ -69,3 +69,4 @@ devtools::load_all()
 rcmdcheck::rcmdcheck()
 devtools::check(vignettes = FALSE)
 
+covr::package_coverage()

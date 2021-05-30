@@ -31,13 +31,11 @@ path <- create_pkg()
 test_that("get_no_visible works", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
   expect_equal(globals$globalVariables$fun,
-               c("my_long_fun_name_for_multiple_lines_globals",
-                 "my_long_fun_name_for_multiple_lines_globals",
-                 "my_long_fun_name_for_multiple_lines_globals",
-                 "my_median", "my_median", "my_median", "my_median"))
+               c(rep("my_long_fun_name_for_multiple_lines_globals", 3),
+                 rep("my_plot", 3)))
   # glue("\"", paste(globals$globalVariables$variable, collapse = "\", \""), "\"")
   expect_equal(globals$globalVariables$variable,
-               c("x", "y", "new_col", "data", "x", "y", "new_col2"))
+               c("x", "y", "new_col", "x", "y", "new_col2"))
 })
 
 # print_globals ----
@@ -47,11 +45,11 @@ print_outputs <- print_globals(globals, message = FALSE)
 test_that("print_outputs works", {
   expect_equal(
     print_outputs$liste_funs,
-    "--- Fonctions to add in NAMESPACE (with @importFrom ?) ---\n\nmy_long_fun_name_for_multiple_lines_globals: %>%, aes, geom_point, ggplot, mutate\nmy_median: %>%, aes, geom_point, ggplot, mutate\n"
+    "--- Fonctions to add in NAMESPACE (with @importFrom ?) ---\n\nmy_long_fun_name_for_multiple_lines_globals: %>%, aes, geom_point, ggplot, mutate\nmy_plot: %>%, aes, geom_point, ggplot, mutate\n"
   )
   expect_equal(
     print_outputs$liste_globals,
-    "--- Potential GlobalVariables ---\n-- code to copy to your globals.R file --\n\nglobalVariables(unique(c(\n# my_long_fun_name_for_multiple_lines_globals: \n\"new_col\", \"x\", \"y\", \n# my_median: \n\"data\", \"new_col2\", \"x\", \"y\"\n)))"
+    "--- Potential GlobalVariables ---\n-- code to copy to your globals.R file --\n\nglobalVariables(unique(c(\n# my_long_fun_name_for_multiple_lines_globals: \n\"new_col\", \"x\", \"y\", \n# my_plot: \n\"new_col2\", \"x\", \"y\"\n)))"
   )
   expect_message(print_globals(globals, message = TRUE))
 })
@@ -67,7 +65,7 @@ print_outputs <- print_globals(globals, message = FALSE)
 test_that("no notes works", {
   expect_null(globals)
   expect_null(print_outputs)
-  expect_message(print_globals(globals, message = TRUE))
+  expect_message(print_globals(globals, message = TRUE), "no globalVariable")
 })
 
 unlink(path, recursive = TRUE)
@@ -89,11 +87,11 @@ checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE)
 notes <- get_notes(path = path, checks = checks)
 
 test_that("notes from checks works", {
-  expect_equal(nrow(notes), 21)
+  expect_equal(nrow(notes), 18)
   expect_equal(ncol(notes), 7)
   expect_true(all(notes[["fun"]][2:9] == "my_long_fun_name_for_multiple_lines_globals"))
-  expect_true(all(notes[["fun"]][10:18] == "my_median"))
-  expect_true(all(notes[["is_global_variable"]][c(6:8, 11, 15:17)]))
+  expect_true(all(notes[["fun"]][10:17] == "my_plot"))
+  expect_true(all(notes[["is_global_variable"]][c(6:8, 14:16)]))
 })
 
 globals <- get_no_visible(path, checks, quiet = TRUE)
@@ -101,13 +99,11 @@ globals <- get_no_visible(path, checks, quiet = TRUE)
 test_that("get_no_visible works after checks", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
   expect_equal(globals$globalVariables$fun,
-               c("my_long_fun_name_for_multiple_lines_globals",
-                 "my_long_fun_name_for_multiple_lines_globals",
-                 "my_long_fun_name_for_multiple_lines_globals",
-                 "my_median", "my_median", "my_median", "my_median"))
+               c(rep("my_long_fun_name_for_multiple_lines_globals", 3),
+                 rep("my_plot", 3)))
   # glue("\"", paste(globals$globalVariables$variable, collapse = "\", \""), "\"")
   expect_equal(globals$globalVariables$variable,
-               c("x", "y", "new_col", "data", "x", "y", "new_col2"))
+               c("x", "y", "new_col", "x", "y", "new_col2"))
 })
 
 # Remove path

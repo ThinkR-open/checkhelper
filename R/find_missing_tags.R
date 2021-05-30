@@ -8,9 +8,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' find_missing_values()
+#' find_missing_tags()
 #' }
-find_missing_values <- function (package.dir = ".", roclets = NULL, load_code = NULL,
+find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NULL,
                                  clean = FALSE)
 {
   # browser()
@@ -59,6 +59,7 @@ find_missing_values <- function (package.dir = ".", roclets = NULL, load_code = 
   })
   res_find_export <- lapply(blocks, roxygen2::block_has_tags, tags = list("export"))
   res_find_return <- lapply(blocks, roxygen2::block_has_tags, tags = list("return"))
+  res_find_nord <- lapply(blocks, roxygen2::block_has_tags, tags = list("noRd"))
   res_find_return_value <- lapply(blocks, function(x) {
     return <- roxygen2::block_get_tag_value(x, tag = "return")
     if (is.null(return)) {""} else {return}
@@ -70,11 +71,20 @@ find_missing_values <- function (package.dir = ".", roclets = NULL, load_code = 
     has_return = unlist(res_find_return),
     return_value = unlist(res_find_return_value),
     not_empty_return_value = (return_value != ""),
-    has_export_and_return_ok = (has_export & has_return & not_empty_return_value) | !has_export,
-)
+    has_nord = unlist(res_find_nord),
+    test_has_export_and_return = ifelse((has_export & has_return & not_empty_return_value) | !has_export,
+                                        "ok", "not_ok"),
+    test_has_export_or_has_nord = ifelse((!has_export & has_nord) | has_export, "ok", "not_ok")
+  )
 
-  res_missing <- res[!res$has_export_and_return_ok,]
-  message("Missing or empty return value for functions: ", paste(res_missing$topic, collapse = ", "))
+  res_return_error <- res[res$test_has_export_and_return == "not_ok",]
+  if (nrow(res_return_error) != 0) {
+    message("Missing or empty return value for exported functions: ", paste(res_return_error$topic, collapse = ", "), "\n\n")
+  }
+  res_export_error <- res[res$test_has_export_or_has_nord == "not_ok",]
+  if (nrow(res_export_error) != 0) {
+    message("Doc available but need to choose between `@export` or `@noRd`: ", paste(res_export_error$topic, collapse = ", "), "\n\n")
+  }
 
 
   return(res)
