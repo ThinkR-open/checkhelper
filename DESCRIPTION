@@ -10,20 +10,24 @@ Authors@R:
              family = "Guyader",
              role = "aut",
              email = "vincent@thinkr.fr"))
-Description: A package to help you deal with
-    devtools::check outputs.
+Description: A package to help you deal with devtools::check outputs.
 License: GPL-3
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Imports: 
+    desc,
     dplyr,
     glue,
     magrittr,
+    purrr,
     rcmdcheck,
-    stringr
+    roxygen2,
+    stringr,
+    utils
 Suggests: 
     attachment,
+    fs,
     knitr,
     rmarkdown,
     testthat,

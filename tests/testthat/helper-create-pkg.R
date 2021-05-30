@@ -23,6 +23,7 @@ create_pkg <- function(with_functions = TRUE, with_extra_notes = FALSE) {
     cat("
 #' Function
 #' @importFrom dplyr filter
+#' @return
 #' @export
 my_long_fun_name_for_multiple_lines_globals <- function(data) {
   data %>%
