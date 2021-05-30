@@ -140,7 +140,7 @@
 
 <span class="co"># Create fake package</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpHfD26A/pkg.d775162af69'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpbEhiTS/pkg.d31283b264a'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
@@ -162,8 +162,8 @@ ggplot() +
 "</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.d775162af69 documentation</span>
-<span class="co">#&gt; ℹ Loading pkg.d775162af69</span>
+<span class="co">#&gt; Updating pkg.d31283b264a documentation</span>
+<span class="co">#&gt; ℹ Loading pkg.d31283b264a</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 
 <span class="co"># Files of the package</span>
@@ -176,7 +176,7 @@ ggplot() +
 <p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.d775162af69</span>
+<span class="co">#&gt; ℹ Loading pkg.d31283b264a</span>
 <span class="co">#&gt; Writing NAMESPACE</span>
 <span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
 <span class="co">#&gt; # A tibble: 1 x 8</span>

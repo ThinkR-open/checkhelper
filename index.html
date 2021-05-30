@@ -112,7 +112,7 @@
 <div id="checkhelper" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#checkhelper" class="anchor"></a>checkhelper</h1></div>
-<p>A package to help you deal with <code>devtools::check()</code> outputs</p>
+<p>A package to help you deal with <code>devtools::check()</code> outputs and helps avoids problems with CRAN submissions</p>
 <p>Complete documentation in the {pkgdown} site: <a href="https://thinkr-open.github.io/checkhelper/" class="uri">https://thinkr-open.github.io/checkhelper/</a></p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -127,7 +127,7 @@
 <ul>
 <li>Check your current package under development and get all the globals missing: <code>no visible global variable</code> and <code>no visible global function</code>
 </li>
-<li>Detect exported functions with missing or empty <code>@return</code> tag</li>
+<li>Detect exported functions with missing or empty <code>@return</code> / <code>@noRd</code> tags</li>
 </ul>
 <div id="directly-in-your-package-in-development" class="section level3">
 <h3 class="hasAnchor">
@@ -136,8 +136,7 @@
 <li>Use <code><a href="reference/find_missing_tags.html">checkhelper::find_missing_tags()</a></code> on your package in development to find which functions are exported but missing <code>@export</code> roxygen2 tag.
 <ul>
 <li>CRAN policy asks for every exported function to have a value (named <code>@export</code> when using {roxygen2}).</li>
-<li>This also checks that not exported functions dont have roxygen title, or have <code>@noRd</code>
-</li>
+<li>This also checks that not exported functions dont have roxygen title, or have <code>@noRd</code> in case you faced <code>Please add \value to .Rd files</code> CRAN message for documented but not exported functions.</li>
 </ul>
 </li>
 <li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
@@ -170,7 +169,7 @@
 
 <span class="co"># Create fake package</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✓ Setting active project to '/tmp/RtmpgaYnxF/pkg.5db141d26de96'</span>
+<span class="co">#&gt; ✓ Setting active project to '/tmp/Rtmpr5hR9Z/pkg.5ecb790df6c5'</span>
 <span class="co">#&gt; ✓ Creating 'R/'</span>
 <span class="co">#&gt; ✓ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✓ Writing 'NAMESPACE'</span>
@@ -197,9 +196,9 @@ my_not_exported_doc &lt;- function() {
 "</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.5db141d26de96 documentation</span>
+<span class="co">#&gt; Updating pkg.5ecb790df6c5 documentation</span>
 <span class="co">#&gt; First time using roxygen2. Upgrading automatically...</span>
-<span class="co">#&gt; ℹ Loading pkg.5db141d26de96</span>
+<span class="co">#&gt; ℹ Loading pkg.5ecb790df6c5</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 
 <span class="co"># Files of the package</span>
@@ -210,7 +209,7 @@ my_not_exported_doc &lt;- function() {
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.5db141d26de96</span>
+<span class="co">#&gt; ℹ Loading pkg.5ecb790df6c5</span>
 <span class="co">#&gt; Writing NAMESPACE</span>
 <span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
 <span class="co">#&gt; Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc</span>
