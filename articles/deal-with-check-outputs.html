@@ -140,7 +140,7 @@
 
 <span class="co"># Create fake package</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp022g0k/pkg.12e7524b0bd3'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpHfD26A/pkg.d775162af69'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
@@ -162,8 +162,8 @@ ggplot() +
 "</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.12e7524b0bd3 documentation</span>
-<span class="co">#&gt; ℹ Loading pkg.12e7524b0bd3</span>
+<span class="co">#&gt; Updating pkg.d775162af69 documentation</span>
+<span class="co">#&gt; ℹ Loading pkg.d775162af69</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 
 <span class="co"># Files of the package</span>
@@ -173,16 +173,18 @@ ggplot() +
 <div id="avoid-missing-return-value-for-exported-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#avoid-missing-return-value-for-exported-functions" class="anchor"></a>Avoid missing return value for exported functions</h2>
-<p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_values.html">find_missing_values()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
+<p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/find_missing_values.html">find_missing_values</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.12e7524b0bd3</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
+<span class="co">#&gt; ℹ Loading pkg.d775162af69</span>
 <span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; Missing or empty return value for functions: my_fun</span>
-<span class="co">#&gt; # A tibble: 1 x 6</span>
-<span class="co">#&gt;   topic  has_export has_return return_value not_empty_return… has_export_and_re…</span>
-<span class="co">#&gt;   &lt;chr&gt;  &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;             &lt;lgl&gt;             </span>
-<span class="co">#&gt; 1 my_fun TRUE       FALSE      ""           FALSE             FALSE</span></code></pre></div>
+<span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
+<span class="co">#&gt; # A tibble: 1 x 8</span>
+<span class="co">#&gt;   topic  has_export has_return return_value not_empty_return_value has_nord</span>
+<span class="co">#&gt;   &lt;chr&gt;  &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;                  &lt;lgl&gt;   </span>
+<span class="co">#&gt; 1 my_fun TRUE       FALSE      ""           FALSE                  FALSE   </span>
+<span class="co">#&gt; # … with 2 more variables: test_has_export_and_return &lt;chr&gt;,</span>
+<span class="co">#&gt; #   test_has_export_or_has_nord &lt;chr&gt;</span></code></pre></div>
 </div>
 <div id="deal-with-check-outputs" class="section level2">
 <h2 class="hasAnchor">

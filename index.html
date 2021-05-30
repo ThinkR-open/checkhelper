@@ -133,10 +133,17 @@
 <h3 class="hasAnchor">
 <a href="#directly-in-your-package-in-development" class="anchor"></a>Directly in your package in development</h3>
 <ul>
+<li>Use <code><a href="reference/find_missing_tags.html">checkhelper::find_missing_tags()</a></code> on your package in development to find which functions are exported but missing <code>@export</code> roxygen2 tag.
+<ul>
+<li>CRAN policy asks for every exported function to have a value (named <code>@export</code> when using {roxygen2}).</li>
+<li>This also checks that not exported functions dont have roxygen title, or have <code>@noRd</code>
+</li>
+</ul>
+</li>
 <li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/find_missing_values.html">find_missing_values</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="op">)</span>
 
 <span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/print_globals.html">print_globals</a></span><span class="op">(</span>quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
@@ -144,7 +151,15 @@
 <h3 class="hasAnchor">
 <a href="#reproducible-example-with-a-fake-package-in-tempdir" class="anchor"></a>Reproducible example with a fake package in tempdir</h3>
 <ul>
-<li>Create a fake package with a function having globalvariables</li>
+<li>Create a fake package with
+<ul>
+<li>a function having global variables</li>
+<li>a function with <code>@export</code> but no <code>@return</code>
+</li>
+<li>a function with title but without <code>@export</code> and thus missing <code>@noRd</code>
+</li>
+</ul>
+</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span>
@@ -155,7 +170,7 @@
 
 <span class="co"># Create fake package</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✓ Setting active project to '/tmp/Rtmp2TuqBq/pkg.5690e53275c34'</span>
+<span class="co">#&gt; ✓ Setting active project to '/tmp/RtmpgaYnxF/pkg.5db141d26de96'</span>
 <span class="co">#&gt; ✓ Creating 'R/'</span>
 <span class="co">#&gt; ✓ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✓ Writing 'NAMESPACE'</span>
@@ -174,30 +189,38 @@ ggplot() +
   aes(x, y, colour = new_col) +
   geom_point()
 }
+
+#' Function not exported but with doc
+my_not_exported_doc &lt;- function() {
+  message('Not exported but with title, should have @noRd')
+}
 "</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.5690e53275c34 documentation</span>
+<span class="co">#&gt; Updating pkg.5db141d26de96 documentation</span>
 <span class="co">#&gt; First time using roxygen2. Upgrading automatically...</span>
-<span class="co">#&gt; ℹ Loading pkg.5690e53275c34</span>
+<span class="co">#&gt; ℹ Loading pkg.5db141d26de96</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 
 <span class="co"># Files of the package</span>
 <span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="http://fs.r-lib.org/reference/dir_tree.html">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; Warning: `recursive` is deprecated, please use `recurse` instead</span></code></pre></div>
 <ul>
-<li>Find missing <code>@return</code>
-</li>
+<li>Find missing <code>@return</code> and find missing <code>@noRd</code> for not exported function with documentation</li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/find_missing_values.html">find_missing_values</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.5690e53275c34</span>
+<code class="sourceCode R"><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
+<span class="co">#&gt; ℹ Loading pkg.5db141d26de96</span>
 <span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; Missing or empty return value for functions: my_fun</span>
-<span class="co">#&gt; # A tibble: 1 x 6</span>
-<span class="co">#&gt;   topic  has_export has_return return_value not_empty_return… has_export_and_re…</span>
-<span class="co">#&gt;   &lt;chr&gt;  &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;             &lt;lgl&gt;             </span>
-<span class="co">#&gt; 1 my_fun TRUE       FALSE      ""           FALSE             FALSE</span></code></pre></div>
+<span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
+<span class="co">#&gt; Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc</span>
+<span class="co">#&gt; # A tibble: 2 x 8</span>
+<span class="co">#&gt;   topic          has_export has_return return_value not_empty_return_v… has_nord</span>
+<span class="co">#&gt;   &lt;chr&gt;          &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;               &lt;lgl&gt;   </span>
+<span class="co">#&gt; 1 my_fun         TRUE       FALSE      ""           FALSE               FALSE   </span>
+<span class="co">#&gt; 2 my_not_export… FALSE      FALSE      ""           FALSE               FALSE   </span>
+<span class="co">#&gt; # … with 2 more variables: test_has_export_and_return &lt;chr&gt;,</span>
+<span class="co">#&gt; #   test_has_export_or_has_nord &lt;chr&gt;</span></code></pre></div>
 <ul>
 <li>Get global variables</li>
 </ul>
