@@ -57,6 +57,7 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
     topic <- x$object$topic
     if (is.null(topic)) {""} else {topic}
   })
+  res_find_filename <- lapply(blocks, function(x) basename(x[["file"]]))
   res_find_export <- lapply(blocks, roxygen2::block_has_tags, tags = list("export"))
   res_find_return <- lapply(blocks, roxygen2::block_has_tags, tags = list("return"))
   res_find_nord <- lapply(blocks, roxygen2::block_has_tags, tags = list("noRd"))
@@ -66,6 +67,7 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
   })
 
   res <- dplyr::tibble(
+    filename = unlist(res_find_filename),
     topic = unlist(res_topic),
     has_export = unlist(res_find_export),
     has_return = unlist(res_find_return),

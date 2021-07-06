@@ -3,6 +3,7 @@ path <- create_pkg()
 test_that("find_missing_tags works", {
   out <- expect_message(find_missing_tags(path))
   expect_equal(nrow(out), 4)
+  expect_equal(out$filename, rep("function.R", 4))
   expect_equal(out$topic, c("my_long_fun_name_for_multiple_lines_globals", "my_plot",
                             "my_not_exported_doc", "my_not_exported_nord"))
   expect_false("my_not_exported_nodoc" %in% out$topic)
