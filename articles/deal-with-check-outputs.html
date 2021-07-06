@@ -111,7 +111,7 @@
       <h1 data-toc-skip>Deal with check outputs</h1>
                         <h4 class="author">Sébastien Rochette</h4>
             
-            <h4 class="date">2021-05-30</h4>
+            <h4 class="date">2021-07-06</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/master/vignettes/deal-with-check-outputs.Rmd"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -140,7 +140,7 @@
 
 <span class="co"># Create fake package</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpbEhiTS/pkg.d31283b264a'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpQAabfx/pkg.7cf718d3c7d'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
@@ -162,8 +162,8 @@ ggplot() +
 "</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.d31283b264a documentation</span>
-<span class="co">#&gt; ℹ Loading pkg.d31283b264a</span>
+<span class="co">#&gt; Updating pkg.7cf718d3c7d documentation</span>
+<span class="co">#&gt; ℹ Loading pkg.7cf718d3c7d</span>
 <span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
 
 <span class="co"># Files of the package</span>
@@ -176,13 +176,13 @@ ggplot() +
 <p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.d31283b264a</span>
+<span class="co">#&gt; ℹ Loading pkg.7cf718d3c7d</span>
 <span class="co">#&gt; Writing NAMESPACE</span>
 <span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
-<span class="co">#&gt; # A tibble: 1 x 8</span>
-<span class="co">#&gt;   topic  has_export has_return return_value not_empty_return_value has_nord</span>
-<span class="co">#&gt;   &lt;chr&gt;  &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;                  &lt;lgl&gt;   </span>
-<span class="co">#&gt; 1 my_fun TRUE       FALSE      ""           FALSE                  FALSE   </span>
+<span class="co">#&gt; # A tibble: 1 x 9</span>
+<span class="co">#&gt;   filename  topic has_export has_return return_value not_empty_return_… has_nord</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;              &lt;lgl&gt;   </span>
+<span class="co">#&gt; 1 function… my_f… TRUE       FALSE      ""           FALSE              FALSE   </span>
 <span class="co">#&gt; # … with 2 more variables: test_has_export_and_return &lt;chr&gt;,</span>
 <span class="co">#&gt; #   test_has_export_or_has_nord &lt;chr&gt;</span></code></pre></div>
 </div>
