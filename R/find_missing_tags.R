@@ -18,7 +18,7 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
   # browser()
   base_path <- normalizePath(package.dir, mustWork = TRUE)
   # is_first <- roxygen2:::roxygen_setup(base_path)
-  is_first <- getFromNamespace("roxygen_setup", "roxygen2")(base_path)
+  # is_first <- getFromNamespace("roxygen_setup", "roxygen2")(base_path)
   encoding <- desc::desc_get("Encoding", file = base_path)[[1]]
   if (!identical(encoding, "UTF-8")) {
     warning("roxygen2 requires Encoding: UTF-8", call. = FALSE)
@@ -119,7 +119,8 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
     message("Doc available but need to choose between `@export` or `@noRd`: ", paste(res_export_error$topic, collapse = ", "), "\n\n")
   }
 
-
+  # Set NAMESPACE back to normal
+  roxygen2::roxygenise(package.dir = package.dir)
   return(res_join)
   # results <- lapply(roclets, roxygen2:::roclet_process, blocks = blocks,
   #                   env = env, base_path = base_path)
