@@ -60,6 +60,18 @@ my_not_exported_nord <- function() {
 my_not_exported_nodoc <- function() {
   message('Not exported but with no roxygen')
 }
+
+#' Function 3 with rdname
+#' @rdname my_plot
+#' @export
+my_plot_rdname <- function(data) {
+  data %>%
+  filter(col == 3) %>%
+  mutate(new_col2 = 1) %>%
+  ggplot() +
+    aes(x, y, colour = new_col2) +
+    geom_point()
+}
 ", file = file.path(pkg_path, "checkpackage", "R", "function.R"))
 
   }

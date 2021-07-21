@@ -6,7 +6,8 @@ globalVariables(
       # print_globals:
       "fun", "text",
       # find_missing_tags
-      "return_value", "has_export", "has_return", "not_empty_return_value", "has_nord"
+      "return_value", "has_export", "has_return", "not_empty_return_value", "has_nord",
+      "filename", "id", "rdname_value", "topic"
     )
   )
 )

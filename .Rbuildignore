@@ -11,3 +11,4 @@
 ^tic\.R$
 ^\.github$
 ^codecov\.yml$
+^dev$

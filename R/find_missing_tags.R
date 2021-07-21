@@ -4,6 +4,8 @@
 #'
 #' @return Tibble of all functions with information whether documentation is correct or not
 #' @importFrom utils getFromNamespace
+#' @importFrom dplyr mutate filter left_join if_else tibble
+#' @importFrom dplyr group_by summarise first select n
 #' @export
 #'
 #' @examples
@@ -61,35 +63,64 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
   res_find_export <- lapply(blocks, roxygen2::block_has_tags, tags = list("export"))
   res_find_return <- lapply(blocks, roxygen2::block_has_tags, tags = list("return"))
   res_find_nord <- lapply(blocks, roxygen2::block_has_tags, tags = list("noRd"))
+
+  res_find_rdname_value <- lapply(blocks, function(x) {
+    rdname <- roxygen2::block_get_tag_value(x, tag = "rdname")
+    if (is.null(rdname)) {""} else {rdname}
+  })
   res_find_return_value <- lapply(blocks, function(x) {
     return <- roxygen2::block_get_tag_value(x, tag = "return")
     if (is.null(return)) {""} else {return}
   })
 
-  res <- dplyr::tibble(
+  res <- tibble(
     filename = unlist(res_find_filename),
     topic = unlist(res_topic),
     has_export = unlist(res_find_export),
     has_return = unlist(res_find_return),
     return_value = unlist(res_find_return_value),
-    not_empty_return_value = (return_value != ""),
     has_nord = unlist(res_find_nord),
-    test_has_export_and_return = ifelse((has_export & has_return & not_empty_return_value) | !has_export,
-                                        "ok", "not_ok"),
-    test_has_export_or_has_nord = ifelse((!has_export & has_nord) | has_export, "ok", "not_ok")
+    rdname_value = unlist(res_find_rdname_value)
+    ) %>%
+    mutate(
+      rdname_value = if_else(rdname_value == "", topic, rdname_value),
+      id = 1:n()
+    )
+
+  # Join with itself to find common rdname
+  res_join <- res %>%
+    select(id, topic, rdname_value) %>%
+    left_join(
+      res %>% filter(rdname_value != "") %>% select(-topic, -id),
+      by = "rdname_value"
+    ) %>%
+    group_by(id, filename, topic) %>%
+    summarise(
+      has_export = any(has_export),
+      has_return = any(has_return),
+      return_value = ifelse(any(return_value != ""), first(return_value[return_value != ""]), ""),
+      has_nord = any(has_nord),
+      rdname_value = first(rdname_value),
+      .groups = "drop"
+    ) %>%
+    mutate(
+      not_empty_return_value = (return_value != ""),
+      test_has_export_and_return = ifelse((has_export & has_return & not_empty_return_value) | !has_export,
+                                          "ok", "not_ok"),
+      test_has_export_or_has_nord = ifelse((!has_export & has_nord) | has_export, "ok", "not_ok")
   )
 
-  res_return_error <- res[res$test_has_export_and_return == "not_ok",]
+  res_return_error <- res_join[res_join$test_has_export_and_return == "not_ok",]
   if (nrow(res_return_error) != 0) {
     message("Missing or empty return value for exported functions: ", paste(res_return_error$topic, collapse = ", "), "\n\n")
   }
-  res_export_error <- res[res$test_has_export_or_has_nord == "not_ok",]
+  res_export_error <- res_join[res_join$test_has_export_or_has_nord == "not_ok",]
   if (nrow(res_export_error) != 0) {
     message("Doc available but need to choose between `@export` or `@noRd`: ", paste(res_export_error$topic, collapse = ", "), "\n\n")
   }
 
 
-  return(res)
+  return(res_join)
   # results <- lapply(roclets, roxygen2:::roclet_process, blocks = blocks,
   #                   env = env, base_path = base_path)
   # out <- purrr::map2(roclets, results, roxygen2:::roclet_output, base_path = base_path,
