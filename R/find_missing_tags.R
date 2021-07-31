@@ -89,10 +89,10 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
 
   # Join with itself to find common rdname
   res_join <- res %>%
-    select(id, topic, rdname_value) %>%
+    select(filename, id, topic, rdname_value) %>%
     left_join(
       res %>% filter(rdname_value != "") %>% select(-topic, -id),
-      by = "rdname_value"
+      by = c("filename", "rdname_value")
     ) %>%
     group_by(id, filename, topic) %>%
     summarise(
