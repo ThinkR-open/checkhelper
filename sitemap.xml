@@ -7,6 +7,9 @@
     <loc>https://thinkr-open.github.io/checkhelper//reference/find_missing_tags.html</loc>
   </url>
   <url>
+    <loc>https://thinkr-open.github.io/checkhelper//reference/get_data_info.html</loc>
+  </url>
+  <url>
     <loc>https://thinkr-open.github.io/checkhelper//reference/get_no_visible.html</loc>
   </url>
   <url>
@@ -17,6 +20,9 @@
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper//reference/print_globals.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/checkhelper//reference/use_data_doc.html</loc>
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper//articles/deal-with-check-outputs.html</loc>

@@ -139,7 +139,7 @@
 <li>This also checks that not exported functions dont have roxygen title, or have <code>@noRd</code> in case you faced <code>Please add \value to .Rd files</code> CRAN message for documented but not exported functions.</li>
 </ul>
 </li>
-<li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="https://rdrr.io/pkg/rcmdcheck/man/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
+<li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="op">)</span>
