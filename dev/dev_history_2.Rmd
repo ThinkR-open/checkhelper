@@ -1,0 +1,223 @@
+---
+title: "dev_history_2.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-1}
+# Load already included functions
+pkgload::load_all(export_all = TRUE)
+```
+
+# Write doc from template
+
+```{r function}
+#' Render template for data documentation
+#'
+#' This use double stash template.
+#'
+#' @param path path to the template.
+#' @param data list of information to replace in the template.
+#'
+#' @return use for this side effect. Make a file
+render_template <- function(path_template, path_to_save ,data){
+  render <- whisker::whisker.render(readLines(path_template, encoding = "UTF-8", warn = FALSE), data)
+  writeLines(render, con = path_to_save)
+}
+```
+
+
+```{r tests}
+test_that("my_function works properly", {
+  data <- list(
+    name = "unit-test",
+    description = "Testing this fct",
+    rows = 12,
+    cols = 3,
+    items = list(
+      list(name = "first", class = "character"),
+      list(name = "second", class = "numeric")
+      ),
+    source = "ThinkR"
+  )
+  dir_temp <- tempdir()
+  path_to_save <- file.path(dir_temp, "test_data_doc.R")
+  template <- system.file("template", "data-doc.R", package = "checkhelper")
+  render_template(template, path_to_save ,data)
+  
+  expect_true(file.exists(path_to_save))
+  text <- readLines(path_to_save)
+  lapply(data, function(x){
+    if(is.list(x)){
+      lapply(x, function(x){
+        expect_true(any(grepl(x[[1]], x = text)))
+      })
+    }else{
+      expect_true(any(grepl(x, x = text)))
+    }
+  })
+})
+```
+
+
+# Get info from data object
+
+```{r function}
+#' Get infos form .Rdata inside data folder
+#'
+#' @param name name of file
+#' @param description description for the data
+#' @param source source of data
+#'
+#' @return list of infos form data
+#' @export
+#'
+#' @examples
+get_data_info <- function(name, description, source) {
+  if (!dir.exists("data/")) {
+    stop("data folder doesn't exists")
+  }
+  file <- list.files("data/",
+               pattern = glue::glue("^{name}\\.(r|R).+$"),
+               full.names = TRUE)
+  if(purrr::is_empty(file)){
+    stop("Don't find this data object, must be the name of one .rda.")
+  }else if(length(file) > 1){
+    stop("Multiple files with the same name.")
+  }
+  dataset <- get(load(file))
+  if (!is.data.frame(dataset)) {
+    "Your object must be a data.frame."
+  }
+  info <- lapply(names(dataset), function(x) {
+    list(name = x, class = class(dataset[[x]]))
+  })
+  list(
+    name = name,
+    description = description,
+    rows = nrow(dataset),
+    cols = ncol(dataset),
+    items = info,
+    source = source
+  )
+}
+```
+
+```{r examples}
+temp_dir <- tempdir()
+path_data <- file.path(temp_dir, "data")
+dir.create(path_data)
+path_rda <- file.path(path_data, "iris.rda")
+save(iris, file = path_rda)
+withr::with_dir(
+  temp_dir, {
+   get_data_info("iris", "Iris data frame", source = "Thinkr") 
+  })
+
+```
+
+```{r tests}
+test_that("my_function works properly", {
+temp_dir <- tempdir()
+path_data <- file.path(temp_dir, "data")
+suppressWarnings(dir.create(path_data))
+path_rda <- file.path(path_data, "iris.rda")
+save(iris, file = path_rda)
+withr::with_dir(
+  temp_dir, {
+  result<-  get_data_info("iris", "Iris data frame", source = "Thinkr") 
+  })
+expect_is(result, 'list')
+expect_equal(length(result), 6)
+expect_true(all( c("name", "description", "rows", "cols", "items", "source") %in% names(result)), 6)
+})
+```
+
+# Use data doc
+
+Function to add automaticly data documentation of .rda inside data folder
+
+```{r function-1}
+#' Documentation of .rda in package
+#'
+#' @param name Name of your data. only the name, 
+#' @param prefix Add prefix for the name of R script
+#' @param description Add a description
+#' @param source Add a source
+#'
+#' @export
+#'
+#' @importFrom glue glue
+#'
+#' @examples
+#' \dontrun{
+#' use_data_doc("my_data", description = "Desc of my_data", source = "Here my source")
+#' }
+use_data_doc <- function(name, prefix = "doc_", description = "Description", source = "Source"){
+  if(!file.exists("DESCRIPTION") & dir.exists("R")){
+    stop("You have to be in package.")
+  }
+  
+  path <- glue("R/{prefix}{name}.R")
+  
+  render_template(
+    path_template =  system.file("template", "data-doc.R", package = "checkhelper"),
+    path_to_save = path,
+    data = get_data_info(name, description, source)
+  )
+  
+  if(!requireNamespace("cli")){
+    cli::cli_alert_success(
+      glue("Adding the data documentation in {path}")
+      )
+    invisible(path)
+  }else{
+    message(
+      glue("Adding the data documentation in {path}")
+      )
+    invisible(path)
+  }
+  
+}
+```
+
+
+```{r tests}
+path <- create_pkg()
+
+test_that("use_doc_data", {
+path_data <- file.path(path, "data")
+suppressWarnings(dir.create(path_data))
+path_rda <- file.path(path_data, "iris.rda")
+save(iris, file = path_rda)
+withr::with_dir(path, {
+  test <- use_data_doc("iris")
+  })
+
+expect_true(
+  file.exists(file.path(path, test))
+  )
+})
+```
+
+
+```{r development-1, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(rmd = "dev/dev_history_2.Rmd", name = "exploration_2")
+```
+
+<!-- # Inflate your package -->
+
+<!-- You're one inflate from paper to box. -->
+<!-- Build your package from this very Rmd using `fusen::inflate()` -->
+
+<!-- - Verify your `"DESCRIPTION"` file has been updated -->
+<!-- - Verify your function is in `"R/"` directory -->
+<!-- - Verify your test is in `"tests/testthat/"` directory -->
+<!-- - Verify this Rmd appears in `"vignettes/"` directory -->
