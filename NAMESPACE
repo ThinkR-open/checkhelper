@@ -2,9 +2,11 @@
 
 export("%>%")
 export(find_missing_tags)
+export(get_data_info)
 export(get_no_visible)
 export(get_notes)
 export(print_globals)
+export(use_data_doc)
 importFrom(dplyr,filter)
 importFrom(dplyr,first)
 importFrom(dplyr,group_by)

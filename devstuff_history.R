@@ -59,6 +59,8 @@ checkhelper::print_globals()
 usethis::use_r("globals")
 usethis::use_r("find_missing_tags")
 usethis::use_test("find_missing_tags")
+usethis::use_package("cli", type = "suggest")
+
 
 # Documentation ----
 usethis::use_vignette("deal-with-check-outputs")

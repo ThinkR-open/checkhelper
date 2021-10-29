@@ -24,17 +24,20 @@ Imports:
     rcmdcheck,
     roxygen2,
     stringr,
-    utils
+    utils,
+    whisker
 Suggests: 
+    cli,
     attachment,
     fs,
     knitr,
     rmarkdown,
     testthat,
-    usethis
+    usethis,
+    withr
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

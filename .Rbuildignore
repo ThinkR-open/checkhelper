@@ -12,3 +12,4 @@
 ^\.github$
 ^codecov\.yml$
 ^dev$
+^dev/$
