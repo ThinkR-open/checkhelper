@@ -45,7 +45,7 @@ print_outputs <- print_globals(globals, message = FALSE)
 test_that("print_outputs works", {
   expect_equal(
     print_outputs$liste_funs,
-    "--- Fonctions to add in NAMESPACE (with @importFrom ?) ---\n\nmy_long_fun_name_for_multiple_lines_globals: %>%, aes, geom_point, ggplot, mutate\nmy_plot: %>%, aes, geom_point, ggplot, mutate\nmy_plot_rdname: %>%, aes, geom_point, ggplot, mutate\n"
+    "--- Functions to add in NAMESPACE (with @importFrom ?) ---\n\nmy_long_fun_name_for_multiple_lines_globals: %>%, aes, geom_point, ggplot, mutate\nmy_plot: %>%, aes, geom_point, ggplot, mutate\nmy_plot_rdname: %>%, aes, geom_point, ggplot, mutate\n"
   )
   expect_equal(
     print_outputs$liste_globals,
