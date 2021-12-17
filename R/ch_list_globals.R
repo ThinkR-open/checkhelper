@@ -209,7 +209,7 @@ print_globals <- function(globals, path = ".", ..., message = TRUE) {
     ) %>%
     pull(text) %>%
     paste(., collapse = "") %>%
-    paste0("--- Fonctions to add in NAMESPACE (with @importFrom ?) ---\n\n", .)
+    paste0("--- Functions to add in NAMESPACE (with @importFrom ?) ---\n\n", .)
 
   liste_globals <- globals[["globalVariables"]] %>%
     group_by(fun) %>%
