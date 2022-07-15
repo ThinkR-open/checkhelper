@@ -37,6 +37,8 @@
 -->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -49,23 +51,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">checkhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -90,7 +86,7 @@
 </div>
         </li>
         <li>
-  <a href="https://github.com/ThinkR-open/checkhelper/">
+  <a href="https://github.com/ThinkR-open/checkhelper/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -109,90 +105,88 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Deal with check outputs</h1>
-                        <h4 class="author">Sébastien Rochette</h4>
+                        <h4 data-toc-skip class="author">Sébastien Rochette</h4>
             
-            <h4 class="date">2021-10-29</h4>
+            <h4 data-toc-skip class="date">2022-07-15</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/master/vignettes/deal-with-check-outputs.Rmd"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/HEAD/vignettes/deal-with-check-outputs.Rmd" class="external-link"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
 
     </div>
 
     
     
-<div id="packages" class="section level2">
-<h2 class="hasAnchor">
-<a href="#packages" class="anchor"></a>Packages</h2>
+<div class="section level2">
+<h2 id="packages">Packages<a class="anchor" aria-label="anchor" href="#packages"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="create-a-fake-package-for-examples" class="section level2">
-<h2 class="hasAnchor">
-<a href="#create-a-fake-package-for-examples" class="anchor"></a>Create a fake package for examples</h2>
+<div class="section level2">
+<h2 id="create-a-fake-package-for-examples">Create a fake package for examples<a class="anchor" aria-label="anchor" href="#create-a-fake-package-for-examples"></a>
+</h2>
 <ul>
 <li>The function has no visible global variables and missing documented functions</li>
 <li>The function has <code>@export</code> tag but not <code>@return</code> tag</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Create fake package ----</span>
-<span class="va">pkg_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"pkg."</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-
-<span class="co"># Create fake package</span>
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp3tL9FJ/pkg.20e3c811601'</span>
-<span class="co">#&gt; ✔ Creating 'R/'</span>
-<span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
-<span class="co">#&gt; ✔ Writing 'NAMESPACE'</span>
-<span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span>
-
-<span class="co"># Create function no visible global variables and missing documented functions</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"
-#' Function
-#' @importFrom dplyr filter
-#' @export
-my_fun &lt;- function() {
-data %&gt;%
-filter(col == 3) %&gt;%
-mutate(new_col = 1) %&gt;%
-ggplot() +
-  aes(x, y, colour = new_col) +
-  geom_point()
-}
-"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment//reference/att_amend_desc.html">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; Updating pkg.20e3c811601 documentation</span>
-<span class="co">#&gt; ℹ Loading pkg.20e3c811601</span>
-<span class="co">#&gt; [+] 1 package(s) added: dplyr.</span>
-
-<span class="co"># Files of the package</span>
-<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="http://fs.r-lib.org/reference/dir_tree.html">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; Warning: `recursive` is deprecated, please use `recurse` instead</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Create fake package ----</span></span>
+<span><span class="va">pkg_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"pkg."</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create fake package</span></span>
+<span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpUDbDpB/pkg.1a9a3b5a72af'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'R/'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'DESCRIPTION'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'NAMESPACE'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'&lt;no active project&gt;'</span></span></span>
+<span></span>
+<span><span class="co"># Create function no visible global variables and missing documented functions</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"</span></span>
+<span><span class="st">#' Function</span></span>
+<span><span class="st">#' @importFrom dplyr filter</span></span>
+<span><span class="st">#' @export</span></span>
+<span><span class="st">my_fun &lt;- function() {</span></span>
+<span><span class="st">data %&gt;%</span></span>
+<span><span class="st">filter(col == 3) %&gt;%</span></span>
+<span><span class="st">mutate(new_col = 1) %&gt;%</span></span>
+<span><span class="st">ggplot() +</span></span>
+<span><span class="st">  aes(x, y, colour = new_col) +</span></span>
+<span><span class="st">  geom_point()</span></span>
+<span><span class="st">}</span></span>
+<span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Updating pkg.1a9a3b5a72af documentation</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1a9a3b5a72af</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">my_fun.Rd</span>[+] 1 package(s) added: dplyr.</span></span>
+<span></span>
+<span><span class="co"># Files of the package</span></span>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: `recursive` is deprecated, please use `recurse` instead</span></span></code></pre></div>
 </div>
-<div id="avoid-missing-return-value-for-exported-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#avoid-missing-return-value-for-exported-functions" class="anchor"></a>Avoid missing return value for exported functions</h2>
+<div class="section level2">
+<h2 id="avoid-missing-return-value-for-exported-functions">Avoid missing return value for exported functions<a class="anchor" aria-label="anchor" href="#avoid-missing-return-value-for-exported-functions"></a>
+</h2>
 <p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span>
-<span class="co">#&gt; ℹ Loading pkg.20e3c811601</span>
-<span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ℹ Loading pkg.20e3c811601</span>
-<span class="co">#&gt; Writing NAMESPACE</span>
-<span class="co">#&gt; # A tibble: 1 × 11</span>
-<span class="co">#&gt;      id filename  topic has_export has_return return_value has_nord rdname_value</span>
-<span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;     &lt;chr&gt; &lt;lgl&gt;      &lt;lgl&gt;      &lt;chr&gt;        &lt;lgl&gt;    &lt;chr&gt;       </span>
-<span class="co">#&gt; 1     1 function… my_f… TRUE       FALSE      ""           FALSE    my_fun      </span>
-<span class="co">#&gt; # … with 3 more variables: not_empty_return_value &lt;lgl&gt;,</span>
-<span class="co">#&gt; #   test_has_export_and_return &lt;chr&gt;, test_has_export_or_has_nord &lt;chr&gt;</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1a9a3b5a72af</span></span></span>
+<span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1a9a3b5a72af</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 11</span></span></span>
+<span><span class="co">#&gt;      id filename  topic has_export has_return return_value has_nord rdname_value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>     1 function… my_f… TRUE       FALSE      <span style="color: #949494;">""</span>           FALSE    my_fun      </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: not_empty_return_value &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   test_has_export_and_return &lt;chr&gt;, test_has_export_or_has_nord &lt;chr&gt;</span></span></span></code></pre></div>
 </div>
-<div id="deal-with-check-outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#deal-with-check-outputs" class="anchor"></a>Deal with check outputs</h2>
+<div class="section level2">
+<h2 id="deal-with-check-outputs">Deal with check outputs<a class="anchor" aria-label="anchor" href="#deal-with-check-outputs"></a>
+</h2>
 <ul>
 <li>
 <code><a href="../reference/get_no_visible.html">get_no_visible()</a></code> runs the checks and extract no visible global variables and missing documented functions</li>
@@ -201,43 +195,43 @@ ggplot() +
 </li>
 </ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Get globals</span>
-<span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_no_visible.html">get_no_visible</a></span><span class="op">(</span><span class="va">pkg_path</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; pdflatex not found! Not building PDF manual.</span>
-<span class="va">globals</span>
-<span class="co">#&gt; $globalVariables</span>
-<span class="co">#&gt; # A tibble: 4 × 6</span>
-<span class="co">#&gt;   notes              fun    is_function is_global_varia… variable proposed      </span>
-<span class="co">#&gt;   &lt;chr&gt;              &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;         </span>
-<span class="co">#&gt; 1 my_fun: no visibl… my_fun FALSE       TRUE             data     " importFrom(…</span>
-<span class="co">#&gt; 2 my_fun: no visibl… my_fun FALSE       TRUE             x         &lt;NA&gt;         </span>
-<span class="co">#&gt; 3 my_fun: no visibl… my_fun FALSE       TRUE             y         &lt;NA&gt;         </span>
-<span class="co">#&gt; 4 my_fun: no visibl… my_fun FALSE       TRUE             new_col   &lt;NA&gt;         </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $functions</span>
-<span class="co">#&gt; # A tibble: 5 × 6</span>
-<span class="co">#&gt;   notes                    fun    is_function is_global_varia… variable proposed</span>
-<span class="co">#&gt;   &lt;chr&gt;                    &lt;chr&gt;  &lt;lgl&gt;       &lt;lgl&gt;            &lt;chr&gt;    &lt;chr&gt;   </span>
-<span class="co">#&gt; 1 my_fun: no visible glob… my_fun TRUE        FALSE            %&gt;%      &lt;NA&gt;    </span>
-<span class="co">#&gt; 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   &lt;NA&gt;    </span>
-<span class="co">#&gt; 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   &lt;NA&gt;    </span>
-<span class="co">#&gt; 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      &lt;NA&gt;    </span>
-<span class="co">#&gt; 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… &lt;NA&gt;</span>
-
-<span class="co"># Print globals to copy-paste</span>
-<span class="fu"><a href="../reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span>
-<span class="co">#&gt; --- Fonctions to add in NAMESPACE (with @importFrom ?) ---</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; --- Potential GlobalVariables ---</span>
-<span class="co">#&gt; -- code to copy to your globals.R file --</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; globalVariables(unique(c(</span>
-<span class="co">#&gt; # my_fun: </span>
-<span class="co">#&gt; "data", "new_col", "x", "y"</span>
-<span class="co">#&gt; )))</span>
-<span class="co"># Store in package using usethis::use_r("globals")</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Get globals</span></span>
+<span><span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_no_visible.html">get_no_visible</a></span><span class="op">(</span><span class="va">pkg_path</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; pdflatex not found! Not building PDF manual.</span></span>
+<span><span class="va">globals</span></span>
+<span><span class="co">#&gt; $globalVariables</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
+<span><span class="co">#&gt;   notes                     fun   is_function is_global_varia… variable proposed</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible bindi… my_f… FALSE       TRUE             data     <span style="color: #949494;">"</span> impor…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible bindi… my_f… FALSE       TRUE             x         <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible bindi… my_f… FALSE       TRUE             y         <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible bindi… my_f… FALSE       TRUE             new_col   <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $functions</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 6</span></span></span>
+<span><span class="co">#&gt;   notes                     fun   is_function is_global_varia… variable proposed</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible globa… my_f… TRUE        FALSE            %&gt;%      <span style="color: #BB0000;">NA</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible globa… my_f… TRUE        FALSE            mutate   <span style="color: #BB0000;">NA</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible globa… my_f… TRUE        FALSE            ggplot   <span style="color: #BB0000;">NA</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible globa… my_f… TRUE        FALSE            aes      <span style="color: #BB0000;">NA</span>      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> my_fun: no visible globa… my_f… TRUE        FALSE            geom_po… <span style="color: #BB0000;">NA</span></span></span>
+<span></span>
+<span><span class="co"># Print globals to copy-paste</span></span>
+<span><span class="fu"><a href="../reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span></span>
+<span><span class="co">#&gt; --- Functions to add in NAMESPACE (with @importFrom ?) ---</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; --- Potential GlobalVariables ---</span></span>
+<span><span class="co">#&gt; -- code to copy to your globals.R file --</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; globalVariables(unique(c(</span></span>
+<span><span class="co">#&gt; # my_fun: </span></span>
+<span><span class="co">#&gt; "data", "new_col", "x", "y"</span></span>
+<span><span class="co">#&gt; )))</span></span>
+<span><span class="co"># Store in package using usethis::use_r("globals")</span></span></code></pre></div>
 </div>
   </div>
 
@@ -252,13 +246,14 @@ ggplot() +
 
 
       <footer><div class="thinkr">
-  <p>checkhelper is a  <strong>ThinkR</strong> package. Learn more at <a href="https://rtask.thinkr.fr">rtask.thinkr.fr</a>.</p>
+  <p></p>
+<p>Developed by Sebastien Rochette, Vincent Guyader.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
 <div class="author">
   <p>
-    Developed by Sebastien Rochette, Vincent Guyader.
-    Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
+    Developed by .
+    Site built by <a href="https://pkgdown.r-lib.org" class="external-link">pkgdown</a>.
   </p>
 </div>
 
@@ -267,6 +262,8 @@ ggplot() +
 
   
 
+
+  
 
   </body>
 </html>
