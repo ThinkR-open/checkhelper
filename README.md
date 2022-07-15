@@ -71,11 +71,11 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✓ Setting active project to '/tmp/Rtmpr5hR9Z/pkg.5ecb790df6c5'
-#> ✓ Creating 'R/'
-#> ✓ Writing 'DESCRIPTION'
-#> ✓ Writing 'NAMESPACE'
-#> ✓ Setting active project to '<no active project>'
+#> ✔ Setting active project to '/tmp/Rtmp23xgFb/pkg.416665a6ac09'
+#> ✔ Creating 'R/'
+#> ✔ Writing 'DESCRIPTION'
+#> ✔ Writing 'NAMESPACE'
+#> ✔ Setting active project to '<no active project>'
 
 # Create function no visible global variables and missing documented functions
 cat("
@@ -98,14 +98,11 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.5ecb790df6c5 documentation
-#> First time using roxygen2. Upgrading automatically...
-#> ℹ Loading pkg.5ecb790df6c5
-#> [+] 1 package(s) added: dplyr.
+#> Updating pkg.416665a6ac09 documentation
+#> ℹ Loading pkg.416665a6ac09Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'[+] 1 package(s) added: dplyr.
 
 # Files of the package
-fs::dir_tree(pkg_path, recursive = TRUE)
-#> Warning: `recursive` is deprecated, please use `recurse` instead
+fs::dir_tree(pkg_path, recurse = TRUE)
 ```
 
 -   Find missing `@return` and find missing `@noRd` for not exported
@@ -113,17 +110,23 @@ fs::dir_tree(pkg_path, recursive = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.5ecb790df6c5
-#> Writing NAMESPACE
+#> ℹ Loading pkg.416665a6ac09
 #> Missing or empty return value for exported functions: my_fun
+#> 
+#> 
+#> 
 #> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
-#> # A tibble: 2 x 8
-#>   topic          has_export has_return return_value not_empty_return_v… has_nord
-#>   <chr>          <lgl>      <lgl>      <chr>        <lgl>               <lgl>   
-#> 1 my_fun         TRUE       FALSE      ""           FALSE               FALSE   
-#> 2 my_not_export… FALSE      FALSE      ""           FALSE               FALSE   
-#> # … with 2 more variables: test_has_export_and_return <chr>,
-#> #   test_has_export_or_has_nord <chr>
+#> 
+#> 
+#> 
+#> ℹ Loading pkg.416665a6ac09
+#> # A tibble: 2 × 11
+#>      id filename  topic has_export has_return return_value has_nord rdname_value
+#>   <int> <chr>     <chr> <lgl>      <lgl>      <chr>        <lgl>    <chr>       
+#> 1     1 function… my_f… TRUE       FALSE      ""           FALSE    my_fun      
+#> 2     2 function… my_n… FALSE      FALSE      ""           FALSE    my_not_expo…
+#> # … with 3 more variables: not_empty_return_value <lgl>,
+#> #   test_has_export_and_return <chr>, test_has_export_or_has_nord <chr>
 ```
 
 -   Get global variables
@@ -132,30 +135,30 @@ find_missing_tags(pkg_path)
 globals <- get_no_visible(pkg_path, quiet = TRUE)
 globals
 #> $globalVariables
-#> # A tibble: 4 x 6
-#>   notes              fun    is_function is_global_varia… variable proposed      
-#>   <chr>              <chr>  <lgl>       <lgl>            <chr>    <chr>         
-#> 1 my_fun: no visibl… my_fun FALSE       TRUE             data     " importFrom(…
-#> 2 my_fun: no visibl… my_fun FALSE       TRUE             x         <NA>         
-#> 3 my_fun: no visibl… my_fun FALSE       TRUE             y         <NA>         
-#> 4 my_fun: no visibl… my_fun FALSE       TRUE             new_col   <NA>         
+#> # A tibble: 4 × 6
+#>   notes                     fun   is_function is_global_varia… variable proposed
+#>   <chr>                     <chr> <lgl>       <lgl>            <chr>    <chr>   
+#> 1 my_fun: no visible bindi… my_f… FALSE       TRUE             data     " impor…
+#> 2 my_fun: no visible bindi… my_f… FALSE       TRUE             x         <NA>   
+#> 3 my_fun: no visible bindi… my_f… FALSE       TRUE             y         <NA>   
+#> 4 my_fun: no visible bindi… my_f… FALSE       TRUE             new_col   <NA>   
 #> 
 #> $functions
-#> # A tibble: 5 x 6
-#>   notes                    fun    is_function is_global_varia… variable proposed
-#>   <chr>                    <chr>  <lgl>       <lgl>            <chr>    <chr>   
-#> 1 my_fun: no visible glob… my_fun TRUE        FALSE            %>%      <NA>    
-#> 2 my_fun: no visible glob… my_fun TRUE        FALSE            mutate   <NA>    
-#> 3 my_fun: no visible glob… my_fun TRUE        FALSE            ggplot   <NA>    
-#> 4 my_fun: no visible glob… my_fun TRUE        FALSE            aes      <NA>    
-#> 5 my_fun: no visible glob… my_fun TRUE        FALSE            geom_po… <NA>
+#> # A tibble: 5 × 6
+#>   notes                     fun   is_function is_global_varia… variable proposed
+#>   <chr>                     <chr> <lgl>       <lgl>            <chr>    <chr>   
+#> 1 my_fun: no visible globa… my_f… TRUE        FALSE            %>%      <NA>    
+#> 2 my_fun: no visible globa… my_f… TRUE        FALSE            mutate   <NA>    
+#> 3 my_fun: no visible globa… my_f… TRUE        FALSE            ggplot   <NA>    
+#> 4 my_fun: no visible globa… my_f… TRUE        FALSE            aes      <NA>    
+#> 5 my_fun: no visible globa… my_f… TRUE        FALSE            geom_po… <NA>
 ```
 
 -   Print globals to copy-paste
 
 ``` r
 print_globals(globals)
-#> --- Fonctions to add in NAMESPACE (with @importFrom ?) ---
+#> --- Functions to add in NAMESPACE (with @importFrom ?) ---
 #> 
 #> my_fun: %>%, aes, geom_point, ggplot, mutate
 #> 
