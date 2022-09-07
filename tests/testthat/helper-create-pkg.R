@@ -20,6 +20,7 @@ create_pkg <- function(with_functions = TRUE, with_extra_notes = FALSE) {
 
   if (isTRUE(with_functions)) {
     # Create function no visible global variables and missing documented functions
+    # And return empty
     cat("
 #' Function
 #' @importFrom dplyr filter

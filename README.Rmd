@@ -90,7 +90,7 @@ my_not_exported_doc <- function() {
 attachment::att_amend_desc(path = pkg_path)
 
 # Files of the package
-fs::dir_tree(pkg_path, recursive = TRUE)
+fs::dir_tree(pkg_path, recurse = TRUE)
 ```
 
 - Find missing `@return` and find missing `@noRd` for not exported function with documentation
