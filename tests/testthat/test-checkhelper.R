@@ -49,7 +49,7 @@ test_that("print_outputs works", {
   )
   expect_equal(
     print_outputs$liste_globals,
-    "--- Potential GlobalVariables ---\n-- code to copy to your globals.R file --\n\nglobalVariables(unique(c(\n# my_long_fun_name_for_multiple_lines_globals: \n\"new_col\", \"x\", \"y\", \n# my_plot: \n\"new_col2\", \"x\", \"y\", \n# my_plot_rdname: \n\"new_col2\", \"x\", \"y\"\n)))"
+    "--- Potential GlobalVariables ---\n-- code to copy to your R/globals.R file --\n\nglobalVariables(unique(c(\n# my_long_fun_name_for_multiple_lines_globals: \n\"new_col\", \"x\", \"y\", \n# my_plot: \n\"new_col2\", \"x\", \"y\", \n# my_plot_rdname: \n\"new_col2\", \"x\", \"y\"\n)))"
   )
   expect_message(print_globals(globals, message = TRUE))
 })
