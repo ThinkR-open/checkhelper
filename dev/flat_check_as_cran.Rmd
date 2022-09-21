@@ -1,0 +1,149 @@
+---
+title: "flat_check_as_cran.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# check_as_cran
+
+Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
+
+=> TODO: Run from the bash script ("inst/cran/bin"), having extra args.
+
+```{r function-check_as_cran}
+#' Check your package with CRAN default values for environment variables
+#'
+#' @param pkg pkg directory to check
+#' @param check_dir Where to store check outputs
+#' @param scratch Where to store temporary files (cleaned after)
+#' @param Ncpus Number of Cpus
+#' @param as_command Whether to run the check as Linux command line, instead of directly in R
+#' @param clean_before Whether to delete the previous check_dir
+#' @param open Whether to open the check dir at the end of the process
+#'
+#' @return An object containing errors, warnings, and notes.
+#' @export
+#'
+#' @examples
+check_as_cran <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FALSE,
+                          clean_before = TRUE,
+                          open = FALSE) {
+  pkg <- normalizePath(pkg)
+
+  if (missing(check_dir)) {check_dir <- file.path(dirname(normalizePath(pkg)), "checkdir")}
+  if (isTRUE(clean_before) | !dir.exists(check_dir)) {
+    # if ( file.exists(check_dir)) {a <- try(file.remove(check_dir), silent = TRUE)}
+    if (dir.exists(check_dir)) {
+      unlink(check_dir, recursive = TRUE)
+    }
+    dir.create(check_dir)
+  }
+
+  if (missing(scratch)) {scratch <- file.path(dirname(normalizePath(pkg)), "scratch")}
+  if (dir.exists(scratch)) {
+    unlink(scratch, recursive = TRUE)
+  } else {
+    dir.create(scratch)
+  }
+  
+    results <- the_check(
+      pkg = pkg,
+      check_dir =  check_dir,
+      scratch = scratch,
+      Ncpus = Ncpus,
+      clean_before = clean_before
+    )
+
+  writeLines("\nDepends:")
+  tools::summarize_check_packages_in_dir_depends(check_dir)
+  writeLines("\nTimings:")
+  tools::summarize_check_packages_in_dir_timings(check_dir)
+  writeLines("\nResults:")
+  tools::summarize_check_packages_in_dir_results(check_dir)
+  writeLines("\nDetails:")
+  tools::check_packages_in_dir_details(check_dir)
+  message("\nSee all check outputs in: ", check_dir)
+  
+  if (isTRUE(open)) {
+    utils::browseURL(check_dir)
+  }
+  return(results)
+}
+  
+
+#' @noRd
+the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FALSE, clean_before = TRUE) {
+
+  pkgbuild::build(path = pkg, dest_path = check_dir)
+  
+  envfile <- system.file("cran/CRAN_incoming/check.Renviron", package = "checkhelper")
+  # read.table does not read comment, which is good
+  envfile_table <- utils::read.table(envfile, sep = "=")
+  env_values <- as.list(t(envfile_table)[2,])
+  names(env_values) <- as.list(t(envfile_table)[1,])
+  
+  lib_dir <- system.file("cran/lib", package = "checkhelper")
+  
+  withr::with_envvar(new = env_values, {
+    if (!as_command) {
+      Sys.setenv("TMPDIR" = scratch)
+      check_unique(check_dir, lib_dir, scratch, Ncpus)
+    } else {
+      message("This may only run on Linux OS with sh")
+      # Run as command line for Linux only
+      lib_bin <- system.file("cran/bin", package = "checkhelper")
+    }
+  })
+}
+```
+
+```{r examples-check_as_cran, eval=FALSE}
+#' \dontrun{
+check_dir <- tempfile("example")
+# Check the current directory
+check_as_cran(check_dir = check_dir)
+# Open directory with all outputs
+utils::browseURL(check_dir)
+#' }
+```
+
+```{r tests-check_as_cran}
+test_that("check_as_cran works", {
+  path <- suppressWarnings(create_pkg())
+  check_dir <- tempfile("example")
+  
+  if (interactive()) {
+    expect_error(check_as_cran(pkg = path, check_dir = check_dir), regexp = NA)
+  } else {
+    check_callr <- function(pkg, check_dir) {
+      library(checkhelper)
+      check_as_cran(pkg = pkg, check_dir = check_dir)
+    }
+    
+    # need to run in another env. inside check in check
+    expect_error(callr::r(check_callr, args = list(pkg = path, check_dir = check_dir)), regexp = NA)
+  }
+  # check_as_cran(pkg = "/mnt/Data/github/ThinkR-open/attachment")
+  # Check that env is clean - only manually
+  # Sys.getenv("_R_CHECK_AUTOCONF_")
+  unlink(check_dir, recursive = TRUE)
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "RConsortium exploration: Check as CRAN")
+```
+

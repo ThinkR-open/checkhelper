@@ -1,4 +1,5 @@
-path <- create_pkg()
+# Warnings are ok with new version o
+path <- suppressWarnings(create_pkg())
 
 # get_no_visible ----
 # Get globals
@@ -24,7 +25,7 @@ path <- create_pkg()
 
 # withr::local_environment({
   # test_env({
-  globals <- checkhelper::get_no_visible(path, quiet = TRUE)
+  globals <- get_no_visible(path, quiet = TRUE, args = (c("--no-manual", "--as-cran")))
   # saveRDS(globals,"C:\\Users\\seb44\\AppData\\Local\\Temp\\RtmpqI9biW\\checkpackage\\globals.rds")
 # })
 
@@ -82,7 +83,7 @@ test_that("extra notes only works", {
 unlink(path, recursive = TRUE)
 
 # Test when checks done before ----
-path <- create_pkg()
+path <- suppressWarnings(create_pkg())
 checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE)
 notes <- get_notes(path = path, checks = checks)
 

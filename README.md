@@ -2,8 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions)
+[![R-CMD-check](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg)](https://codecov.io/gh/ThinkR-open/checkhelper?branch=master)
 <!-- badges: end -->
@@ -18,7 +17,13 @@ Complete documentation in the {pkgdown} site:
 
 ## Installation
 
-You can install the last version of checkhelper from github with:
+You can install the last version of checkhelper from r-universe with:
+
+``` r
+install.packages('checkhelper', repos = 'https://thinkr-open.r-universe.dev')
+```
+
+Or from GitHub:
 
 ``` r
 remotes::install_github("thinkr-open/checkhelper")
@@ -71,11 +76,11 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> v Setting active project to 'C:/Users/PC/AppData/Local/Temp/RtmpuGUA7H/pkg.360c29787ba'
-#> v Creating 'R/'
-#> v Writing 'DESCRIPTION'
-#> v Writing 'NAMESPACE'
-#> v Setting active project to '<no active project>'
+#> ✔ Setting active project to '/tmp/RtmpT2YnX3/pkg.26be9459ed409'
+#> ✔ Creating 'R/'
+#> ✔ Writing 'DESCRIPTION'
+#> ✔ Writing 'NAMESPACE'
+#> ✔ Setting active project to '<no active project>'
 
 # Create function no visible global variables and missing documented functions
 cat("
@@ -98,13 +103,11 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.360c29787ba documentation
-#> i Loading pkg.360c29787ba
-#> [+] 1 package(s) added: dplyr.
+#> Updating pkg.26be9459ed409 documentation
+#> ℹ Loading pkg.26be9459ed409Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.26be9459ed409[+] 1 package(s) added: dplyr.
 
 # Files of the package
-fs::dir_tree(pkg_path, recursive = TRUE)
-#> Warning: `recursive` is deprecated, please use `recurse` instead
+fs::dir_tree(pkg_path, recurse = TRUE)
 ```
 
 -   Find missing `@return` and find missing `@noRd` for not exported
@@ -112,19 +115,24 @@ fs::dir_tree(pkg_path, recursive = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> i Loading pkg.360c29787ba
-#> Writing NAMESPACE
+#> ℹ Loading pkg.26be9459ed409
 #> Missing or empty return value for exported functions: my_fun
+#> 
+#> 
+#> 
 #> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
-#> i Loading pkg.360c29787ba
-#> Writing NAMESPACE
-#> # A tibble: 2 x 11
-#>      id filename  topic has_export has_return return_value has_nord rdname_value
-#>   <int> <chr>     <chr> <lgl>      <lgl>      <chr>        <lgl>    <chr>       
-#> 1     1 function~ my_f~ TRUE       FALSE      ""           FALSE    my_fun      
-#> 2     2 function~ my_n~ FALSE      FALSE      ""           FALSE    my_not_expo~
-#> # ... with 3 more variables: not_empty_return_value <lgl>,
-#> #   test_has_export_and_return <chr>, test_has_export_or_has_nord <chr>
+#> 
+#> 
+#> 
+#> ℹ Loading pkg.26be9459ed409
+#> # A tibble: 2 × 11
+#>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
+#>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
+#> 1     1 function.R my_f… TRUE    FALSE   ""      FALSE   my_fun  FALSE   not_ok 
+#> 2     2 function.R my_n… FALSE   FALSE   ""      FALSE   my_not… FALSE   ok     
+#> # … with 1 more variable: test_has_export_or_has_nord <chr>, and abbreviated
+#> #   variable names ¹​has_export, ²​has_return, ³​return_value, ⁴​has_nord,
+#> #   ⁵​rdname_value, ⁶​not_empty_return_value, ⁷​test_has_export_and_return
 ```
 
 -   Get global variables
@@ -133,23 +141,27 @@ find_missing_tags(pkg_path)
 globals <- get_no_visible(pkg_path, quiet = TRUE)
 globals
 #> $globalVariables
-#> # A tibble: 4 x 6
-#>   notes                     fun   is_function is_global_varia~ variable proposed
-#>   <chr>                     <chr> <lgl>       <lgl>            <chr>    <chr>   
-#> 1 my_fun: no visible bindi~ my_f~ FALSE       TRUE             data     " impor~
-#> 2 my_fun: no visible bindi~ my_f~ FALSE       TRUE             x         <NA>   
-#> 3 my_fun: no visible bindi~ my_f~ FALSE       TRUE             y         <NA>   
-#> 4 my_fun: no visible bindi~ my_f~ FALSE       TRUE             new_col   <NA>   
+#> # A tibble: 4 × 6
+#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
+#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible binding for global v… my_f… FALSE   TRUE    data    " impo…
+#> 2 my_fun: no visible binding for global v… my_f… FALSE   TRUE    x        <NA>  
+#> 3 my_fun: no visible binding for global v… my_f… FALSE   TRUE    y        <NA>  
+#> 4 my_fun: no visible binding for global v… my_f… FALSE   TRUE    new_col  <NA>  
+#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
+#> #   ³​variable, ⁴​proposed
 #> 
 #> $functions
-#> # A tibble: 5 x 6
-#>   notes                     fun   is_function is_global_varia~ variable proposed
-#>   <chr>                     <chr> <lgl>       <lgl>            <chr>    <chr>   
-#> 1 my_fun: no visible globa~ my_f~ TRUE        FALSE            %>%      <NA>    
-#> 2 my_fun: no visible globa~ my_f~ TRUE        FALSE            mutate   <NA>    
-#> 3 my_fun: no visible globa~ my_f~ TRUE        FALSE            ggplot   <NA>    
-#> 4 my_fun: no visible globa~ my_f~ TRUE        FALSE            aes      <NA>    
-#> 5 my_fun: no visible globa~ my_f~ TRUE        FALSE            geom_po~ <NA>
+#> # A tibble: 5 × 6
+#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
+#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible global function defi… my_f… TRUE    FALSE   %>%     <NA>   
+#> 2 my_fun: no visible global function defi… my_f… TRUE    FALSE   mutate  <NA>   
+#> 3 my_fun: no visible global function defi… my_f… TRUE    FALSE   ggplot  <NA>   
+#> 4 my_fun: no visible global function defi… my_f… TRUE    FALSE   aes     <NA>   
+#> 5 my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… <NA>   
+#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
+#> #   ³​variable, ⁴​proposed
 ```
 
 -   Print globals to copy-paste
@@ -161,7 +173,7 @@ print_globals(globals)
 #> my_fun: %>%, aes, geom_point, ggplot, mutate
 #> 
 #> --- Potential GlobalVariables ---
-#> -- code to copy to your R/globals.R file --
+#> -- code to copy to your globals.R file --
 #> 
 #> globalVariables(unique(c(
 #> # my_fun: 
@@ -173,6 +185,21 @@ print_globals(globals)
     `usethis::use_r("globals")`. Note that you can also transform all
     these variables with `.data[[variable]]`
 
-    Please note that this project is released with a [Contributor Code
-    of Conduct](CODE_OF_CONDUCT.md). By participating in this project
-    you agree to abide by its terms.
+### Experimental: Check as CRAN with CRAN global variables
+
+Use the exploration of CRAN scripts by the RConsortium to check a
+package as CRAN does it with their env. variables. See
+<https://github.com/RConsortium/r-repositories-wg/issues/17> for more
+details.
+
+``` r
+check_dir <- tempfile("example")
+# Check the current directory
+check_as_cran(check_dir = check_dir)
+# Open directory with all outputs
+utils::browseURL(check_dir)
+```
+
+Please note that this project is released with a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
+to abide by its terms.
