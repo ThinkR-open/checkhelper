@@ -1,6 +1,6 @@
 Package: checkhelper
 Title: Deal with check outputs
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
     person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = c("aut", "cre")),
     person("Vincent", "Guyader", , "vincent@thinkr.fr", role = "aut")

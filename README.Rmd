@@ -26,8 +26,14 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-You can install the last version of checkhelper from github with:
+You can install the last version of checkhelper from r-universe with:
 
+```r
+install.packages('checkhelper', repos = 'https://thinkr-open.r-universe.dev')
+```
+
+
+Or from GitHub:
 ``` r
 remotes::install_github("thinkr-open/checkhelper")
 ```

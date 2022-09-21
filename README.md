@@ -17,7 +17,13 @@ Complete documentation in the {pkgdown} site:
 
 ## Installation
 
-You can install the last version of checkhelper from github with:
+You can install the last version of checkhelper from r-universe with:
+
+``` r
+install.packages('checkhelper', repos = 'https://thinkr-open.r-universe.dev')
+```
+
+Or from GitHub:
 
 ``` r
 remotes::install_github("thinkr-open/checkhelper")
@@ -70,7 +76,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmpiWQuWQ/pkg.2681653ace3ee'
+#> ✔ Setting active project to '/tmp/RtmpT2YnX3/pkg.26be9459ed409'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -97,8 +103,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.2681653ace3ee documentation
-#> ℹ Loading pkg.2681653ace3eeWriting ']8;;file:///tmp/RtmpiWQuWQ/pkg.2681653ace3ee/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpiWQuWQ/pkg.2681653ace3ee/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2681653ace3ee[+] 1 package(s) added: dplyr.
+#> Updating pkg.26be9459ed409 documentation
+#> ℹ Loading pkg.26be9459ed409Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.26be9459ed409[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -109,7 +115,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.2681653ace3ee
+#> ℹ Loading pkg.26be9459ed409
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -118,7 +124,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.2681653ace3ee
+#> ℹ Loading pkg.26be9459ed409
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
