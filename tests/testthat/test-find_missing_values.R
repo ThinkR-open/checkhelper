@@ -1,4 +1,4 @@
-path <- create_pkg()
+path <- suppressWarnings(create_pkg())
 
 test_that("find_missing_tags works", {
 

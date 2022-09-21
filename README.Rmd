@@ -114,6 +114,18 @@ print_globals(globals)
 - Store the output of `print_globals()` in package using `usethis::use_r("globals")`. 
 Note that you can also transform all these variables with `.data[[variable]]`
 
+### Experimental: Check as CRAN with CRAN global variables
+
+Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
+
+```{r eval=FALSE}
+check_dir <- tempfile("example")
+# Check the current directory
+check_as_cran(check_dir = check_dir)
+# Open directory with all outputs
+utils::browseURL(check_dir)
+```
+
 
   Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
   By participating in this project you agree to abide by its terms.
