@@ -1,9 +1,10 @@
-pandoc: 2.7.3
-pkgdown: 2.0.5
+pandoc: 2.14.2
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   deal-with-check-outputs: deal-with-check-outputs.html
-last_built: 2022-07-15T07:36Z
+  rconsortium-exploration-check-as-cran: rconsortium-exploration-check-as-cran.html
+last_built: 2022-09-21T18:21Z
 urls:
   reference: https://thinkr-open.github.io/checkhelper/reference
   article: https://thinkr-open.github.io/checkhelper/articles

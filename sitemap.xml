@@ -16,6 +16,9 @@
     <loc>https://thinkr-open.github.io/checkhelper/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://thinkr-open.github.io/checkhelper/articles/rconsortium-exploration-check-as-cran.html</loc>
+  </url>
+  <url>
     <loc>https://thinkr-open.github.io/checkhelper/authors.html</loc>
   </url>
   <url>
@@ -23,6 +26,9 @@
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/checkhelper/reference/check_as_cran.html</loc>
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/reference/find_missing_tags.html</loc>
