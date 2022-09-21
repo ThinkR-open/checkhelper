@@ -62,7 +62,8 @@ get_notes <- function(path = ".", checks, ...) {
   res <- tibble(notes = strsplit(notes_with_globals_return, "RETURN")[[1]]) %>%
   # res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
     mutate(
-      fun = str_extract(notes, ".+(?=:)"),
+      # Maybe a path in parenthesis ?
+      fun = str_extract(notes, "(\\s*\\(.*\\)\\s){0,1}.+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
       is_global_variable = grepl("no visible binding for global variable", notes),
       variable = str_extract(notes, "(?<=\\u2018).+(?=\\u2019)|(?<=\\u0027).+(?=\\u0027)"),

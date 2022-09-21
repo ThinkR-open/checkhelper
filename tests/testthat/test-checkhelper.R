@@ -25,7 +25,7 @@ path <- suppressWarnings(create_pkg())
 
 # withr::local_environment({
   # test_env({
-  globals <- checkhelper::get_no_visible(path, quiet = TRUE)
+  globals <- get_no_visible(path, quiet = TRUE, args = (c("--no-manual", "--as-cran")))
   # saveRDS(globals,"C:\\Users\\seb44\\AppData\\Local\\Temp\\RtmpqI9biW\\checkpackage\\globals.rds")
 # })
 

@@ -68,7 +68,7 @@ usethis::use_vignette("deal-with-check-outputs")
 
 devtools::build_vignettes()
 devtools::load_all()
-rcmdcheck::rcmdcheck()
+rcmdcheck::rcmdcheck(args = (c("--no-manual", "--as-cran")))
 devtools::check(vignettes = FALSE)
 
 covr::package_coverage()
