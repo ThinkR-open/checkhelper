@@ -2,8 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/ThinkR-open/checkhelper/workflows/R-CMD-check/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions)
+[![R-CMD-check](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg)](https://codecov.io/gh/ThinkR-open/checkhelper?branch=master)
 <!-- badges: end -->
@@ -71,7 +70,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmplTNCpQ/pkg.2579f749b154a'
+#> ✔ Setting active project to '/tmp/RtmpiWQuWQ/pkg.2681653ace3ee'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -98,8 +97,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.2579f749b154a documentation
-#> ℹ Loading pkg.2579f749b154aWriting ']8;;file:///tmp/RtmplTNCpQ/pkg.2579f749b154a/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmplTNCpQ/pkg.2579f749b154a/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2579f749b154a[+] 1 package(s) added: dplyr.
+#> Updating pkg.2681653ace3ee documentation
+#> ℹ Loading pkg.2681653ace3eeWriting ']8;;file:///tmp/RtmpiWQuWQ/pkg.2681653ace3ee/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpiWQuWQ/pkg.2681653ace3ee/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2681653ace3ee[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -110,7 +109,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.2579f749b154a
+#> ℹ Loading pkg.2681653ace3ee
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -119,7 +118,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.2579f749b154a
+#> ℹ Loading pkg.2681653ace3ee
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
