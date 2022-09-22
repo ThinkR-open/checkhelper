@@ -60,10 +60,15 @@ get_notes <- function(path = ".", checks, ...) {
     stringr::str_replace_all("\\s*\\n\\s*", " ") # No known new line
 
   res <- tibble(notes = strsplit(notes_with_globals_return, "RETURN")[[1]]) %>%
+    # pull(res[2,1])
   # res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
     mutate(
       # Maybe a path in parenthesis ?
-      fun = str_extract(notes, "(\\s*\\(.*\\)\\s){0,1}.+(?=:)"),
+      filepath = str_extract(notes, "(\\s*\\(.*\\)\\s*){0,1}"),
+      filepath = ifelse(filepath == "", "-", filepath),
+      fun = purrr::map2_chr(notes, filepath, ~gsub(.y, "", .x, fixed = TRUE)),
+      fun = str_extract(fun, ".+(?=:)"),
+      # fun = str_extract(notes, "(\\s*\\(.*\\)\\s){0,1}.+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
       is_global_variable = grepl("no visible binding for global variable", notes),
       variable = str_extract(notes, "(?<=\\u2018).+(?=\\u2019)|(?<=\\u0027).+(?=\\u0027)"),

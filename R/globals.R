@@ -7,7 +7,9 @@ globalVariables(
       "fun", "text",
       # find_missing_tags
       "return_value", "has_export", "has_return", "not_empty_return_value", "has_nord",
-      "filename", "id", "rdname_value", "topic"
+      "filename", "id", "rdname_value", "topic",
+      # get_notes
+      "filepath"
     )
   )
 )

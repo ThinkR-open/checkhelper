@@ -55,6 +55,7 @@ usethis::pr_push()
 
 # Development ----
 attachment::att_amend_desc() #dir.v = ""
+devtools::document()
 checkhelper::print_globals()
 usethis::use_r("globals")
 usethis::use_r("find_missing_tags")
@@ -69,6 +70,7 @@ usethis::use_vignette("deal-with-check-outputs")
 devtools::build_vignettes()
 devtools::load_all()
 rcmdcheck::rcmdcheck(args = (c("--no-manual", "--as-cran")))
+rcmdcheck::rcmdcheck(args = (c("--no-manual", "--as-cran")), build_args = ("--no-manual"), error_on = ("warning"), check_dir = ("check"))
 devtools::check(vignettes = FALSE)
 
 covr::package_coverage()

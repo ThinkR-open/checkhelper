@@ -23,10 +23,11 @@ path <- suppressWarnings(create_pkg())
 # globals <- readRDS(file.path(tempdir, "checkpackage", "globals.rds"))
 # }
 
+
 # withr::local_environment({
   # test_env({
-  globals <- get_no_visible(path, quiet = TRUE, args = (c("--no-manual", "--as-cran")))
-  # saveRDS(globals,"C:\\Users\\seb44\\AppData\\Local\\Temp\\RtmpqI9biW\\checkpackage\\globals.rds")
+  globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
+  # saveRDS(globals, "~/Bureau/globals.rds")
 # })
 
 test_that("get_no_visible works", {
@@ -60,7 +61,7 @@ unlink(path, recursive = TRUE)
 
 # Test when no notes at all ----
 path <- create_pkg(with_functions = FALSE, with_extra_notes = FALSE)
-globals <- get_no_visible(path, quiet = TRUE)
+globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 print_outputs <- print_globals(globals, message = FALSE)
 
 test_that("no notes works", {
@@ -74,7 +75,7 @@ unlink(path, recursive = TRUE)
 
 # Test when only extra notes ----
 path <- create_pkg(with_functions = FALSE, with_extra_notes = TRUE)
-notes <- get_notes(path = path)
+notes <- get_notes(path = path, args = c("--no-manual", "--as-cran"))
 
 test_that("extra notes only works", {
   expect_null(notes)
@@ -84,12 +85,12 @@ unlink(path, recursive = TRUE)
 
 # Test when checks done before ----
 path <- suppressWarnings(create_pkg())
-checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE)
+checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 notes <- get_notes(path = path, checks = checks)
 
 test_that("notes from checks works", {
   expect_equal(nrow(notes), 26)
-  expect_equal(ncol(notes), 7)
+  expect_equal(ncol(notes), 8)
   expect_true(all(notes[["fun"]][2:9] == "my_long_fun_name_for_multiple_lines_globals"))
   expect_true(all(notes[["fun"]][10:17] == "my_plot"))
   expect_true(all(notes[["fun"]][18:25] == "my_plot_rdname"))
@@ -110,3 +111,43 @@ test_that("get_no_visible works after checks", {
 
 # Remove path
 unlink(path, recursive = TRUE)
+
+# Detect path if exists in notes ----
+# "  (/tmp/RtmpkW3scz/working_dir/RtmpMNu2An/file348c18e5542c/checkpackage.R
+# x[1]: check/00_pkg_src/checkpackage/R/function.R:7-12) my_long_fun_name_for_mult
+# x[1]: iple_lines_globals"
+
+test_that("Check with path in outputs works", {
+  notes_with_globals <-
+    "checking R code for possible problems ... NOTE\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘%>%’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘mutate’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘ggplot’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘aes’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘x’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘y’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘new_col’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘geom_point’\nmy_plot: no visible global function definition for ‘%>%’\nmy_plot: no visible global function definition for ‘mutate’\nmy_plot: no visible global function definition for ‘ggplot’\nmy_plot: no visible global function definition for ‘aes’\nmy_plot: no visible binding for global variable ‘x’\nmy_plot: no visible binding for global variable ‘y’\nmy_plot: no visible binding for global variable ‘new_col2’\nmy_plot: no visible global function definition for ‘geom_point’\nmy_plot_rdname: no visible global function definition for ‘%>%’\nmy_plot_rdname: no visible global function definition for ‘mutate’\nmy_plot_rdname: no visible global function definition for ‘ggplot’\nmy_plot_rdname: no visible global function definition for ‘aes’\nmy_plot_rdname: no visible binding for global variable ‘x’\nmy_plot_rdname: no visible binding for global variable ‘y’\nmy_plot_rdname: no visible binding for global variable ‘new_col2’\nmy_plot_rdname: no visible global function definition for ‘geom_point’\nUndefined global functions or variables:\n  %>% aes geom_point ggplot mutate new_col new_col2 x y"
+
+  fake_check <- list()
+  fake_check[["notes"]] <- notes_with_globals
+
+  res <- get_notes(checks = fake_check)
+
+  expect_true(all(res[["filepath"]] == "-"))
+  expect_equal(res[["fun"]],
+               c(NA,
+                 rep("my_long_fun_name_for_multiple_lines_globals", 8),
+                 rep("my_plot", 8), rep("my_plot_rdname", 8),
+                 "Undefined global functions or variables")
+  )
+
+  notes_with_globals_with_path <-
+    "checking R code for possible problems ... NOTE\n  (/tmp/RtmpkW3scz/working_dir/RtmpMNu2An/file348c18e5542c/checkpackage.Rcheck/00_pkg_src/checkpackage/R/function.R:7-12) my_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘%>%’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘mutate’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘ggplot’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘aes’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘x’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘y’\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable ‘new_col’\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for ‘geom_point’\nmy_plot: no visible global function definition for ‘%>%’\nmy_plot: no visible global function definition for ‘mutate’\nmy_plot: no visible global function definition for ‘ggplot’\nmy_plot: no visible global function definition for ‘aes’\nmy_plot: no visible binding for global variable ‘x’\nmy_plot: no visible binding for global variable ‘y’\nmy_plot: no visible binding for global variable ‘new_col2’\nmy_plot: no visible global function definition for ‘geom_point’\nmy_plot_rdname: no visible global function definition for ‘%>%’\nmy_plot_rdname: no visible global function definition for ‘mutate’\nmy_plot_rdname: no visible global function definition for ‘ggplot’\nmy_plot_rdname: no visible global function definition for ‘aes’\nmy_plot_rdname: no visible binding for global variable ‘x’\nmy_plot_rdname: no visible binding for global variable ‘y’\nmy_plot_rdname: no visible binding for global variable ‘new_col2’\nmy_plot_rdname: no visible global function definition for ‘geom_point’\nUndefined global functions or variables:\n  %>% aes geom_point ggplot mutate new_col new_col2 x y"
+
+  fake_check <- list()
+  fake_check[["notes"]] <- notes_with_globals_with_path
+
+  res <- get_notes(checks = fake_check)
+
+  expect_true(all(res[["filepath"]][-2] == "-"))
+  expect_true(res[["filepath"]][2] == "  (/tmp/RtmpkW3scz/working_dir/RtmpMNu2An/file348c18e5542c/checkpackage.Rcheck/00_pkg_src/checkpackage/R/function.R:7-12) ")
+  expect_equal(res[["fun"]],
+               c(NA,
+                 rep("my_long_fun_name_for_multiple_lines_globals", 8),
+                 rep("my_plot", 8), rep("my_plot_rdname", 8),
+                 "Undefined global functions or variables")
+  )
+})
