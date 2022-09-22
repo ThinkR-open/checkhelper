@@ -241,7 +241,7 @@ in_example <- function() {
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
     expect_true(any(grepl("symbols[.]rds$", all_files$file[6])))
   } else {
-    stop("Number of rows is not expected")
+    stop("Number of rows is not expected: ", all_files)
   }
 })
 ```
