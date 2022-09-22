@@ -110,7 +110,7 @@
       <h1 data-toc-skip>Deal with check outputs</h1>
                         <h4 data-toc-skip class="author">Sébastien Rochette</h4>
             
-            <h4 data-toc-skip class="date">2022-09-21</h4>
+            <h4 data-toc-skip class="date">2022-09-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/HEAD/vignettes/deal-with-check-outputs.Rmd" class="external-link"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -139,7 +139,7 @@
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/Rtmp2QBPYo/pkg.389437b1573e'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/Rtmpr09GWg/pkg.32f14a9ba7b4'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'R/'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'DESCRIPTION'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'NAMESPACE'</span></span></span>
@@ -161,8 +161,8 @@
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.389437b1573e documentation</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.389437b1573e</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">my_fun.Rd</span><span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.389437b1573e</span>[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.32f14a9ba7b4 documentation</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.32f14a9ba7b4</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">my_fun.Rd</span><span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.32f14a9ba7b4</span>[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -174,12 +174,12 @@
 <p>CRAN does not like when exported functions do not have returned value. Using <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>, you can detect exported functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.389437b1573e</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.32f14a9ba7b4</span></span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.389437b1573e</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.32f14a9ba7b4</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 11</span></span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
@@ -204,27 +204,27 @@
 <span><span class="co">#&gt; pdflatex not found! Not building PDF manual.</span></span>
 <span><span class="va">globals</span></span>
 <span><span class="co">#&gt; $globalVariables</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 6</span></span></span>
-<span><span class="co">#&gt;   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible binding for global v… my_f… FALSE   TRUE    data    <span style="color: #949494;">"</span> impo…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible binding for global v… my_f… FALSE   TRUE    x        <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible binding for global v… my_f… FALSE   TRUE    y        <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible binding for global v… my_f… FALSE   TRUE    new_col  <span style="color: #BB0000;">NA</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​is_function, ²​is_global_variable,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ³​variable, ⁴​proposed</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 7</span></span></span>
+<span><span class="co">#&gt;   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible binding for … -       my_f… FALSE   TRUE    data    <span style="color: #949494;">"</span> impo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible binding for … -       my_f… FALSE   TRUE    x        <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible binding for … -       my_f… FALSE   TRUE    y        <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible binding for … -       my_f… FALSE   TRUE    new_col  <span style="color: #BB0000;">NA</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​filepath, ²​is_function,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $functions</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 6</span></span></span>
-<span><span class="co">#&gt;   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible global function defi… my_f… TRUE    FALSE   %&gt;%     <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible global function defi… my_f… TRUE    FALSE   mutate  <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible global function defi… my_f… TRUE    FALSE   ggplot  <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible global function defi… my_f… TRUE    FALSE   aes     <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… <span style="color: #BB0000;">NA</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​is_function, ²​is_global_variable,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ³​variable, ⁴​proposed</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 5 × 7</span></span></span>
+<span><span class="co">#&gt;   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> my_fun: no visible global funct… -       my_f… TRUE    FALSE   %&gt;%     <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> my_fun: no visible global funct… -       my_f… TRUE    FALSE   mutate  <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> my_fun: no visible global funct… -       my_f… TRUE    FALSE   ggplot  <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> my_fun: no visible global funct… -       my_f… TRUE    FALSE   aes     <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> my_fun: no visible global funct… -       my_f… TRUE    FALSE   geom_p… <span style="color: #BB0000;">NA</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># … with abbreviated variable names ¹​filepath, ²​is_function,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span></span>
 <span></span>
 <span><span class="co"># Print globals to copy-paste</span></span>
 <span><span class="fu"><a href="../reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span></span>
