@@ -76,7 +76,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmpT2YnX3/pkg.26be9459ed409'
+#> ✔ Setting active project to '/tmp/Rtmp6gUH1X/pkg.2c50e44e86df9'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -103,8 +103,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.26be9459ed409 documentation
-#> ℹ Loading pkg.26be9459ed409Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.26be9459ed409[+] 1 package(s) added: dplyr.
+#> Updating pkg.2c50e44e86df9 documentation
+#> ℹ Loading pkg.2c50e44e86df9Writing ']8;;file:///tmp/Rtmp6gUH1X/pkg.2c50e44e86df9/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/Rtmp6gUH1X/pkg.2c50e44e86df9/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2c50e44e86df9[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -115,7 +115,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.26be9459ed409
+#> ℹ Loading pkg.2c50e44e86df9
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -124,7 +124,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.26be9459ed409
+#> ℹ Loading pkg.2c50e44e86df9
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -141,27 +141,27 @@ find_missing_tags(pkg_path)
 globals <- get_no_visible(pkg_path, quiet = TRUE)
 globals
 #> $globalVariables
-#> # A tibble: 4 × 6
-#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
-#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible binding for global v… my_f… FALSE   TRUE    data    " impo…
-#> 2 my_fun: no visible binding for global v… my_f… FALSE   TRUE    x        <NA>  
-#> 3 my_fun: no visible binding for global v… my_f… FALSE   TRUE    y        <NA>  
-#> 4 my_fun: no visible binding for global v… my_f… FALSE   TRUE    new_col  <NA>  
-#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
-#> #   ³​variable, ⁴​proposed
+#> # A tibble: 4 × 7
+#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible binding for … -       my_f… FALSE   TRUE    data    " impo…
+#> 2 my_fun: no visible binding for … -       my_f… FALSE   TRUE    x        <NA>  
+#> 3 my_fun: no visible binding for … -       my_f… FALSE   TRUE    y        <NA>  
+#> 4 my_fun: no visible binding for … -       my_f… FALSE   TRUE    new_col  <NA>  
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 #> 
 #> $functions
-#> # A tibble: 5 × 6
-#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
-#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible global function defi… my_f… TRUE    FALSE   %>%     <NA>   
-#> 2 my_fun: no visible global function defi… my_f… TRUE    FALSE   mutate  <NA>   
-#> 3 my_fun: no visible global function defi… my_f… TRUE    FALSE   ggplot  <NA>   
-#> 4 my_fun: no visible global function defi… my_f… TRUE    FALSE   aes     <NA>   
-#> 5 my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… <NA>   
-#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
-#> #   ³​variable, ⁴​proposed
+#> # A tibble: 5 × 7
+#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible global funct… -       my_f… TRUE    FALSE   %>%     <NA>   
+#> 2 my_fun: no visible global funct… -       my_f… TRUE    FALSE   mutate  <NA>   
+#> 3 my_fun: no visible global funct… -       my_f… TRUE    FALSE   ggplot  <NA>   
+#> 4 my_fun: no visible global funct… -       my_f… TRUE    FALSE   aes     <NA>   
+#> 5 my_fun: no visible global funct… -       my_f… TRUE    FALSE   geom_p… <NA>   
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 ```
 
 -   Print globals to copy-paste
@@ -173,7 +173,7 @@ print_globals(globals)
 #> my_fun: %>%, aes, geom_point, ggplot, mutate
 #> 
 #> --- Potential GlobalVariables ---
-#> -- code to copy to your globals.R file --
+#> -- code to copy to your R/globals.R file --
 #> 
 #> globalVariables(unique(c(
 #> # my_fun: 
@@ -184,6 +184,56 @@ print_globals(globals)
 -   Store the output of `print_globals()` in package using
     `usethis::use_r("globals")`. Note that you can also transform all
     these variables with `.data[[variable]]`
+
+### Check that the user space is clean after checks
+
+Have you faced a note on CRAN about non-standard things in the check
+directory ?
+
+    Check: for non-standard things in the check directory
+    Result: NOTE
+        Found the following files/directories:
+         ‘extrapackage’ 
+
+Maybe you do not understand where these files came from.  
+Then, you can run `check_clean_userspace()` in your package directory to
+detect every files that you created during the check.  
+They could be issued from examples, tests or vignettes:
+`check_clean_userspace()` will tell you.
+
+``` r
+check_clean_userspace()
+```
+
+    #> Package: checkpackage
+    #> Title: What the Package Does (One Line, Title Case)
+    #> Version: 0.0.0.9000
+    #> Authors@R (parsed):
+    #>     * First Last <first.last@example.com> [aut, cre] (YOUR-ORCID-ID)
+    #> Description: What the package does (one paragraph).
+    #> License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    #>     license
+    #> Encoding: UTF-8
+    #> Roxygen: list(markdown = TRUE)
+    #> RoxygenNote: 7.2.1
+    #> ✔ | F W S  OK | Context
+    #> ⠏ |         0 | in_test                                                         
+    #> ══ Results ═════════════════════════════════════════════════════════════════════
+    #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
+    #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
+    #> 
+    #> > cat("#in example", file = tempfile("in_example"))
+    #> Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the
+    #> 'Run examples' .R file was created to run examples. You should not bother about
+    #> it
+    #> # A tibble: 5 × 4
+    #>   source       problem where                                         file       
+    #>   <chr>        <chr>   <chr>                                         <chr>      
+    #> 1 Unit tests   added   /tmp/Rtmp6gUH1X/pkg-2c50eb9771e3/checkpackage /tmp/Rtmp6…
+    #> 2 Unit tests   added   /tmp/Rtmp6gUH1X                               /tmp/Rtmp6…
+    #> 3 Run examples added   /tmp/Rtmp6gUH1X                               /tmp/Rtmp6…
+    #> 4 Run examples added   /tmp/Rtmp6gUH1X                               /tmp/Rtmp6…
+    #> 5 Full check   added   /tmp/Rtmp6gUH1X                               /tmp/Rtmp6…
 
 ### Experimental: Check as CRAN with CRAN global variables
 

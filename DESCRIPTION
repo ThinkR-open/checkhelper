@@ -14,6 +14,7 @@ BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Imports: 
     cli,
     desc,
+    devtools,
     dplyr,
     glue,
     magrittr,

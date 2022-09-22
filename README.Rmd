@@ -120,6 +120,56 @@ print_globals(globals)
 - Store the output of `print_globals()` in package using `usethis::use_r("globals")`. 
 Note that you can also transform all these variables with `.data[[variable]]`
 
+### Check that the user space is clean after checks
+
+Have you faced a note on CRAN about non-standard things in the check directory ?
+
+```
+Check: for non-standard things in the check directory
+Result: NOTE
+    Found the following files/directories:
+     ‘extrapackage’ 
+```
+
+Maybe you do not understand where these files came from.  
+Then, you can run `check_clean_userspace()` in your package directory to detect every files that you created during the check.  
+They could be issued from examples, tests or vignettes: `check_clean_userspace()` will tell you.
+
+```{r examples-check_clean_userspace, eval=FALSE}
+check_clean_userspace()
+```
+```{r, echo=FALSE, message=FALSE}
+pkgload::load_all()
+path <- suppressWarnings(create_pkg())
+dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
+# Add a test that let file in the testthat dir
+cat(
+  "cat('#in tests', file = 'in_test.R')", 
+  file = file.path(path, "tests", "testthat", "test-in_test.R"))
+
+# Add an example that let file in tempdir
+cat(
+  "#' Function
+#' @return 1
+#' @export
+#' @examples
+#' cat('#in example', file = tempfile('in_example'))
+in_example <- function() {
+1
+}", 
+file = file.path(path, "R", "in_example.R"))
+
+suppressWarnings(attachment::att_amend_desc(path = path))
+
+check_dir <- tempfile("check_dir")
+
+suppressMessages(
+  all_files <- check_clean_userspace(pkg = path, check_dir = check_dir),
+)
+  all_files
+```
+
+
 ### Experimental: Check as CRAN with CRAN global variables
 
 Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
