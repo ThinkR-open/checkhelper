@@ -21,4 +21,7 @@ check_clean_userspace
 \dontrun{
 check_clean_userspace()
 }
+\dontrun{
+check_clean_userspace()
+}
 }
