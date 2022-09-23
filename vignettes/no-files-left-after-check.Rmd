@@ -28,7 +28,7 @@ Have you faced a note on CRAN about non-standard things in the check directory ?
 Check: for non-standard things in the check directory
 Result: NOTE
     Found the following files/directories:
-     ‘extrapackage’ 
+     â€˜extrapackageâ€™ 
 ```
 
 Maybe you do not understand where these files came from.  

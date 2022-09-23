@@ -39,7 +39,9 @@ in_example <- function() {
     expect_equal(all_files$source, c("Unit tests", "Unit tests", "Run examples", "Run examples", 
                                      "Full check"))
     expect_equal(all_files$problem, c("added", "added", "added", "added", "added"))
-    expect_equal(all_files$where, c(path, rep(tempdir(), 4)))
+    expect_equal(
+      normalizePath(all_files$where, winslash = "/"),
+      normalizePath(c(path, rep(tempdir(), 4)), winslash = "/"))
     expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
     expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
@@ -48,12 +50,14 @@ in_example <- function() {
     expect_equal(all_files$source, c("Unit tests", "Unit tests", "Run examples", "Run examples", 
                                      "Full check", "Full check"))
     expect_equal(all_files$problem, c("added", "added", "added", "added", "added", "added"))
-    expect_equal(all_files$where, c(path, rep(tempdir(), 5)))
+    expect_equal(
+      normalizePath(all_files$where, winslash = "/"),
+      normalizePath(c(path, rep(tempdir(), 5)), winslash = "/"))
     expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
     expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
     expect_true(any(grepl("symbols[.]rds$", all_files$file[6])))
   } else {
-    stop("Number of rows is not expected")
+    stop("Number of rows is not expected: ", all_files)
   }
 })
