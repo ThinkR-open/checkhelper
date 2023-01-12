@@ -1,3 +1,7 @@
 template:
   package: thinkrtemplate
+
 url: https://thinkr-open.github.io/checkhelper/
+
+development:
+  mode: auto
