@@ -136,7 +136,8 @@
 <h3 id="directly-in-your-package-in-development">Directly in your package in development<a class="anchor" aria-label="anchor" href="#directly-in-your-package-in-development"></a>
 </h3>
 <ul>
-<li>Use <code><a href="reference/find_missing_tags.html">checkhelper::find_missing_tags()</a></code> on your package in development to find which functions are exported but missing <code>@export</code> roxygen2 tag.<ul>
+<li>Use <code><a href="reference/find_missing_tags.html">checkhelper::find_missing_tags()</a></code> on your package in development to find which functions are exported but missing <code>@export</code> roxygen2 tag.
+<ul>
 <li>CRAN policy asks for every exported function to have a value (named <code>@export</code> when using {roxygen2}).</li>
 <li>This also checks that not exported functions dont have roxygen title, or have <code>@noRd</code> in case you faced <code>Please add \value to .Rd files</code> CRAN message for documented but not exported functions.</li>
 </ul>
@@ -151,14 +152,17 @@
 <div class="section level3">
 <h3 id="reproducible-example-with-a-fake-package-in-tempdir">Reproducible example with a fake package in tempdir<a class="anchor" aria-label="anchor" href="#reproducible-example-with-a-fake-package-in-tempdir"></a>
 </h3>
-<ul><li>Create a fake package with<ul>
+<ul>
+<li>Create a fake package with
+<ul>
 <li>a function having global variables</li>
 <li>a function with <code>@export</code> but no <code>@return</code>
 </li>
 <li>a function with title but without <code>@export</code> and thus missing <code>@noRd</code>
 </li>
 </ul>
-</li></ul>
+</li>
+</ul>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span>
 <span></span>
@@ -200,7 +204,9 @@
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<ul><li>Find missing <code>@return</code> and find missing <code>@noRd</code> for not exported function with documentation</li></ul>
+<ul>
+<li>Find missing <code>@return</code> and find missing <code>@noRd</code> for not exported function with documentation</li>
+</ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ Loading pkg.26be9459ed409</span></span>
@@ -221,7 +227,9 @@
 <span><span class="co">#&gt; # … with 1 more variable: test_has_export_or_has_nord &lt;chr&gt;, and abbreviated</span></span>
 <span><span class="co">#&gt; #   variable names ¹​has_export, ²​has_return, ³​return_value, ⁴​has_nord,</span></span>
 <span><span class="co">#&gt; #   ⁵​rdname_value, ⁶​not_empty_return_value, ⁷​test_has_export_and_return</span></span></code></pre></div>
-<ul><li>Get global variables</li></ul>
+<ul>
+<li>Get global variables</li>
+</ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span><span class="op">(</span><span class="va">pkg_path</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">globals</span></span>
@@ -247,7 +255,9 @@
 <span><span class="co">#&gt; 5 my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… &lt;NA&gt;   </span></span>
 <span><span class="co">#&gt; # … with abbreviated variable names ¹​is_function, ²​is_global_variable,</span></span>
 <span><span class="co">#&gt; #   ³​variable, ⁴​proposed</span></span></code></pre></div>
-<ul><li>Print globals to copy-paste</li></ul>
+<ul>
+<li>Print globals to copy-paste</li>
+</ul>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span></span>
 <span><span class="co">#&gt; --- Functions to add in NAMESPACE (with @importFrom ?) ---</span></span>
@@ -261,8 +271,10 @@
 <span><span class="co">#&gt; # my_fun: </span></span>
 <span><span class="co">#&gt; "data", "new_col", "x", "y"</span></span>
 <span><span class="co">#&gt; )))</span></span></code></pre></div>
-<ul><li>Store the output of <code><a href="reference/print_globals.html">print_globals()</a></code> in package using <code>usethis::use_r("globals")</code>. Note that you can also transform all these variables with <code>.data[[variable]]</code>
-</li></ul>
+<ul>
+<li>Store the output of <code><a href="reference/print_globals.html">print_globals()</a></code> in package using <code>usethis::use_r("globals")</code>. Note that you can also transform all these variables with <code>.data[[variable]]</code>
+</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="experimental-check-as-cran-with-cran-global-variables">Experimental: Check as CRAN with CRAN global variables<a class="anchor" aria-label="anchor" href="#experimental-check-as-cran-with-cran-global-variables"></a>
@@ -334,7 +346,7 @@
 
       <footer><div class="thinkr">
   <p></p>
-<p>Developed by Sebastien Rochette, Vincent Guyader.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Developed by Sebastien Rochette, Vincent Guyader.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
 <div class="author">
