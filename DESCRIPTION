@@ -10,7 +10,7 @@ Authors@R: c(
   )
 Description: Some tools to help you deal with devtools::check outputs and
     to reduce the risk of rejection of CRAN.
-License: GPL-3
+License: MIT + file LICENSE
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
