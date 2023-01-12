@@ -132,6 +132,6 @@ check_as_cran(check_dir = check_dir)
 utils::browseURL(check_dir)
 ```
 
-
-  Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
-  By participating in this project you agree to abide by its terms.
+## Code of Conduct
+  
+  Please note that the checkhelper project is released with a [Contributor Code of Conduct](https://thinkr-open.github.io/checkhelper/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

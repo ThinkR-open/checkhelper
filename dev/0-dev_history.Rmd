@@ -47,7 +47,7 @@ remotes::install_local()
 # README
 usethis::use_readme_rmd()
 # Code of Conduct
-usethis::use_code_of_conduct("contact@fake.com")
+usethis::use_code_of_conduct("codeofconduct@thinkr.fr")
 # NEWS
 usethis::use_news_md()
 ```
