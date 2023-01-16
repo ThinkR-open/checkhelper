@@ -52,7 +52,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">checkhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -122,7 +122,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'checkhelper'</span>, repos <span class="op">=</span> <span class="st">'https://thinkr-open.r-universe.dev'</span><span class="op">)</span></span></code></pre></div>
 <p>Or from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -172,7 +172,7 @@
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Setting active project to '/tmp/RtmpT2YnX3/pkg.26be9459ed409'</span></span>
+<span><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/Rtmp1Hf0yE/pkg.4c1d46124bd3'</span></span>
 <span><span class="co">#&gt; ✔ Creating 'R/'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
@@ -199,8 +199,8 @@
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.26be9459ed409 documentation</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.26be9459ed409Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.26be9459ed409[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.4c1d46124bd3 documentation</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.4c1d46124bd3Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.4c1d46124bd3[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -209,7 +209,7 @@
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.26be9459ed409</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.4c1d46124bd3</span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -218,7 +218,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.26be9459ed409</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.4c1d46124bd3</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
@@ -234,27 +234,27 @@
 <code class="sourceCode R"><span><span class="va">globals</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_no_visible.html">get_no_visible</a></span><span class="op">(</span><span class="va">pkg_path</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">globals</span></span>
 <span><span class="co">#&gt; $globalVariables</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 6</span></span>
-<span><span class="co">#&gt;   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                    &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1 my_fun: no visible binding for global v… my_f… FALSE   TRUE    data    " impo…</span></span>
-<span><span class="co">#&gt; 2 my_fun: no visible binding for global v… my_f… FALSE   TRUE    x        &lt;NA&gt;  </span></span>
-<span><span class="co">#&gt; 3 my_fun: no visible binding for global v… my_f… FALSE   TRUE    y        &lt;NA&gt;  </span></span>
-<span><span class="co">#&gt; 4 my_fun: no visible binding for global v… my_f… FALSE   TRUE    new_col  &lt;NA&gt;  </span></span>
-<span><span class="co">#&gt; # … with abbreviated variable names ¹​is_function, ²​is_global_variable,</span></span>
-<span><span class="co">#&gt; #   ³​variable, ⁴​proposed</span></span>
+<span><span class="co">#&gt; # A tibble: 4 × 7</span></span>
+<span><span class="co">#&gt;   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 my_fun: no visible binding for … -       my_f… FALSE   TRUE    data    " impo…</span></span>
+<span><span class="co">#&gt; 2 my_fun: no visible binding for … -       my_f… FALSE   TRUE    x        &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 3 my_fun: no visible binding for … -       my_f… FALSE   TRUE    y        &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 4 my_fun: no visible binding for … -       my_f… FALSE   TRUE    new_col  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; # … with abbreviated variable names ¹​filepath, ²​is_function,</span></span>
+<span><span class="co">#&gt; #   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $functions</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
-<span><span class="co">#&gt;   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                    &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1 my_fun: no visible global function defi… my_f… TRUE    FALSE   %&gt;%     &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 2 my_fun: no visible global function defi… my_f… TRUE    FALSE   mutate  &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 3 my_fun: no visible global function defi… my_f… TRUE    FALSE   ggplot  &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 4 my_fun: no visible global function defi… my_f… TRUE    FALSE   aes     &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; 5 my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… &lt;NA&gt;   </span></span>
-<span><span class="co">#&gt; # … with abbreviated variable names ¹​is_function, ²​is_global_variable,</span></span>
-<span><span class="co">#&gt; #   ³​variable, ⁴​proposed</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
+<span><span class="co">#&gt;   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;                            &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 my_fun: no visible global funct… -       my_f… TRUE    FALSE   %&gt;%     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 2 my_fun: no visible global funct… -       my_f… TRUE    FALSE   mutate  &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 3 my_fun: no visible global funct… -       my_f… TRUE    FALSE   ggplot  &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4 my_fun: no visible global funct… -       my_f… TRUE    FALSE   aes     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 5 my_fun: no visible global funct… -       my_f… TRUE    FALSE   geom_p… &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; # … with abbreviated variable names ¹​filepath, ²​is_function,</span></span>
+<span><span class="co">#&gt; #   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span></code></pre></div>
 <ul>
 <li>Print globals to copy-paste</li>
 </ul>
@@ -265,7 +265,7 @@
 <span><span class="co">#&gt; my_fun: %&gt;%, aes, geom_point, ggplot, mutate</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; --- Potential GlobalVariables ---</span></span>
-<span><span class="co">#&gt; -- code to copy to your globals.R file --</span></span>
+<span><span class="co">#&gt; -- code to copy to your R/globals.R file --</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; globalVariables(unique(c(</span></span>
 <span><span class="co">#&gt; # my_fun: </span></span>
@@ -286,8 +286,12 @@
 <span><span class="fu"><a href="reference/check_as_cran.html">check_as_cran</a></span><span class="op">(</span>check_dir <span class="op">=</span> <span class="va">check_dir</span><span class="op">)</span></span>
 <span><span class="co"># Open directory with all outputs</span></span>
 <span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">check_dir</span><span class="op">)</span></span></code></pre></div>
-<p>Please note that this project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By participating in this project you agree to abide by its terms.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
+<p>Please note that the checkhelper project is released with a <a href="https://thinkr-open.github.io/checkhelper/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
 
@@ -306,7 +310,7 @@
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 
@@ -327,18 +331,13 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Sebastien Rochette <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Vincent Guyader <br><small class="roles"> Author </small>  </li>
+<li>Sebastien Rochette <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1565-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Vincent Guyader <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0671-9270" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/ThinkR-open/checkhelper?branch=master" class="external-link"><img src="https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
-</ul>
-</div>
+
 
   </div>
 </div>
