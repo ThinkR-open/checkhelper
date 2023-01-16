@@ -107,3 +107,94 @@ pkgdown::build_site()
 devtools::build(vignettes = TRUE)
 ```
 
+# Prepare for CRAN ----
+
+```{r}
+# _Check in interactive test-inflate for templates and Addins
+pkgload::load_all()
+devtools::test()
+testthat::test_dir("tests/testthat/")
+
+# Test no output generated in the user files
+
+# Run examples in interactive mode too
+devtools::run_examples()
+
+# PR in progress on the content of these lines
+local <- utils::fileSnapshot(".", timestamp = tempfile("timestamp"), md5sum = TRUE)
+home <- utils::fileSnapshot("~", timestamp = tempfile("timestamp"), md5sum = TRUE)
+
+# run tests or whatever, then ...
+devtools::test()
+devtools::run_examples()
+# vignettes
+dircheck <- tempfile("check")
+dir.create(dircheck)
+rcmdcheck::rcmdcheck(check_dir = dircheck)
+# browseURL(dircheck)
+
+the_dir <- list.files(file.path(dircheck), pattern = ".Rcheck", full.names = TRUE)
+# Same tests, no new files
+all(list.files(file.path(the_dir, "tests", "testthat")) %in%
+  list.files(file.path(".", "tests", "testthat")))
+
+devtools::build_vignettes()
+devtools::clean_vignettes()
+
+utils::changedFiles(local, md5sum = TRUE)
+utils::changedFiles(home, md5sum = TRUE)
+
+
+# Check package as CRAN
+rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
+# devtools::check(args = c("--no-manual", "--as-cran"))
+
+# Check content
+# remotes::install_github("ThinkR-open/checkhelper")
+checkhelper::find_missing_tags() # Toutes les fonctions doivent avoir soit `@noRd` soit un `@export`
+checkhelper::check_clean_userspace(pkg = ".")
+checkhelper::check_as_cran()
+
+# Check spelling
+# usethis::use_spell_check()
+spelling::spell_check_package()
+
+# Check URL are correct
+# remotes::install_github("r-lib/urlchecker")
+urlchecker::url_check()
+urlchecker::url_update()
+
+# Upgrade version number
+usethis::use_version(which = c("patch", "minor", "major", "dev")[2])
+
+# check on other distributions
+# _rhub
+# devtools::check_rhub()
+rhub::platforms()
+rhub::check_on_windows(check_args = "--force-multiarch", show_status = FALSE)
+rhub::check_on_solaris(show_status = FALSE)
+rhub::check(platform = "debian-clang-devel", show_status = FALSE)
+rhub::check(platform = "debian-gcc-devel", show_status = FALSE)
+rhub::check(platform = "fedora-clang-devel", show_status = FALSE)
+rhub::check(platform = "macos-highsierra-release-cran", show_status = FALSE)
+rhub::check_for_cran(show_status = FALSE)
+
+# _win devel
+devtools::check_win_devel()
+devtools::check_win_release()
+# remotes::install_github("r-lib/devtools")
+devtools::check_mac_release() # Need to follow the URL proposed to see the results
+
+# Update NEWS
+# Bump version manually and add list of changes
+
+# Add comments for CRAN
+# Need to .gitignore this file
+usethis::use_cran_comments(open = rlang::is_interactive())
+
+# Upgrade version number if necessary
+usethis::use_version(which = c("patch", "minor", "major", "dev")[1])
+
+# Verify you're ready for release, and release
+devtools::release()
+```
