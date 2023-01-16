@@ -27,12 +27,11 @@ Imports:
     stringr,
     tools,
     utils,
-    whisker,
+    whisker (>= 0.4),
     withr
 Suggests: 
     attachment,
     callr,
-    covr,
     fs,
     knitr,
     rmarkdown,
