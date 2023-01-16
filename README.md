@@ -76,7 +76,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmpT2YnX3/pkg.26be9459ed409'
+#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/Rtmp1Hf0yE/pkg.4c1d46124bd3'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -103,8 +103,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.26be9459ed409 documentation
-#> ℹ Loading pkg.26be9459ed409Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpT2YnX3/pkg.26be9459ed409/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.26be9459ed409[+] 1 package(s) added: dplyr.
+#> Updating pkg.4c1d46124bd3 documentation
+#> ℹ Loading pkg.4c1d46124bd3Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.4c1d46124bd3[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -115,7 +115,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.26be9459ed409
+#> ℹ Loading pkg.4c1d46124bd3
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -124,7 +124,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.26be9459ed409
+#> ℹ Loading pkg.4c1d46124bd3
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -141,27 +141,27 @@ find_missing_tags(pkg_path)
 globals <- get_no_visible(pkg_path, quiet = TRUE)
 globals
 #> $globalVariables
-#> # A tibble: 4 × 6
-#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
-#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible binding for global v… my_f… FALSE   TRUE    data    " impo…
-#> 2 my_fun: no visible binding for global v… my_f… FALSE   TRUE    x        <NA>  
-#> 3 my_fun: no visible binding for global v… my_f… FALSE   TRUE    y        <NA>  
-#> 4 my_fun: no visible binding for global v… my_f… FALSE   TRUE    new_col  <NA>  
-#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
-#> #   ³​variable, ⁴​proposed
+#> # A tibble: 4 × 7
+#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible binding for … -       my_f… FALSE   TRUE    data    " impo…
+#> 2 my_fun: no visible binding for … -       my_f… FALSE   TRUE    x        <NA>  
+#> 3 my_fun: no visible binding for … -       my_f… FALSE   TRUE    y        <NA>  
+#> 4 my_fun: no visible binding for … -       my_f… FALSE   TRUE    new_col  <NA>  
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 #> 
 #> $functions
-#> # A tibble: 5 × 6
-#>   notes                                    fun   is_fu…¹ is_gl…² varia…³ propo…⁴
-#>   <chr>                                    <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible global function defi… my_f… TRUE    FALSE   %>%     <NA>   
-#> 2 my_fun: no visible global function defi… my_f… TRUE    FALSE   mutate  <NA>   
-#> 3 my_fun: no visible global function defi… my_f… TRUE    FALSE   ggplot  <NA>   
-#> 4 my_fun: no visible global function defi… my_f… TRUE    FALSE   aes     <NA>   
-#> 5 my_fun: no visible global function defi… my_f… TRUE    FALSE   geom_p… <NA>   
-#> # … with abbreviated variable names ¹​is_function, ²​is_global_variable,
-#> #   ³​variable, ⁴​proposed
+#> # A tibble: 5 × 7
+#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visible global funct… -       my_f… TRUE    FALSE   %>%     <NA>   
+#> 2 my_fun: no visible global funct… -       my_f… TRUE    FALSE   mutate  <NA>   
+#> 3 my_fun: no visible global funct… -       my_f… TRUE    FALSE   ggplot  <NA>   
+#> 4 my_fun: no visible global funct… -       my_f… TRUE    FALSE   aes     <NA>   
+#> 5 my_fun: no visible global funct… -       my_f… TRUE    FALSE   geom_p… <NA>   
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 ```
 
 -   Print globals to copy-paste
@@ -173,7 +173,7 @@ print_globals(globals)
 #> my_fun: %>%, aes, geom_point, ggplot, mutate
 #> 
 #> --- Potential GlobalVariables ---
-#> -- code to copy to your globals.R file --
+#> -- code to copy to your R/globals.R file --
 #> 
 #> globalVariables(unique(c(
 #> # my_fun: 
@@ -200,6 +200,9 @@ check_as_cran(check_dir = check_dir)
 utils::browseURL(check_dir)
 ```
 
-Please note that this project is released with a [Contributor Code of
-Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree
-to abide by its terms.
+## Code of Conduct
+
+Please note that the checkhelper project is released with a [Contributor
+Code of
+Conduct](https://thinkr-open.github.io/checkhelper/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
