@@ -8,6 +8,8 @@
 #' @importFrom dplyr mutate tibble
 #' @importFrom stringr str_extract str_extract_all
 #'
+#' @return A tibble with notes and information about the global variables
+#'
 #' @export
 #' @examples
 #' \dontrun{
@@ -34,9 +36,7 @@
 #' attachment::att_to_description(path = path)
 #' get_notes(path)
 #' }
-
 get_notes <- function(path = ".", checks, ...) {
-
   if (missing(checks)) {
     checks <- rcmdcheck(path = path, ...)
   }
@@ -61,12 +61,12 @@ get_notes <- function(path = ".", checks, ...) {
 
   res <- tibble(notes = strsplit(notes_with_globals_return, "RETURN")[[1]]) %>%
     # pull(res[2,1])
-  # res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
+    # res <- tibble(notes = strsplit(notes_with_globals, "\n")[[1]]) %>%
     mutate(
       # Maybe a path in parenthesis ?
       filepath = str_extract(notes, "(\\s*\\(.*\\)\\s*){0,1}"),
       filepath = ifelse(filepath == "", "-", filepath),
-      fun = purrr::map2_chr(notes, filepath, ~gsub(.y, "", .x, fixed = TRUE)),
+      fun = purrr::map2_chr(notes, filepath, ~ gsub(.y, "", .x, fixed = TRUE)),
       fun = str_extract(fun, ".+(?=:)"),
       # fun = str_extract(notes, "(\\s*\\(.*\\)\\s){0,1}.+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
@@ -75,15 +75,15 @@ get_notes <- function(path = ".", checks, ...) {
       is_importfrom = grepl("importFrom", notes)
     )
 
-    tmp <- str_extract_all(res$notes, "(?<=\")(\\w*\\.*\\_*)*(?=\")", simplify = TRUE)
-    if (ncol(tmp) >= 2) {
-      importfrom_function <- tmp[,2]
-    } else {
-      importfrom_function <- rep("", nrow(tmp))
-    }
+  tmp <- str_extract_all(res$notes, "(?<=\")(\\w*\\.*\\_*)*(?=\")", simplify = TRUE)
+  if (ncol(tmp) >= 2) {
+    importfrom_function <- tmp[, 2]
+  } else {
+    importfrom_function <- rep("", nrow(tmp))
+  }
 
-    res$importfrom_function <- importfrom_function
-    return(res)
+  res$importfrom_function <- importfrom_function
+  return(res)
 }
 
 #' List no visible globals from check and separate by category
@@ -92,6 +92,8 @@ get_notes <- function(path = ".", checks, ...) {
 #' @inheritParams get_notes
 #'
 #' @importFrom dplyr filter select mutate left_join rename
+#'
+#' @return A list with no visible globals
 #'
 #' @export
 #' @examples
@@ -119,15 +121,15 @@ get_notes <- function(path = ".", checks, ...) {
 #' attachment::att_to_description(path = path)
 #' get_no_visible(path)
 #' }
-
 get_no_visible <- function(path = ".", checks, ...) {
-
   if (missing(checks)) {
     notes <- get_notes(path, ...)
   } else {
     notes <- get_notes(path, checks, ...)
   }
-  if (is.null(notes)) {return(NULL)}
+  if (is.null(notes)) {
+    return(NULL)
+  }
 
   # propositions
   proposed <- notes %>%
@@ -137,9 +139,9 @@ get_no_visible <- function(path = ".", checks, ...) {
 
   # join with names
   fun_names <- notes %>%
-    filter(is_global_variable|is_function) %>%
+    filter(is_global_variable | is_function) %>%
     select(-importfrom_function, -is_importfrom) %>%
-    left_join(proposed, by = c("variable"  = "importfrom_function"))
+    left_join(proposed, by = c("variable" = "importfrom_function"))
 
   list(
     globalVariables = fun_names %>%
@@ -158,6 +160,8 @@ get_no_visible <- function(path = ".", checks, ...) {
 #'
 #' @importFrom dplyr pull mutate group_by summarise
 #' @importFrom glue glue_collapse glue
+#'
+#' @return A message with no visible globals or a list with no visible globals
 #'
 #' @export
 #' @examples
@@ -184,10 +188,10 @@ get_no_visible <- function(path = ".", checks, ...) {
 #' globals <- get_no_visible(path)
 #' print_globals(globals = globals)
 #' }
-
 print_globals <- function(globals, path = ".", ..., message = TRUE) {
-
-  if (missing(globals)) {globals <- get_no_visible(path, ...)}
+  if (missing(globals)) {
+    globals <- get_no_visible(path, ...)
+  }
   if (is.null(globals)) {
     if (isTRUE(message)) {
       message("There is no globalVariable detected.")
@@ -208,7 +212,8 @@ print_globals <- function(globals, path = ".", ..., message = TRUE) {
         variable %>%
           unique() %>%
           sort(),
-        collapse = ", ")
+        collapse = ", "
+      )
     ) %>%
     mutate(
       text = paste0(fun, ": ", text, "\n")
@@ -225,23 +230,26 @@ print_globals <- function(globals, path = ".", ..., message = TRUE) {
           unique() %>%
           sort() %>%
           paste0("\"", ., "\""),
-        collapse = ", ")
+        collapse = ", "
+      )
     ) %>%
     mutate(
       text = paste0("# ", fun, ": \n", text)
     ) %>%
     pull(text) %>%
     paste(., collapse = ", \n") %>%
-    paste0("--- Potential GlobalVariables ---\n",
-           "-- code to copy to your R/globals.R file --\n\n",
-           "globalVariables(unique(c(\n", ., "\n)))")
+    paste0(
+      "--- Potential GlobalVariables ---\n",
+      "-- code to copy to your R/globals.R file --\n\n",
+      "globalVariables(unique(c(\n", ., "\n)))"
+    )
 
-    if (isTRUE(message)) {
-      message(glue(liste_funs, "\n", liste_globals))
-    } else {
-      list(
-        liste_funs = liste_funs,
-        liste_globals = liste_globals
-      )
-    }
+  if (isTRUE(message)) {
+    message(glue(liste_funs, "\n", liste_globals))
+  } else {
+    list(
+      liste_funs = liste_funs,
+      liste_globals = liste_globals
+    )
+  }
 }

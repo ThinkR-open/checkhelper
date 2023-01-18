@@ -44,7 +44,7 @@ remotes::install_github("thinkr-open/checkhelper")
     `@export` roxygen2 tag.
     -   CRAN policy asks for every exported function to have a value
         (named `@export` when using {roxygen2}).
-    -   This also checks that not exported functions dont have roxygen
+    -   This also checks that not exported functions don’t have roxygen
         title, or have `@noRd` in case you faced
         `Please add \value to .Rd files` CRAN message for documented but
         not exported functions.
@@ -76,7 +76,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/Rtmp1Hf0yE/pkg.4c1d46124bd3'
+#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpJyLIWz/pkg.c22f25649df5'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -103,8 +103,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.4c1d46124bd3 documentation
-#> ℹ Loading pkg.4c1d46124bd3Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.4c1d46124bd3[+] 1 package(s) added: dplyr.
+#> Updating pkg.c22f25649df5 documentation
+#> ℹ Loading pkg.c22f25649df5Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.c22f25649df5[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -115,7 +115,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.4c1d46124bd3
+#> ℹ Loading pkg.c22f25649df5
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -124,7 +124,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.4c1d46124bd3
+#> ℹ Loading pkg.c22f25649df5
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
