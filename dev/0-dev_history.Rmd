@@ -110,6 +110,9 @@ devtools::build(vignettes = TRUE)
 # Prepare for CRAN ----
 
 ```{r}
+# Check package coverage
+covr::package_coverage()
+
 # _Check in interactive test-inflate for templates and Addins
 pkgload::load_all()
 devtools::test()
