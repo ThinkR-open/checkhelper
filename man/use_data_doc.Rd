@@ -20,6 +20,9 @@ use_data_doc(
 
 \item{source}{Add a source}
 }
+\value{
+Create a data documentation and return path to the file
+}
 \description{
 Documentation of .rda in package
 }

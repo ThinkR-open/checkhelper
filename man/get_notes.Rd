@@ -13,6 +13,9 @@ get_notes(path = ".", checks, ...)
 
 \item{...}{Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}}
 }
+\value{
+A tibble with notes and information about the global variables
+}
 \description{
 List notes from check and identify global variables
 }

@@ -13,6 +13,9 @@ get_no_visible(path = ".", checks, ...)
 
 \item{...}{Other parameters for \code{\link[rcmdcheck]{rcmdcheck}}}
 }
+\value{
+A list with no visible globals
+}
 \description{
 List no visible globals from check and separate by category
 }

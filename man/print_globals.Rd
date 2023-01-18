@@ -15,6 +15,9 @@ print_globals(globals, path = ".", ..., message = TRUE)
 
 \item{message}{Logical. Whether to return message with content (Default) or return as list}
 }
+\value{
+A message with no visible globals or a list with no visible globals
+}
 \description{
 Print no visible globals from check and separate by category
 }
