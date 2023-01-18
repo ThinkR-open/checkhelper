@@ -173,7 +173,7 @@
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpJyLIWz/pkg.c22f25649df5'</span></span>
+<span><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpjF6P2X/pkg.136df59ea9934'</span></span>
 <span><span class="co">#&gt; ✔ Creating 'R/'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
@@ -200,8 +200,8 @@
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.c22f25649df5 documentation</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.c22f25649df5Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.c22f25649df5[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.136df59ea9934 documentation</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.136df59ea9934[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -210,7 +210,7 @@
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.c22f25649df5</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934</span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -219,7 +219,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.c22f25649df5</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
@@ -342,7 +342,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/ThinkR-open/checkhelper?branch=master" class="external-link"><img src="https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/ThinkR-open/checkhelper/tree/main" class="external-link"><img src="https://codecov.io/gh/ThinkR-open/checkhelper/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
