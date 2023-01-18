@@ -1,3 +1,5 @@
+# checkhelper (development version)
+
 # checkhelper 0.0.1
 
 * Check with same variables and parameters as CRAN (#21)
