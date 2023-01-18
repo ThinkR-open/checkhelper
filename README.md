@@ -4,7 +4,7 @@
 
 [![R-CMD-check](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg)](https://codecov.io/gh/ThinkR-open/checkhelper?branch=master)
+coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ThinkR-open/checkhelper/tree/main)
 <!-- badges: end -->
 
 # checkhelper
@@ -14,6 +14,8 @@ avoids problems with CRAN submissions
 
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
+
+<https://codecov.io/gh/ThinkR-open/checkhelper/branch/main/graph/badge.svg>
 
 ## Installation
 
@@ -76,7 +78,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpJyLIWz/pkg.c22f25649df5'
+#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpIyByDX/pkg.da9072b8e745'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -103,8 +105,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.c22f25649df5 documentation
-#> ℹ Loading pkg.c22f25649df5Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.c22f25649df5[+] 1 package(s) added: dplyr.
+#> Updating pkg.da9072b8e745 documentation
+#> ℹ Loading pkg.da9072b8e745Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.da9072b8e745[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -115,7 +117,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.c22f25649df5
+#> ℹ Loading pkg.da9072b8e745
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -124,7 +126,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.c22f25649df5
+#> ℹ Loading pkg.da9072b8e745
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
