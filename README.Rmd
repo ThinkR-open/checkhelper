@@ -6,7 +6,7 @@ output: github_document
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/master/graph/badge.svg)](https://codecov.io/gh/ThinkR-open/checkhelper?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ThinkR-open/checkhelper/tree/main)
 <!-- badges: end -->
   
 # checkhelper
@@ -22,7 +22,6 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
-
 
 ## Installation
 
