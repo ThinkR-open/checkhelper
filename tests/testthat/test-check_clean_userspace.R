@@ -33,7 +33,7 @@ in_example <- function() {
       all_files <- check_clean_userspace(pkg = path, check_dir = check_dir),
       "Some files"),
     "One of the 'Run examples'")
-  
+  browser()
   if (nrow(all_files) == 5) {
     # In some cases, the check updates the DESCRIPTION file as it run document()
     expect_equal(all_files$source, c("Unit tests", "Unit tests", "Run examples", "Run examples", 
@@ -57,6 +57,31 @@ in_example <- function() {
     expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
     expect_true(any(grepl("symbols[.]rds$", all_files$file[6])))
+  } else if (nrow(all_files) == 10) {
+    expect_equal(all_files$source, c(
+      "Unit tests", "Unit tests", "Run examples", "Run examples",
+      "Full check", "Full check", "Full check", "Full check", "Full check",
+      "Full check"
+    ))
+    expect_equal(all_files$problem[1:9], c(
+      "added", "added", "added", "added", "added", "added", "added",
+      "added", "added"
+    ))
+    # the first time the file is 'added' then is 'changed'
+    expect_true(all_files$problem[10] %in% c("added", "changed"))
+    expect_equal(
+      all_files$where,
+      gsub(
+        file.path("/private", c(path, rep(tempdir(), 9)), fsep = ""),
+        pattern = "//",
+        replacement = "/"
+      )
+    )
+    expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
+    expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
+    expect_true(any(grepl("callr-", all_files$file[5:8])))
+    expect_true(any(grepl("DESCRIPTION$", all_files$file[9])))
+    expect_true(any(grepl("foo[.]o", all_files$file[10])))
   } else {
     stop("Number of rows is not expected: ", all_files)
   }
