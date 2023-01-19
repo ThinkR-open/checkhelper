@@ -338,7 +338,11 @@ check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   }
 }
 
-
+#' The code as issued from r-lib/devtools (almost) directly
+#'
+#' @details https://github.com/r-lib/devtools/blob/c9696a61605059bed233f63fdccc2928a034fae6/R/check.R#L240-L245
+#' updated 2022-01-19
+#' @noRd
 aspell_env_var <- function() {
   tryCatch(
     {
