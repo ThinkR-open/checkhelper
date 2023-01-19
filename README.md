@@ -76,7 +76,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpjF6P2X/pkg.136df59ea9934'
+#> ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpH9EgPc/pkg.e4fa5b804d15'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -103,8 +103,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.136df59ea9934 documentation
-#> ℹ Loading pkg.136df59ea9934Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.136df59ea9934[+] 1 package(s) added: dplyr.
+#> Updating pkg.e4fa5b804d15 documentation
+#> ℹ Loading pkg.e4fa5b804d15Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.e4fa5b804d15[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -115,7 +115,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.136df59ea9934
+#> ℹ Loading pkg.e4fa5b804d15
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -124,7 +124,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.136df59ea9934
+#> ℹ Loading pkg.e4fa5b804d15
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -184,6 +184,63 @@ print_globals(globals)
 -   Store the output of `print_globals()` in package using
     `usethis::use_r("globals")`. Note that you can also transform all
     these variables with `.data[[variable]]`
+
+### Check that the user space is clean after checks
+
+Have you faced a note on CRAN about non-standard things in the check
+directory ?
+
+    Check: for non-standard things in the check directory
+    Result: NOTE
+        Found the following files/directories:
+         ‘extrapackage’ 
+
+Maybe you do not understand where these files came from.  
+Then, you can run `check_clean_userspace()` in your package directory to
+detect every files that you created during the check.  
+They could be issued from examples, tests or vignettes:
+`check_clean_userspace()` will tell you.
+
+``` r
+check_clean_userspace()
+```
+
+    #> Package: checkpackage
+    #> Title: What the Package Does (One Line, Title Case)
+    #> Version: 0.0.0.9000
+    #> Authors@R (parsed):
+    #>     * First Last <first.last@example.com> [aut, cre] (YOUR-ORCID-ID)
+    #> Description: What the package does (one paragraph).
+    #> License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    #>     license
+    #> Encoding: UTF-8
+    #> Roxygen: list(markdown = TRUE)
+    #> RoxygenNote: 7.2.3
+    #> ✔ | F W S  OK | Context
+    #> 
+    #> ⠏ |         0 | in_test                                                         
+    #> ══ Results ═════════════════════════════════════════════════════════════════════
+    #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
+    #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
+    #> 
+    #> > cat("#in example", file = tempfile("in_example"))
+    #> Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the
+    #> 'Run examples' .R file was created to run examples. You should not bother about
+    #> it
+    #> # A tibble: 11 × 4
+    #>    source       problem where                                              file 
+    #>    <chr>        <chr>   <chr>                                              <chr>
+    #>  1 Unit tests   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  2 Unit tests   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  3 Run examples added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  4 Run examples added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  5 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  6 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  7 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  8 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #>  9 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #> 10 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
+    #> 11 Full check   changed /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…
 
 ### Experimental: Check as CRAN with CRAN global variables
 
