@@ -17,7 +17,7 @@ fusen::fill_description(
   pkg = here::here(),
   fields = list(
     Title = "Deal with Check Outputs",
-    Description = "Some tools to help you deal with devtools::check outputs and to reduce the risk of rejection of CRAN.",
+    Description = "Some tools to help you deal with 'devtools::check' outputs and to reduce the risk of rejection of CRAN.",
     `Authors@R` = c(
       person("Sebastien", "Rochette", email = "sebastien@thinkr.fr", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1565-9313")),
       person("Vincent", "Guyader", email = "vincent@thinkr.fr", role = "aut", comment = c(ORCID = "0000-0003-0671-9270")),
