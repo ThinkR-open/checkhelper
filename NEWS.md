@@ -1,5 +1,7 @@
 # checkhelper 0.0.1.9000 (development version)
 
+- Check that there is no new file after tests, examples, vignettes of full check with `check_clean_userspace()` (#13)
+
 ### Prepare for the CRAN
 
 ### Bring the package up to standard (#25)
