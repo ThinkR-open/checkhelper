@@ -124,7 +124,8 @@ testthat::test_dir("tests/testthat/")
 devtools::run_examples()
 
 # Check that the state is clean after check
-checkhelper::check_clean_userspace(pkg = ".")
+all_files <- checkhelper::check_clean_userspace()
+all_files
 
 # Check package as CRAN
 rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))

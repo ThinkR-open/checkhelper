@@ -23,6 +23,7 @@ Useful links:
 Authors:
 \itemize{
   \item Vincent Guyader \email{vincent@thinkr.fr} (\href{https://orcid.org/0000-0003-0671-9270}{ORCID})
+  \item Arthur Bréant \email{arthur@thinkr.fr} (\href{https://orcid.org/0000-0003-1668-0963}{ORCID})
 }
 
 Other contributors:

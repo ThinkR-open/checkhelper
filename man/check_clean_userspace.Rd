@@ -4,7 +4,7 @@
 \alias{check_clean_userspace}
 \title{check_clean_userspace}
 \usage{
-check_clean_userspace(pkg, check_dir = tempfile("dircheck"))
+check_clean_userspace(pkg = ".", check_dir = tempfile("dircheck"))
 }
 \arguments{
 \item{pkg}{Path to package to check}
@@ -19,6 +19,7 @@ data.frame of files that are left after checks
 }
 \examples{
 \dontrun{
-check_clean_userspace()
+all_files <- check_clean_userspace()
+all_files
 }
 }

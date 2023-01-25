@@ -4,6 +4,7 @@ test_that("check_clean_userspace works", {
 
   if (!interactive()) {
     skip_on_os("windows")
+    skip_on_os("mac")
   }
 
   path <- suppressWarnings(create_pkg())
@@ -89,4 +90,8 @@ in_example <- function() {
   } else {
     stop("Number of rows is not expected: ", all_files)
   }
+
+  unlink(path, recursive = TRUE)
+  unlink(check_dir, recursive = TRUE)
+  unlink(scratch_dir, recursive = TRUE)
 })

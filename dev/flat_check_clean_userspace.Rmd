@@ -43,7 +43,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 #' @export
 #'
 #' @examples
-check_clean_userspace <- function(pkg, check_dir = tempfile("dircheck")) {
+check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
   scratch_dir <- tempdir() #character(0)
 
@@ -192,7 +192,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
 
 ```{r examples-check_clean_userspace, eval=FALSE}
 #' \dontrun{
-check_clean_userspace()
+all_files <- check_clean_userspace()
+all_files
 #' }
 ```
 
@@ -201,6 +202,7 @@ test_that("check_clean_userspace works", {
 
   if (!interactive()) {
     skip_on_os("windows")
+    skip_on_os("mac")
   }
 
   path <- suppressWarnings(create_pkg())
@@ -286,6 +288,10 @@ in_example <- function() {
   } else {
     stop("Number of rows is not expected: ", all_files)
   }
+
+  unlink(path, recursive = TRUE)
+  unlink(check_dir, recursive = TRUE)
+  unlink(scratch_dir, recursive = TRUE)
 })
 ```
 
