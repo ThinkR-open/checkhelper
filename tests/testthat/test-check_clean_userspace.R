@@ -63,17 +63,14 @@ in_example <- function() {
       "Full check", "Full check", "Full check", "Full check", "Full check",
       "Full check", "Full check"
     ))
-    expect_equal(all_files$problem[1:9], c(
+    expect_equal(all_files$problem, c(
       "added", "added", "added", "added", "added", "added", "added",
-      "added", "added", "added"
+      "added", "added", "added", "added"
     ))
-    # the first time the file is 'added' then is 'changed'
-    expect_true(all_files$problem[10] %in% c("added", "changed"))
-    expect_true(all_files$problem[11], "added")
     expect_equal(
       all_files$where,
       gsub(
-        file.path("/private", c(path, rep(tempdir(), 9)), fsep = ""),
+        file.path("/private", c(path, rep(tempdir(), 10)), fsep = ""),
         pattern = "//",
         replacement = "/"
       )
