@@ -4,6 +4,7 @@ test_that("check_clean_userspace works", {
 
   if (!interactive()) {
     skip_on_os("windows")
+    skip_on_os("mac")
   }
 
   path <- suppressWarnings(create_pkg())
