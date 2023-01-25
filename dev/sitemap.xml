@@ -16,6 +16,9 @@
     <loc>https://thinkr-open.github.io/checkhelper/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://thinkr-open.github.io/checkhelper/articles/no-files-left-after-check.html</loc>
+  </url>
+  <url>
     <loc>https://thinkr-open.github.io/checkhelper/articles/rconsortium-exploration-check-as-cran.html</loc>
   </url>
   <url>
@@ -29,6 +32,9 @@
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/reference/check_as_cran.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/checkhelper/reference/check_clean_userspace.html</loc>
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/reference/checkhelper-package.html</loc>

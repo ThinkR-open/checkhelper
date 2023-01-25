@@ -73,6 +73,9 @@
       <a href="articles/deal-with-check-outputs.html">Deal with check outputs</a>
     </li>
     <li>
+      <a href="articles/no-files-left-after-check.html">No files left after check</a>
+    </li>
+    <li>
       <a href="articles/rconsortium-exploration-check-as-cran.html">RConsortium exploration: Check as CRAN</a>
     </li>
   </ul>
@@ -113,7 +116,7 @@
 <div class="section level1">
 <div class="page-header"><h1 id="checkhelper">checkhelper<a class="anchor" aria-label="anchor" href="#checkhelper"></a>
 </h1></div>
-<p>A package to help you deal with <code>devtools::check()</code> outputs and helps avoids problems with CRAN submissions</p>
+<p>A package to help you deal with <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code> outputs and helps avoids problems with CRAN submissions</p>
 <p>Complete documentation in the {pkgdown} site: <a href="https://thinkr-open.github.io/checkhelper/" class="uri">https://thinkr-open.github.io/checkhelper/</a></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -123,7 +126,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'checkhelper'</span>, repos <span class="op">=</span> <span class="st">'https://thinkr-open.r-universe.dev'</span><span class="op">)</span></span></code></pre></div>
 <p>Or from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -143,7 +146,7 @@
 <li>This also checks that not exported functions don’t have roxygen title, or have <code>@noRd</code> in case you faced <code>Please add \value to .Rd files</code> CRAN message for documented but not exported functions.</li>
 </ul>
 </li>
-<li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code>devtools::check()</code>. This is a wrapper around <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
+<li>You can directly use <code><a href="reference/print_globals.html">checkhelper::print_globals()</a></code> on your package instead of <code><a href="https://devtools.r-lib.org/reference/check.html" class="external-link">devtools::check()</a></code>. This is a wrapper around <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code>. This will run the checks and directly list the potential “globalVariables” to add in a <code>globals.R</code> file.</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">checkhelper</span><span class="fu">::</span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -173,7 +176,7 @@
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpjF6P2X/pkg.136df59ea9934'</span></span>
+<span><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/_b/3msvt4xs27jgygz7xykllstw0000gn/T/RtmpH9EgPc/pkg.e4fa5b804d15'</span></span>
 <span><span class="co">#&gt; ✔ Creating 'R/'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
@@ -200,8 +203,8 @@
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.136df59ea9934 documentation</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.136df59ea9934[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.e4fa5b804d15 documentation</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.e4fa5b804d15Writing 'NAMESPACE'Writing 'NAMESPACE'Writing 'my_fun.Rd'Writing 'my_not_exported_doc.Rd'ℹ Loading pkg.e4fa5b804d15[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -210,7 +213,7 @@
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.e4fa5b804d15</span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -219,7 +222,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.136df59ea9934</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.e4fa5b804d15</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
@@ -278,10 +281,60 @@
 </ul>
 </div>
 <div class="section level3">
+<h3 id="check-that-the-user-space-is-clean-after-checks">Check that the user space is clean after checks<a class="anchor" aria-label="anchor" href="#check-that-the-user-space-is-clean-after-checks"></a>
+</h3>
+<p>Have you faced a note on CRAN about non-standard things in the check directory ?</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Check<span class="sc">:</span> <span class="cf">for</span> non<span class="sc">-</span>standard things <span class="cf">in</span> the check directory</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Result<span class="sc">:</span> NOTE</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    Found the following files<span class="sc">/</span>directories<span class="sc">:</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>     ‘extrapackage’ </span></code></pre></div>
+<p>Maybe you do not understand where these files came from.<br>
+Then, you can run <code><a href="reference/check_clean_userspace.html">check_clean_userspace()</a></code> in your package directory to detect every files that you created during the check.<br>
+They could be issued from examples, tests or vignettes: <code><a href="reference/check_clean_userspace.html">check_clean_userspace()</a></code> will tell you.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/check_clean_userspace.html">check_clean_userspace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Package: checkpackage</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Version: 0.0.0.9000</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Authors@R (parsed):</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (YOUR-ORCID-ID)</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Description: What the package does (one paragraph).</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     license</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Encoding: UTF-8</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Roxygen: list(markdown = TRUE)</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; RoxygenNote: 7.2.3</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ✔ | F W S  OK | Context</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ⠏ |         0 | in_test                                                         </span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ── Running 4 example files ───────────────────────────────────── checkpackage ──</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &gt; cat("#in example", file = tempfile("in_example"))</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 'Run examples' .R file was created to run examples. You should not bother about</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; it</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 11 × 4</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    source       problem where                                              file </span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;                                              &lt;chr&gt;</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 Unit tests   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 Unit tests   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 Run examples added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 Run examples added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 Full check   added   /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 Full check   changed /private/var/folders/_b/3msvt4xs27jgygz7xykllstw0… /pri…</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="experimental-check-as-cran-with-cran-global-variables">Experimental: Check as CRAN with CRAN global variables<a class="anchor" aria-label="anchor" href="#experimental-check-as-cran-with-cran-global-variables"></a>
 </h3>
 <p>Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See <a href="https://github.com/RConsortium/r-repositories-wg/issues/17" class="external-link uri">https://github.com/RConsortium/r-repositories-wg/issues/17</a> for more details.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"example"</span><span class="op">)</span></span>
 <span><span class="co"># Check the current directory</span></span>
 <span><span class="fu"><a href="reference/check_as_cran.html">check_as_cran</a></span><span class="op">(</span>check_dir <span class="op">=</span> <span class="va">check_dir</span><span class="op">)</span></span>
