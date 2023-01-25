@@ -32,6 +32,9 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 
 ```{r function-check_clean_userspace}
 #' check_clean_userspace
+#' 
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param pkg Path to package to check
 #' @param check_dir Path to directory where to store check results
@@ -199,7 +202,7 @@ test_that("check_clean_userspace works", {
   if (!interactive()) {
     skip_on_os("windows")
   }
-  
+
   path <- suppressWarnings(create_pkg())
   dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
   # Add a test that let file in the testthat dir

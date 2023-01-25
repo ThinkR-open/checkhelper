@@ -15,7 +15,7 @@ check_clean_userspace(pkg, check_dir = tempfile("dircheck"))
 data.frame of files that are left after checks
 }
 \description{
-check_clean_userspace
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

@@ -20,6 +20,7 @@ Imports:
     devtools,
     dplyr,
     glue,
+    lifecycle,
     magrittr,
     pkgbuild,
     purrr,
