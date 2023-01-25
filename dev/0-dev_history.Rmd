@@ -123,30 +123,8 @@ testthat::test_dir("tests/testthat/")
 # Run examples in interactive mode too
 devtools::run_examples()
 
-# PR in progress on the content of these lines
-local <- utils::fileSnapshot(".", timestamp = tempfile("timestamp"), md5sum = TRUE)
-home <- utils::fileSnapshot("~", timestamp = tempfile("timestamp"), md5sum = TRUE)
-
-# run tests or whatever, then ...
-devtools::test()
-devtools::run_examples()
-# vignettes
-dircheck <- tempfile("check")
-dir.create(dircheck)
-rcmdcheck::rcmdcheck(check_dir = dircheck)
-# browseURL(dircheck)
-
-the_dir <- list.files(file.path(dircheck), pattern = ".Rcheck", full.names = TRUE)
-# Same tests, no new files
-all(list.files(file.path(the_dir, "tests", "testthat")) %in%
-  list.files(file.path(".", "tests", "testthat")))
-
-devtools::build_vignettes()
-devtools::clean_vignettes()
-
-utils::changedFiles(local, md5sum = TRUE)
-utils::changedFiles(home, md5sum = TRUE)
-
+# Check that the state is clean after check
+checkhelper::check_clean_userspace(pkg = ".")
 
 # Check package as CRAN
 rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
