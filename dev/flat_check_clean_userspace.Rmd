@@ -43,7 +43,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 #' @export
 #'
 #' @examples
-check_clean_userspace <- function(pkg, check_dir = tempfile("dircheck")) {
+check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
   scratch_dir <- tempdir() #character(0)
 

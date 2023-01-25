@@ -4,7 +4,7 @@
 \alias{check_clean_userspace}
 \title{check_clean_userspace}
 \usage{
-check_clean_userspace(pkg, check_dir = tempfile("dircheck"))
+check_clean_userspace(pkg = ".", check_dir = tempfile("dircheck"))
 }
 \arguments{
 \item{pkg}{Path to package to check}
