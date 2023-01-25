@@ -192,7 +192,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
 
 ```{r examples-check_clean_userspace, eval=FALSE}
 #' \dontrun{
-check_clean_userspace()
+all_files <- check_clean_userspace()
+all_files
 #' }
 ```
 
@@ -287,6 +288,10 @@ in_example <- function() {
   } else {
     stop("Number of rows is not expected: ", all_files)
   }
+
+  unlink(path, recursive = TRUE)
+  unlink(check_dir, recursive = TRUE)
+  unlink(scratch_dir, recursive = TRUE)
 })
 ```
 

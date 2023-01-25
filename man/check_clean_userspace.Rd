@@ -19,6 +19,7 @@ data.frame of files that are left after checks
 }
 \examples{
 \dontrun{
-check_clean_userspace()
+all_files <- check_clean_userspace()
+all_files
 }
 }

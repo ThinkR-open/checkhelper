@@ -13,7 +13,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' check_clean_userspace()
+#' all_files <- check_clean_userspace()
+#' all_files
 #' }
 check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
