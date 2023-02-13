@@ -115,7 +115,7 @@
                         <h4 data-toc-skip class="author">Sébastien
 Rochette</h4>
             
-            <h4 data-toc-skip class="date">2023-01-25</h4>
+            <h4 data-toc-skip class="date">2023-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/HEAD/vignettes/deal-with-check-outputs.Rmd" class="external-link"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -146,7 +146,7 @@ functions</li>
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/Rtmp0bGk3D/pkg.19fb40e794'</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/RtmpIWwZGt/pkg.1ec56f41ca3b'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'R/'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'DESCRIPTION'</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'NAMESPACE'</span></span></span>
@@ -168,8 +168,8 @@ functions</li>
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.19fb40e794 documentation</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.19fb40e794</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">my_fun.Rd</span><span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.19fb40e794</span>[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.1ec56f41ca3b documentation</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1ec56f41ca3b</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">NAMESPACE</span>Writing <span style="color: #0000BB;">my_fun.Rd</span><span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1ec56f41ca3b</span>[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -183,12 +183,12 @@ value. Using <code><a href="../reference/find_missing_tags.html">find_missing_ta
 functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.19fb40e794</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1ec56f41ca3b</span></span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.19fb40e794</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">pkg.1ec56f41ca3b</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 11</span></span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
