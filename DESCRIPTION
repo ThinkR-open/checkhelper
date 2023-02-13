@@ -10,8 +10,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-1668-0963")),
     person("ThinkR", role = "cph")
   )
-Description: Some tools to help you deal with 'devtools::check' outputs
-    and to reduce the risk of rejection of CRAN.
+Description: Deal with packages 'check' outputs and reduce the risk of
+    rejection by CRAN by following policies.
 License: MIT + file LICENSE
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
