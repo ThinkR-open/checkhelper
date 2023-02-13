@@ -61,10 +61,10 @@ check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   }
   if (hostname == "xmanduin.wu.ac.at") {
     Sys.setenv("_R_CHECK_EXAMPLE_TIMING_THRESHOLD_" = "10")
-    Ncpus <- 10
+    # Ncpus <- 10
   }
   if (hostname %in% c("anduin2.wu.ac.at", "anduin3.wu.ac.at")) {
-    Ncpus <- 28
+    # Ncpus <- 28
   }
 
   Sys.setenv(
@@ -196,7 +196,7 @@ check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
     args <- args[!ind]
   }
   if (any(ind <- startsWith(args, "-N="))) {
-    Ncpus <- list(which = substring(args[ind][1L], 4L))
+    # Ncpus <- list(which = substring(args[ind][1L], 4L))
     args <- args[!ind]
   }
   if (any(ind <- startsWith(args, "-d="))) {

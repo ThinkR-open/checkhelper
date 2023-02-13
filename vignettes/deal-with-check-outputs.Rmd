@@ -82,5 +82,11 @@ print_globals(globals)
 # Store in package using usethis::use_r("globals")
 ```
 
+## Clean after examples
+
+```{r}
+unlink(pkg_path, recursive = TRUE)
+```
+
 
 

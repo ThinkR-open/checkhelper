@@ -6,7 +6,7 @@
 \alias{checkhelper-package}
 \title{checkhelper: Deal with Check Outputs}
 \description{
-Deal with packages 'check' outputs and reduce the risk of rejection by CRAN by following policies.
+Deal with packages 'check' outputs and reduce the risk of rejection by 'CRAN' by following policies.
 }
 \seealso{
 Useful links:

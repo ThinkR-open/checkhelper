@@ -151,6 +151,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
     "|[.]Rcheck/|",
     normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
     "|",
+    normalizePath(file.path(tempdir(), "supervisor_"), winslash = "/"),
+    "|",
     normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/"),
     "|",
     normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/")
@@ -164,8 +166,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
     for (what in c("added", "deleted", "changed")) {
       if (length(all_local[[what]]) != 0) {
         # Not those in checkdir
-        # grepl(normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
-        #       normalizePath(all_local[[what]], winslash = "/"))
+        grepl(normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
+             normalizePath(all_local[[what]], winslash = "/"))
         all_local[[what]] <- normalizePath(all_local[[what]], winslash = "/")
         all_local[[what]] <- all_local[[what]][!grepl(file.no.problem, all_local[[what]])]
         if (length(all_local[[what]]) != 0) {
@@ -301,7 +303,9 @@ in_example <- function() {
 # Execute in the console directly
 fusen::inflate(
   flat_file = "dev/flat_check_clean_userspace.Rmd", 
-  vignette_name = "No files left after check"
+  vignette_name = "No files left after check",
+  check = FALSE, open_vignette = FALSE
 )
+rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 

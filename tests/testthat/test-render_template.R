@@ -14,7 +14,7 @@ test_that("my_function works properly", {
   path_to_save <- file.path(dir_temp, "test_data_doc.R")
   template <- system.file("template", "data-doc.R", package = "checkhelper")
   render_template(template, path_to_save ,data)
-  
+
   expect_true(file.exists(path_to_save))
   text <- readLines(path_to_save)
   lapply(data, function(x){
