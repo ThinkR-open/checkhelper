@@ -17,14 +17,14 @@ test_that("check_as_cran works", {
     }
     
     # need to run in another env. inside check in check
-    expect_error(outrbg <- callr::r_bg(check_callr, args = list(pkg = path, check_dir = check_dir), supervise = TRUE), regexp = NA)
-    while(outrbg$is_alive()) {
-      print("clean callr"); 
-      outrbg$finalize() ; 
-      outrbg$kill();
-      file.remove(list.files(check_dir, pattern = "callr-|supervisor_", full.names = TRUE))
-      break}
-    
+    expect_error(outrbg <- callr::r(check_callr, args = list(pkg = path, check_dir = check_dir), supervise = TRUE), regexp = NA)
+    # while(outrbg$is_alive()) {
+    #   print("clean callr"); 
+    #   outrbg$finalize() ; 
+    #   outrbg$kill();
+      # I can't remove all these as they may be ones for rcmdcheck
+      # file.remove(list.files(check_dir, pattern = "callr-|supervisor_", full.names = TRUE))
+      # break}
     gc()
   }
   # check_as_cran(pkg = "/mnt/Data/github/ThinkR-open/attachment")
