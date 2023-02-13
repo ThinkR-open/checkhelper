@@ -5,8 +5,11 @@ output: github_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 <!-- badges: start -->
+[![checkhelper status badge](https://thinkr-open.r-universe.dev/badges/checkhelper)](https://thinkr-open.r-universe.dev)
 [![R-CMD-check](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ThinkR-open/checkhelper/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/ThinkR-open/checkhelper/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ThinkR-open/checkhelper/tree/main)
+[![](https://cranlogs.r-pkg.org/badges/checkhelper)](https://cran.r-project.org/package=checkhelper)
+[![CRAN status](https://www.r-pkg.org/badges/version/checkhelper)](https://CRAN.R-project.org/package=checkhelper)
 <!-- badges: end -->
   
 # checkhelper
@@ -119,7 +122,7 @@ print_globals(globals)
 - Store the output of `print_globals()` in package using `usethis::use_r("globals")`. 
 Note that you can also transform all these variables with `.data[[variable]]`
 
-### Check that the user space is clean after checks
+### Experimental: Check that the user space is clean after checks
 
 Have you faced a note on CRAN about non-standard things in the check directory ?
 

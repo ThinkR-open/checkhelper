@@ -33,7 +33,7 @@ check_as_cran(
 An object containing errors, warnings, and notes.
 }
 \description{
-Check your package with CRAN default values for environment variables
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

@@ -64,6 +64,9 @@ usethis::use_pipe()
 
 # package-level documentation
 usethis::use_package_doc()
+usethis::use_cran_badge()
+# [![](https://cranlogs.r-pkg.org/badges/checkhelper)](https://cran.r-project.org/package=checkhelper)
+# [![checkhelper status badge](https://thinkr-open.r-universe.dev/badges/checkhelper)](https://thinkr-open.r-universe.dev)
 
 # GitHub
 # Add your credentials for GitHub

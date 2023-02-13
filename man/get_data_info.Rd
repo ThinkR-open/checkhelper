@@ -20,14 +20,16 @@ list of infos form data
 Get infos form .Rdata inside data folder
 }
 \examples{
-temp_dir <- tempdir()
-path_data <- file.path(temp_dir, "data")
+path_data <- tempfile(pattern = "data-")
 dir.create(path_data)
 path_rda <- file.path(path_data, "iris.rda")
 save(iris, file = path_rda)
 withr::with_dir(
-  temp_dir, {
-   get_data_info("iris", "Iris data frame", source = "Thinkr") 
+  path_data, {
+   get_data_info("iris", "Iris data frame", source = "ThinkR")
   })
+
+# Clean userspace
+unlink(path_data, recursive = TRUE)
 
 }

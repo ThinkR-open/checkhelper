@@ -13,3 +13,5 @@
 ^codecov\.yml$
 ^dev$
 ^dev/$
+^doc$
+^Meta$

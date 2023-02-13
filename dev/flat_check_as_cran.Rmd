@@ -23,6 +23,9 @@ Use the exploration of CRAN scripts by the RConsortium to check a package as CRA
 ```{r function-check_as_cran}
 #' Check your package with CRAN default values for environment variables
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' 
 #' @param pkg pkg directory to check
 #' @param check_dir Where to store check outputs
 #' @param scratch Where to store temporary files (cleaned after)
@@ -145,5 +148,6 @@ test_that("check_as_cran works", {
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "RConsortium exploration: Check as CRAN")
+rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 

@@ -2,6 +2,9 @@
 
 #' Check your package with CRAN default values for environment variables
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#' 
 #' @param pkg pkg directory to check
 #' @param check_dir Where to store check outputs
 #' @param scratch Where to store temporary files (cleaned after)
