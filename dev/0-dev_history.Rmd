@@ -136,8 +136,8 @@ rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
 
 # Check content
 # remotes::install_github("ThinkR-open/checkhelper")
-checkhelper::find_missing_tags() # Toutes les fonctions doivent avoir soit `@noRd` soit un `@export`
-checkhelper::check_clean_userspace(pkg = ".")
+tags <- checkhelper::find_missing_tags() # Toutes les fonctions doivent avoir soit `@noRd` soit un `@export`
+tags
 checkhelper::check_as_cran()
 
 # Check spelling
@@ -155,14 +155,15 @@ usethis::use_version(which = c("patch", "minor", "major", "dev")[2])
 # check on other distributions
 # _rhub
 # devtools::check_rhub()
+buildpath <- devtools::build()
 rhub::platforms()
-rhub::check_on_windows(check_args = "--force-multiarch", show_status = FALSE)
-rhub::check_on_solaris(show_status = FALSE)
-rhub::check(platform = "debian-clang-devel", show_status = FALSE)
-rhub::check(platform = "debian-gcc-devel", show_status = FALSE)
-rhub::check(platform = "fedora-clang-devel", show_status = FALSE)
-rhub::check(platform = "macos-highsierra-release-cran", show_status = FALSE)
-rhub::check_for_cran(show_status = FALSE)
+rhub::check_on_windows(check_args = "--force-multiarch", show_status = FALSE, path = buildpath)
+rhub::check_on_solaris(show_status = FALSE, path = buildpath)
+rhub::check(platform = "debian-clang-devel", show_status = FALSE, path = buildpath)
+rhub::check(platform = "debian-gcc-devel", show_status = FALSE, path = buildpath)
+rhub::check(platform = "fedora-clang-devel", show_status = FALSE, path = buildpath)
+rhub::check(platform = "macos-highsierra-release-cran", show_status = FALSE, path = buildpath)
+rhub::check_for_cran(show_status = FALSE, path = buildpath)
 
 # _win devel
 devtools::check_win_devel()
@@ -176,6 +177,8 @@ devtools::check_mac_release() # Need to follow the URL proposed to see the resul
 # Add comments for CRAN
 # Need to .gitignore this file
 usethis::use_cran_comments(open = rlang::is_interactive())
+usethis::use_git_ignore("cran-comments.md")
+usethis::use_git_ignore("CRAN-SUBMISSION")
 
 # Upgrade version number if necessary
 usethis::use_version(which = c("patch", "minor", "major", "dev")[1])

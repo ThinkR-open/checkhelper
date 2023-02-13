@@ -15,3 +15,5 @@
 ^dev/$
 ^doc$
 ^Meta$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
