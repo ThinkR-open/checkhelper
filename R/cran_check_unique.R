@@ -20,7 +20,9 @@ check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   #     sprintf("/tmp/check-CRAN-incoming-%s/config", user)
   # )
 
-  Sys.setenv("_R_CHECK_INSTALL_DEPENDS_" = "true")
+  # Sys.setenv("_R_CHECK_INSTALL_DEPENDS_" = "true")
+  # Set to FALSE to avoid re-install of packages ?
+  Sys.setenv("_R_CHECK_INSTALL_DEPENDS_" = "false")
 
   Sys.setenv(
     "R_GC_MEM_GROW" = "2",

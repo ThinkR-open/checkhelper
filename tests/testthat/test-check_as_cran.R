@@ -4,10 +4,10 @@ test_that("check_as_cran works", {
   # Can not check on CRAN with CRAN variables
   # To avoid special conditions only met on CRAN
   skip_on_cran()
-  
+
   path <- suppressWarnings(create_pkg())
   check_dir <- tempfile("example")
-  
+
   if (interactive()) {
     expect_error(check_as_cran(pkg = path, check_dir = check_dir), regexp = NA)
   } else {
@@ -15,12 +15,12 @@ test_that("check_as_cran works", {
       library(checkhelper)
       check_as_cran(pkg = pkg, check_dir = check_dir)
     }
-    
+
     # need to run in another env. inside check in check
     expect_error(outrbg <- callr::r(check_callr, args = list(pkg = path, check_dir = check_dir), supervise = TRUE), regexp = NA)
     # while(outrbg$is_alive()) {
-    #   print("clean callr"); 
-    #   outrbg$finalize() ; 
+    #   print("clean callr");
+    #   outrbg$finalize() ;
     #   outrbg$kill();
       # I can't remove all these as they may be ones for rcmdcheck
       # file.remove(list.files(check_dir, pattern = "callr-|supervisor_", full.names = TRUE))

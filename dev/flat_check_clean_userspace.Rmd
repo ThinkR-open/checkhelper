@@ -166,8 +166,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
     for (what in c("added", "deleted", "changed")) {
       if (length(all_local[[what]]) != 0) {
         # Not those in checkdir
-        grepl(normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
-             normalizePath(all_local[[what]], winslash = "/"))
+        # grepl(normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
+        #      normalizePath(all_local[[what]], winslash = "/"))
         all_local[[what]] <- normalizePath(all_local[[what]], winslash = "/")
         all_local[[what]] <- all_local[[what]][!grepl(file.no.problem, all_local[[what]])]
         if (length(all_local[[what]]) != 0) {
