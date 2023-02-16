@@ -301,7 +301,9 @@ in_example <- function() {
 # Execute in the console directly
 fusen::inflate(
   flat_file = "dev/flat_check_clean_userspace.Rmd", 
-  vignette_name = "No files left after check"
+  vignette_name = "No files left after check", 
+  check = FALSE, document = FALSE, open_vignette = FALSE
 )
+rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 
