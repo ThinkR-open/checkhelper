@@ -3,7 +3,7 @@ flat_check_as_cran.Rmd:
   state: active
   R: R/check_as_cran.R
   tests: tests/testthat/test-check_as_cran.R
-  vignettes: vignettes/rconsortium-exploration-check-as-cran.Rmd
+  vignettes: vignettes/check-with-real-cran-settings.Rmd
 flat_check_clean_userspace.Rmd:
   path: dev/flat_check_clean_userspace.Rmd
   state: active

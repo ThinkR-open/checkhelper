@@ -16,6 +16,8 @@ pkgload::load_all(export_all = FALSE)
 
 # Check that the user space is clean after checks
 
+`r lifecycle::badge("experimental")`
+
 Have you faced a note on CRAN about non-standard things in the check directory ?
 
 ```

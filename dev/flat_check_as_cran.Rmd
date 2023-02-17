@@ -14,14 +14,20 @@ library(testthat)
 pkgload::load_all(export_all = FALSE)
 ```
 
-# check_as_cran
+# Check your package with CRAN settings
 
-Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
+When you send your package on CRAN, there are multiple options set before running the checks. 
+Here we use the CRAN settings and way of managing incoming packages used for Linux in this function `check_as_cran()`.  
 
-=> TODO: Run from the bash script ("inst/cran/bin"), having extra args.
+Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.  
+Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.  
+
+In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+
+
 
 ```{r function-check_as_cran}
-#' Check your package with CRAN default values for environment variables
+#' Check your package with real CRAN default environment variables and check strategy
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
@@ -35,6 +41,16 @@ Use the exploration of CRAN scripts by the RConsortium to check a package as CRA
 #' @param open Whether to open the check dir at the end of the process
 #'
 #' @return An object containing errors, warnings, and notes.
+#' 
+#' @details
+#' When you send your package on CRAN, there are multiple options set before running the checks. 
+#' Here we use the CRAN settings and way of managing incoming packages used for Linux in this function `check_as_cran()`.  
+#' 
+#' Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.  
+#' Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.  
+#' 
+#' In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+#' 
 #' @export
 #'
 #' @examples
@@ -112,8 +128,9 @@ the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FAL
 
 ```{r examples-check_as_cran, eval=FALSE}
 #' \dontrun{
+# Directory to store the check outputs
 check_dir <- tempfile("example")
-# Check the current directory
+# Check the current package
 check_as_cran(check_dir = check_dir)
 # Open directory with all outputs
 utils::browseURL(check_dir)
@@ -147,7 +164,7 @@ test_that("check_as_cran works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "RConsortium exploration: Check as CRAN", check = FALSE, document = FALSE)
+fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "Check with real CRAN settings", check = FALSE, document = FALSE)
 rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 

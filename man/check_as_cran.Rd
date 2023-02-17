@@ -2,7 +2,7 @@
 % Please edit documentation in R/check_as_cran.R
 \name{check_as_cran}
 \alias{check_as_cran}
-\title{Check your package with CRAN default values for environment variables}
+\title{Check your package with real CRAN default environment variables and check strategy}
 \usage{
 check_as_cran(
   pkg = ".",
@@ -35,10 +35,20 @@ An object containing errors, warnings, and notes.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
+\details{
+When you send your package on CRAN, there are multiple options set before running the checks.
+Here we use the CRAN settings and way of managing incoming packages used for Linux in this function \code{check_as_cran()}.
+
+Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: \url{https://github.com/r-devel/r-dev-web/tree/master/CRAN/}.
+Although \code{check_as_cran()} should run on any OS, it will run CRAN parameters originally set up for Linux machines.
+
+In the \code{check_dir}, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+}
 \examples{
 \dontrun{
+# Directory to store the check outputs
 check_dir <- tempfile("example")
-# Check the current directory
+# Check the current package
 check_as_cran(check_dir = check_dir)
 # Open directory with all outputs
 utils::browseURL(check_dir)

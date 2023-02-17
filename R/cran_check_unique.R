@@ -6,7 +6,7 @@
 #' @param Ncpus Number of CPUS to use
 #'
 #' @details Source: https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
-#' updated 2022-01-18
+#' updated 2023-01-18
 #' @noRd
 check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   user <- Sys.info()["user"]
