@@ -1,0 +1,56 @@
+---
+title: "flat_check_n_covr.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# Get the coverage while checking your package
+
+`check_n_covr()` checks your package and run unit tests for coverage without running unit tests twice. 
+Indeed, if your tests are long, you may not want to wait a second time to get the code coverage.  
+Also, that's a good practice to check the coverage each time you add a new feature so that you do not forget to complete your unit tests.  
+
+```{r function-check_n_covr}
+#' check_n_covr Title
+#'
+#' @param ... Extra parameter for `devtools::check()`
+#' @return Check outputs and code coverage
+#' @export
+#'
+#' @examples
+check_n_covr <- function(...) {
+  res <- devtools::check(args = c("--no-tests"), ...)
+  print(res)
+  covr::package_coverage(type = "tests", quiet = TRUE)
+}
+```
+
+```{r examples-check_n_covr}
+#' \dontrun{
+check_n_covr()
+#' }
+```
+
+```{r tests-check_n_covr}
+test_that("check_n_covr works", {
+
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_check_n_covr.Rmd", vignette_name = "Check and coverage together")
+```
+
