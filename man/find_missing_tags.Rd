@@ -34,7 +34,7 @@ Tibble of all functions with information whether documentation is correct or not
 Find missing 'return' tag when function exported
 }
 \examples{
-\dontrun{
+\donttest{
 find_missing_tags()
 }
 }

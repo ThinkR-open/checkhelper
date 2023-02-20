@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' find_missing_tags()
 #' }
 find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NULL,
