@@ -6,7 +6,7 @@
 #' @param Ncpus Number of CPUS to use
 #'
 #' @details Source: https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
-#' updated 2022-01-18
+#' updated 2023-01-18
 #' @noRd
 check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   user <- Sys.info()["user"]
@@ -59,13 +59,13 @@ check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   if (length(hostname) == 0) {
     hostname <- "windows"
   }
-  if (hostname == "xmanduin.wu.ac.at") {
-    Sys.setenv("_R_CHECK_EXAMPLE_TIMING_THRESHOLD_" = "10")
-    Ncpus <- 10
-  }
-  if (hostname %in% c("anduin2.wu.ac.at", "anduin3.wu.ac.at")) {
-    Ncpus <- 28
-  }
+  # if (hostname == "xmanduin.wu.ac.at") {
+  #   Sys.setenv("_R_CHECK_EXAMPLE_TIMING_THRESHOLD_" = "10")
+  #   Ncpus <- 10
+  # }
+  # if (hostname %in% c("anduin2.wu.ac.at", "anduin3.wu.ac.at")) {
+  #   Ncpus <- 28
+  # }
 
   Sys.setenv(
     "_R_S3_METHOD_LOOKUP_BASEENV_AFTER_GLOBALENV_" =

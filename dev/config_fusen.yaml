@@ -1,0 +1,18 @@
+flat_check_as_cran.Rmd:
+  path: dev/flat_check_as_cran.Rmd
+  state: active
+  R: R/check_as_cran.R
+  tests: tests/testthat/test-check_as_cran.R
+  vignettes: vignettes/check-with-real-cran-settings.Rmd
+flat_check_clean_userspace.Rmd:
+  path: dev/flat_check_clean_userspace.Rmd
+  state: active
+  R: R/check_clean_userspace.R
+  tests: tests/testthat/test-check_clean_userspace.R
+  vignettes: vignettes/no-files-left-after-check.Rmd
+flat_deal-with-check-outputs.Rmd:
+  path: dev/flat_deal-with-check-outputs.Rmd
+  state: active
+  R: []
+  tests: []
+  vignettes: vignettes/deal-with-check-outputs.Rmd

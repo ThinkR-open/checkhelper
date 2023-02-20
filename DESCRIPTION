@@ -1,6 +1,6 @@
 Package: checkhelper
 Title: Deal with Check Outputs
-Version: 0.0.1.9000
+Version: 0.1.0
 Authors@R: c(
     person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1565-9313")),
@@ -11,7 +11,7 @@ Authors@R: c(
     person("ThinkR", role = "cph")
   )
 Description: Deal with packages 'check' outputs and reduce the risk of
-    rejection by CRAN by following policies.
+    rejection by 'CRAN' by following policies.
 License: MIT + file LICENSE
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
@@ -36,13 +36,13 @@ Imports:
 Suggests: 
     attachment,
     callr,
-    fs,
     knitr,
     rmarkdown,
     testthat,
     usethis
 VignetteBuilder: 
     knitr
+Config/fusen/version: 0.5.0.9000
 Config/Needs/website: ThinkR-open/thinkrtemplate
 Encoding: UTF-8
 Language: en-US

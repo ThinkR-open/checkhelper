@@ -1,8 +1,14 @@
-# checkhelper 0.0.1.9000 (development version)
+# checkhelper 0.1.0
+
+## Major changes
 
 - Check that there is no new file after tests, examples, vignettes of full check with `check_clean_userspace()` (#13)
 
-### Prepare for the CRAN
+## Minor changes
+
+### Prepare for CRAN
+
+- Clean userspace after examples and tests
 
 ### Bring the package up to standard (#25)
 
@@ -14,7 +20,7 @@
 
 # checkhelper 0.0.1
 
-- Check with same variables and parameters as CRAN (#21)
+- Check with same variables and parameters as CRAN with `check_as_cran()` (#21)
 - Find missing tags in your roxygen skeletons with `find_missing_tags()`
 - Print code to add to 'globals.R' with `print_globals()`
 - Extract "no visibles" from notes of `rcmdcheck()`
