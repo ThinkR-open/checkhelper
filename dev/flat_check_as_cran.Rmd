@@ -127,7 +127,7 @@ the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FAL
 ```
 
 ```{r examples-check_as_cran, eval=FALSE}
-#' \dontrun{
+#' \donttest{
 # Directory to store the check outputs
 check_dir <- tempfile("example")
 # Check the current package
@@ -164,7 +164,12 @@ test_that("check_as_cran works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "Check with real CRAN settings", check = FALSE, document = FALSE)
+fusen::inflate(
+  flat_file = "dev/flat_check_as_cran.Rmd",
+  vignette_name = "Check with real CRAN settings",
+  check = FALSE,
+  document = FALSE
+)
 rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 
