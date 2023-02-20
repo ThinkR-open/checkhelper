@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">checkhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -47,10 +47,13 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/check-with-real-cran-settings.html">Check with real CRAN settings</a>
+    </li>
+    <li>
       <a href="../articles/deal-with-check-outputs.html">Deal with check outputs</a>
     </li>
     <li>
-      <a href="../articles/rconsortium-exploration-check-as-cran.html">RConsortium exploration: Check as CRAN</a>
+      <a href="../articles/no-files-left-after-check.html">No files left after check</a>
     </li>
   </ul></li>
 <li>
@@ -79,8 +82,30 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="0.1.0" id="checkhelper-010">checkhelper 0.1.0<a class="anchor" aria-label="anchor" href="#checkhelper-010"></a></h2>
+<div class="section level3">
+<h3 id="major-changes-0-1-0">Major changes<a class="anchor" aria-label="anchor" href="#major-changes-0-1-0"></a></h3>
+<ul><li>Check that there is no new file after tests, examples, vignettes of full check with <code><a href="../reference/check_clean_userspace.html">check_clean_userspace()</a></code> (<a href="https://github.com/ThinkR-open/checkhelper/issues/13" class="external-link">#13</a>)</li>
+</ul></div>
+<div class="section level3">
+<h3 id="minor-changes-0-1-0">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-0-1-0"></a></h3>
+<div class="section level4">
+<h4 id="prepare-for-cran-0-1-0">Prepare for CRAN<a class="anchor" aria-label="anchor" href="#prepare-for-cran-0-1-0"></a></h4>
+<ul><li>Clean userspace after examples and tests</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bring-the-package-up-to-standard-0-1-0">Bring the package up to standard (<a href="https://github.com/ThinkR-open/checkhelper/issues/25" class="external-link">#25</a>)<a class="anchor" aria-label="anchor" href="#bring-the-package-up-to-standard-0-1-0"></a></h4>
+<ul><li>Modify the LICENCE to MIT</li>
+<li>Update Code Of Conduct to a recent version</li>
+<li>Add a package documentation</li>
+<li>Update Github Actions workflows</li>
+<li>Propose a release of version 0.0.1</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="0.0.1" id="checkhelper-001">checkhelper 0.0.1<a class="anchor" aria-label="anchor" href="#checkhelper-001"></a></h2>
-<ul><li>Check with same variables and parameters as CRAN (<a href="https://github.com/ThinkR-open/checkhelper/issues/21" class="external-link">#21</a>)</li>
+<ul><li>Check with same variables and parameters as CRAN with <code><a href="../reference/check_as_cran.html">check_as_cran()</a></code> (<a href="https://github.com/ThinkR-open/checkhelper/issues/21" class="external-link">#21</a>)</li>
 <li>Find missing tags in your roxygen skeletons with <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code>
 </li>
 <li>Print code to add to ‘globals.R’ with <code><a href="../reference/print_globals.html">print_globals()</a></code>
@@ -99,7 +124,7 @@
 
 
       <footer><div class="thinkr">
-  <p></p><p>Developed by Sebastien Rochette, Vincent Guyader.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Developed by Sebastien Rochette, Vincent Guyader, Arthur Bréant.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
 <div class="author">
