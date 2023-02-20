@@ -193,7 +193,7 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir)
 ```
 
 ```{r examples-check_clean_userspace, eval=FALSE}
-#' \dontrun{
+#' \donttest{
 all_files <- check_clean_userspace()
 all_files
 #' }
@@ -304,7 +304,9 @@ in_example <- function() {
 fusen::inflate(
   flat_file = "dev/flat_check_clean_userspace.Rmd", 
   vignette_name = "No files left after check", 
-  check = FALSE, document = FALSE, open_vignette = FALSE
+  check = FALSE,
+  document = FALSE,
+  open_vignette = FALSE
 )
 rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
