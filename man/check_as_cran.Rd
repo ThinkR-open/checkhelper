@@ -6,7 +6,7 @@
 \usage{
 check_as_cran(
   pkg = ".",
-  check_dir,
+  check_dir = tempfile("check_dir"),
   scratch,
   Ncpus = 1,
   as_command = FALSE,
@@ -17,7 +17,7 @@ check_as_cran(
 \arguments{
 \item{pkg}{pkg directory to check}
 
-\item{check_dir}{Where to store check outputs}
+\item{check_dir}{Where to store check outputs. Default is a temporary directory}
 
 \item{scratch}{Where to store temporary files (cleaned after)}
 
