@@ -10,6 +10,9 @@
     <loc>https://thinkr-open.github.io/checkhelper/LICENSE.html</loc>
   </url>
   <url>
+    <loc>https://thinkr-open.github.io/checkhelper/articles/check-with-real-cran-settings.html</loc>
+  </url>
+  <url>
     <loc>https://thinkr-open.github.io/checkhelper/articles/deal-with-check-outputs.html</loc>
   </url>
   <url>
@@ -17,9 +20,6 @@
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/articles/no-files-left-after-check.html</loc>
-  </url>
-  <url>
-    <loc>https://thinkr-open.github.io/checkhelper/articles/rconsortium-exploration-check-as-cran.html</loc>
   </url>
   <url>
     <loc>https://thinkr-open.github.io/checkhelper/authors.html</loc>
