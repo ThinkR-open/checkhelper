@@ -51,6 +51,7 @@ In the `check_dir`, you will get the same outputs, in the same format as used by
 #'
 #' In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 #'
+#' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/
 #' @export
 #'
 #' @examples

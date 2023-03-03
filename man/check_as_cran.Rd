@@ -54,3 +54,6 @@ check_as_cran(check_dir = check_dir)
 utils::browseURL(check_dir)
 }
 }
+\references{
+https://github.com/r-devel/r-dev-web/tree/master/CRAN/
+}
