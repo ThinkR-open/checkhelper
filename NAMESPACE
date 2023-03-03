@@ -3,6 +3,7 @@
 export("%>%")
 export(check_as_cran)
 export(check_clean_userspace)
+export(create_example_pkg)
 export(find_missing_tags)
 export(get_data_info)
 export(get_no_visible)

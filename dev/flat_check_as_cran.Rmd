@@ -140,7 +140,7 @@ utils::browseURL(check_dir)
 
 ```{r tests-check_as_cran}
 test_that("check_as_cran works", {
-  path <- suppressWarnings(create_pkg())
+  path <- suppressWarnings(create_example_pkg())
   check_dir <- tempfile("example")
 
   if (interactive()) {

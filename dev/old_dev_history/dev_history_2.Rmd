@@ -189,7 +189,7 @@ use_data_doc <- function(name, prefix = "doc_", description = "Description", sou
 
 
 ```{r tests}
-path <- create_pkg()
+path <- create_example_pkg()
 
 test_that("use_doc_data", {
 path_data <- file.path(path, "data")

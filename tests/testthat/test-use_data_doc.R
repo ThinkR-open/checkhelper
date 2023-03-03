@@ -1,4 +1,4 @@
-path <- suppressWarnings(create_pkg())
+path <- suppressWarnings(create_example_pkg())
 
 test_that("use_doc_data", {
 path_data <- file.path(path, "data")
