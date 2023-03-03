@@ -7,7 +7,7 @@
 check_as_cran(
   pkg = ".",
   check_dir = tempfile("check_dir"),
-  scratch,
+  scratch = tempfile("scratch_dir"),
   Ncpus = 1,
   as_command = FALSE,
   clean_before = TRUE,
@@ -19,9 +19,9 @@ check_as_cran(
 
 \item{check_dir}{Where to store check outputs. Default is a temporary directory}
 
-\item{scratch}{Where to store temporary files (cleaned after)}
+\item{scratch}{Where to store temporary files (cleaned after). Default is another temporary directory}
 
-\item{Ncpus}{Number of Cpus}
+\item{Ncpus}{Number of CPU used to build the package}
 
 \item{as_command}{Whether to run the check as Linux command line, instead of directly in R}
 

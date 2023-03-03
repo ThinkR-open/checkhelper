@@ -7,8 +7,8 @@
 #'
 #' @param pkg pkg directory to check
 #' @param check_dir Where to store check outputs. Default is a temporary directory
-#' @param scratch Where to store temporary files (cleaned after)
-#' @param Ncpus Number of Cpus
+#' @param scratch Where to store temporary files (cleaned after). Default is another temporary directory
+#' @param Ncpus Number of CPU used to build the package
 #' @param as_command Whether to run the check as Linux command line, instead of directly in R
 #' @param clean_before Whether to delete the previous check_dir
 #' @param open Whether to open the check dir at the end of the process
@@ -36,22 +36,20 @@
 #' # Open directory with all outputs
 #' utils::browseURL(check_dir)
 #' }
-check_as_cran <- function(pkg = ".", check_dir = tempfile("check_dir"), scratch, Ncpus = 1, as_command = FALSE,
+check_as_cran <- function(pkg = ".", check_dir = tempfile("check_dir"), 
+                          scratch = tempfile("scratch_dir"), 
+                          Ncpus = 1, as_command = FALSE,
                           clean_before = TRUE,
                           open = FALSE) {
   pkg <- normalizePath(pkg)
 
   if (isTRUE(clean_before) | !dir.exists(check_dir)) {
-    # if ( file.exists(check_dir)) {a <- try(file.remove(check_dir), silent = TRUE)}
     if (dir.exists(check_dir)) {
       unlink(check_dir, recursive = TRUE)
     }
     dir.create(check_dir)
   }
 
-  if (missing(scratch)) {
-    scratch <- file.path(dirname(normalizePath(pkg)), "scratch")
-  }
   if (dir.exists(scratch)) {
     unlink(scratch, recursive = TRUE)
   } else {
