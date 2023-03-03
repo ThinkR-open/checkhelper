@@ -60,10 +60,15 @@ find_missing_tags <- function (package.dir = ".", roclets = NULL, load_code = NU
   blocks <- lapply(blocks, getFromNamespace("block_set_env", "roxygen2"), env = env)
 
   res_topic <- lapply(blocks, function(x) {
-    topic <- x$object$topic
+    topic <- x[["object"]][["topic"]]
     if (is.null(topic)) {""} else {topic}
   })
+  res_find_class <- lapply(blocks, function(x) {
+    classe <- class(x[["object"]])[1]
+    if (is.null(classe)) {""} else {classe}
+  })
   res_find_filename <- lapply(blocks, function(x) basename(x[["file"]]))
+
   res_find_export <- lapply(blocks, roxygen2::block_has_tags, tags = list("export"))
   res_find_return <- lapply(blocks, roxygen2::block_has_tags, tags = list("return"))
   res_find_nord <- lapply(blocks, roxygen2::block_has_tags, tags = list("noRd"))
