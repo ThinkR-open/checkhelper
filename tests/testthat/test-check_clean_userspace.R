@@ -7,7 +7,7 @@ test_that("check_clean_userspace works", {
     skip_on_os("mac")
   }
 
-  path <- suppressWarnings(create_pkg())
+  path <- suppressWarnings(create_example_pkg())
   dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
   # Add a test that let file in the testthat dir
   cat(

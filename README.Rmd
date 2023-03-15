@@ -142,7 +142,7 @@ check_clean_userspace()
 ```
 ```{r, echo=FALSE, message=FALSE}
 pkgload::load_all()
-path <- suppressWarnings(create_pkg())
+path <- suppressWarnings(create_example_pkg())
 dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
 # Add a test that let file in the testthat dir
 cat(

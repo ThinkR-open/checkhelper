@@ -11,6 +11,7 @@
 ### Prepare for CRAN
 
 - Clean userspace after examples and tests
+- Export `create_example_pkg()` to get examples in functions documentation
 
 ### Bring the package up to standard (#25)
 

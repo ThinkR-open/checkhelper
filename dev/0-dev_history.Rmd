@@ -93,7 +93,9 @@ fusen::add_flat_template("add")
 pkgload::load_all()
 
 # Generate documentation and deal with dependencies
-attachment::att_amend_desc()
+attachment::att_amend_desc(
+  pkg_ignore = c("attachment", "usethis"),
+  extra.suggests = c("attachment", "usethis"))
 
 # Check the package
 devtools::check()

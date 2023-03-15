@@ -5,8 +5,8 @@
 #' @param scratch scratch directory (temporary)
 #' @param Ncpus Number of CPUS to use
 #'
-#' @details Source: https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
-#' updated 2023-01-18
+#' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
+#'
 #' @noRd
 check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   user <- Sys.info()["user"]

@@ -1,5 +1,5 @@
 # Warnings are ok with new version o
-path <- suppressWarnings(create_pkg())
+path <- suppressWarnings(create_example_pkg())
 
 # get_no_visible ----
 # Get globals
@@ -60,7 +60,7 @@ test_that("print_outputs works", {
 unlink(path, recursive = TRUE)
 
 # Test when no notes at all ----
-path <- create_pkg(with_functions = FALSE, with_extra_notes = FALSE)
+path <- create_example_pkg(with_functions = FALSE, with_extra_notes = FALSE)
 globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 print_outputs <- print_globals(globals, message = FALSE)
 
@@ -74,7 +74,7 @@ unlink(path, recursive = TRUE)
 
 
 # Test when only extra notes ----
-path <- create_pkg(with_functions = FALSE, with_extra_notes = TRUE)
+path <- create_example_pkg(with_functions = FALSE, with_extra_notes = TRUE)
 notes <- get_notes(path = path, args = c("--no-manual", "--as-cran"))
 
 test_that("extra notes only works", {
@@ -84,7 +84,7 @@ test_that("extra notes only works", {
 unlink(path, recursive = TRUE)
 
 # Test when checks done before ----
-path <- suppressWarnings(create_pkg())
+path <- suppressWarnings(create_example_pkg())
 checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 notes <- get_notes(path = path, checks = checks)
 

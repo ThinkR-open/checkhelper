@@ -4,26 +4,27 @@
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' 
+#'
 #' @param pkg pkg directory to check
-#' @param check_dir Where to store check outputs
-#' @param scratch Where to store temporary files (cleaned after)
-#' @param Ncpus Number of Cpus
+#' @param check_dir Where to store check outputs. Default is a temporary directory
+#' @param scratch Where to store temporary files (cleaned after). Default is another temporary directory
+#' @param Ncpus Number of CPU used to build the package
 #' @param as_command Whether to run the check as Linux command line, instead of directly in R
 #' @param clean_before Whether to delete the previous check_dir
 #' @param open Whether to open the check dir at the end of the process
 #'
 #' @return An object containing errors, warnings, and notes.
-#' 
+#'
 #' @details
-#' When you send your package on CRAN, there are multiple options set before running the checks. 
-#' Here we use the CRAN settings and way of managing incoming packages used for Linux in this function `check_as_cran()`.  
-#' 
-#' Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.  
-#' Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.  
-#' 
+#' When you send your package on CRAN, there are multiple options set before running the checks.
+#' Here we use the CRAN settings and way of managing incoming packages used for Linux in this function `check_as_cran()`.
+#'
+#' Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.
+#' Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.
+#'
 #' In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
-#' 
+#'
+#' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/
 #' @export
 #'
 #' @examples
@@ -35,34 +36,33 @@
 #' # Open directory with all outputs
 #' utils::browseURL(check_dir)
 #' }
-check_as_cran <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FALSE,
+check_as_cran <- function(pkg = ".", check_dir = tempfile("check_dir"), 
+                          scratch = tempfile("scratch_dir"), 
+                          Ncpus = 1, as_command = FALSE,
                           clean_before = TRUE,
                           open = FALSE) {
   pkg <- normalizePath(pkg)
 
-  if (missing(check_dir)) {check_dir <- file.path(dirname(normalizePath(pkg)), "checkdir")}
   if (isTRUE(clean_before) | !dir.exists(check_dir)) {
-    # if ( file.exists(check_dir)) {a <- try(file.remove(check_dir), silent = TRUE)}
     if (dir.exists(check_dir)) {
       unlink(check_dir, recursive = TRUE)
     }
     dir.create(check_dir)
   }
 
-  if (missing(scratch)) {scratch <- file.path(dirname(normalizePath(pkg)), "scratch")}
   if (dir.exists(scratch)) {
     unlink(scratch, recursive = TRUE)
   } else {
     dir.create(scratch)
   }
-  
-    results <- the_check(
-      pkg = pkg,
-      check_dir =  check_dir,
-      scratch = scratch,
-      Ncpus = Ncpus,
-      clean_before = clean_before
-    )
+
+  results <- the_check(
+    pkg = pkg,
+    check_dir = check_dir,
+    scratch = scratch,
+    Ncpus = Ncpus,
+    clean_before = clean_before
+  )
 
   writeLines("\nDepends:")
   tools::summarize_check_packages_in_dir_depends(check_dir)
@@ -73,27 +73,26 @@ check_as_cran <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command =
   writeLines("\nDetails:")
   tools::check_packages_in_dir_details(check_dir)
   message("\nSee all check outputs in: ", check_dir)
-  
+
   if (isTRUE(open)) {
     utils::browseURL(check_dir)
   }
   return(results)
 }
-  
+
 
 #' @noRd
 the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FALSE, clean_before = TRUE) {
-
   pkgbuild::build(path = pkg, dest_path = check_dir)
-  
+
   envfile <- system.file("cran/CRAN_incoming/check.Renviron", package = "checkhelper")
   # read.table does not read comment, which is good
   envfile_table <- utils::read.table(envfile, sep = "=")
-  env_values <- as.list(t(envfile_table)[2,])
-  names(env_values) <- as.list(t(envfile_table)[1,])
-  
+  env_values <- as.list(t(envfile_table)[2, ])
+  names(env_values) <- as.list(t(envfile_table)[1, ])
+
   lib_dir <- system.file("cran/lib", package = "checkhelper")
-  
+
   withr::with_envvar(new = env_values, {
     if (!as_command) {
       Sys.setenv("TMPDIR" = scratch)

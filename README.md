@@ -79,7 +79,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4'
+#> ✔ Setting active project to '/tmp/Rtmp5aSosg/pkg.3df95bd0f67f'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -106,8 +106,8 @@ my_not_exported_doc <- function() {
 ", file = file.path(pkg_path, "R", "function.R"))
 
 attachment::att_amend_desc(path = pkg_path)
-#> Updating pkg.91a53e683a4 documentation
-#> ℹ Loading pkg.91a53e683a4Writing ']8;;file:///tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.91a53e683a4[+] 1 package(s) added: dplyr.
+#> Updating pkg.3df95bd0f67f documentation
+#> ℹ Loading pkg.3df95bd0f67fWriting ']8;;file:///tmp/Rtmp5aSosg/pkg.3df95bd0f67f/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/Rtmp5aSosg/pkg.3df95bd0f67f/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.3df95bd0f67f[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -118,7 +118,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.91a53e683a4
+#> ℹ Loading pkg.3df95bd0f67f
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -127,7 +127,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.91a53e683a4
+#> ℹ Loading pkg.3df95bd0f67f
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -223,135 +223,134 @@ check_clean_userspace()
     #> ⠏ |         0 | in_test                                                         
     #> ══ Results ═════════════════════════════════════════════════════════════════════
     #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
+    #> 
+    #> 🧿 Your tests look perfect 🧿
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou
-    #> dossier de ce type
+    #> "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce
-    #> type
+    #> path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type
     #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
     #> 
     #> > cat("#in example", file = tempfile("in_example"))
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou
-    #> dossier de ce type
+    #> "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce
-    #> type
+    #> path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type
     #> Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the
     #> 'Run examples' .R file was created to run examples. You should not bother about
     #> it
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou
-    #> dossier de ce type
+    #> "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce
-    #> type
+    #> path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4_0.0.0.9000.tar.gz":
+    #> path[1]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f_0.0.0.9000.tar.gz":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[2]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/DESCRIPTION":
+    #> path[2]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/DESCRIPTION":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[3]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/man/my_fun.Rd":
+    #> path[3]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/man/my_fun.Rd":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[4]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/man/my_not_exported_doc.Rd":
+    #> path[4]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/man/my_not_exported_doc.Rd":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[5]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/NAMESPACE":
+    #> path[5]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/NAMESPACE":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[6]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/R/function.R":
+    #> path[6]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/R/function.R":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[7]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00check.log":
+    #> path[7]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00check.log":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[8]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00install.out":
+    #> path[8]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00install.out":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[9]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4-manual.log":
+    #> path[9]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f-manual.log":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[10]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4-manual.pdf":
+    #> path[10]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f-manual.pdf":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[11]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/DESCRIPTION":
+    #> path[11]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/DESCRIPTION":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[12]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/aliases.rds":
+    #> path[12]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/aliases.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[13]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/AnIndex":
+    #> path[13]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/AnIndex":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[14]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/paths.rds":
+    #> path[14]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/paths.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[15]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/pkg.91a53e683a4.rdb":
+    #> path[15]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/pkg.3df95bd0f67f.rdb":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[16]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/pkg.91a53e683a4.rdx":
+    #> path[16]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/pkg.3df95bd0f67f.rdx":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[17]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/html/00Index.html":
+    #> path[17]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/html/00Index.html":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[18]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/html/R.css":
+    #> path[18]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/html/R.css":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[19]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/INDEX":
+    #> path[19]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/INDEX":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[20]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/features.rds":
+    #> path[20]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/features.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[21]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/hsearch.rds":
+    #> path[21]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/hsearch.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[22]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/links.rds":
+    #> path[22]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/links.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[23]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/nsInfo.rds":
+    #> path[23]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/nsInfo.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[24]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/package.rds":
+    #> path[24]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/package.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[25]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/Rd.rds":
+    #> path[25]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/Rd.rds":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[26]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/NAMESPACE":
+    #> path[26]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/NAMESPACE":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[27]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4":
+    #> path[27]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[28]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4.rdb":
+    #> path[28]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f.rdb":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[29]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4.rdx":
+    #> path[29]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f.rdx":
     #> Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(all_local[[what]], winslash = "/"):
-    #> path[30]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/Rdlatex.log":
+    #> path[30]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/Rdlatex.log":
     #> Aucun fichier ou dossier de ce type
     #> # A tibble: 6 × 4
-    #>   source       problem where                                               file 
-    #>   <chr>        <chr>   <chr>                                               <chr>
-    #> 1 Unit tests   added   /tmp/RtmpWS1RKv/RtmpYskIAy/pkg-91a5111d5f0c/checkp… /tmp…
-    #> 2 Unit tests   added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…
-    #> 3 Run examples added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…
-    #> 4 Run examples added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…
-    #> 5 Full check   added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…
-    #> 6 Full check   deleted /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…
+    #>   source       problem where                                         file       
+    #>   <chr>        <chr>   <chr>                                         <chr>      
+    #> 1 Unit tests   added   /tmp/Rtmp5aSosg/pkg-3df94083dc98/checkpackage /tmp/Rtmp5…
+    #> 2 Unit tests   added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…
+    #> 3 Run examples added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…
+    #> 4 Run examples added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…
+    #> 5 Full check   added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…
+    #> 6 Full check   deleted /tmp/Rtmp5aSosg                               /tmp/Rtmp5…
 
 ### Experimental: Check as CRAN with CRAN global variables
 
