@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' all_files <- check_clean_userspace()
 #' all_files
 #' }
@@ -60,7 +60,7 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
     # Verify examples do not leave files ----
     cli::cli_rule("Run examples")
-    devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
+    devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_donttest = FALSE, fresh = FALSE, document = FALSE)
     all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_dir)
     if (any(all_files$source == "Run examples")) {
       warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")

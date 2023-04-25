@@ -28,7 +28,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Directory to store the check outputs
 #' check_dir <- tempfile("example")
 #' # Check the current package

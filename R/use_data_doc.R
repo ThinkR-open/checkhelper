@@ -12,7 +12,7 @@
 #' @importFrom glue glue
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' use_data_doc("my_data", description = "Desc of my_data", source = "Here my source")
 #' }
 use_data_doc <- function(name, prefix = "doc_", description = "Description", source = "Source") {

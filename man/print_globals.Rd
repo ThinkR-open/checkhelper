@@ -22,7 +22,7 @@ A message with no visible globals or a list with no visible globals
 Print no visible globals from check and separate by category
 }
 \examples{
-\dontrun{
+\donttest{
 tempdir <- tempdir()
 # Create fake package
 usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)

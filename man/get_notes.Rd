@@ -20,7 +20,7 @@ A tibble with notes and information about the global variables
 List notes from check and identify global variables
 }
 \examples{
-\dontrun{
+\donttest{
 tempdir <- tempdir()
 # Create fake package
 usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)

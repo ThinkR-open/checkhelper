@@ -34,7 +34,7 @@ In the `check_dir`, you will get the same outputs, in the same format as used by
 
 
 ```{r examples-check_as_cran, eval = FALSE}
-#' \dontrun{
+#' \donttest{
 # Directory to store the check outputs
 check_dir <- tempfile("example")
 # Check the current package

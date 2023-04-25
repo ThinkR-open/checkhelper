@@ -40,7 +40,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 
 
 ```{r examples-check_clean_userspace, eval = FALSE}
-#' \dontrun{
+#' \donttest{
 all_files <- check_clean_userspace()
 all_files
 #' }

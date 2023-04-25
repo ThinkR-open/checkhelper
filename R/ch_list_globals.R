@@ -12,7 +12,7 @@
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' tempdir <- tempdir()
 #' # Create fake package
 #' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
@@ -97,7 +97,7 @@ get_notes <- function(path = ".", checks, ...) {
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' tempdir <- tempdir()
 #' # Create fake package
 #' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
@@ -165,7 +165,7 @@ get_no_visible <- function(path = ".", checks, ...) {
 #'
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' tempdir <- tempdir()
 #' # Create fake package
 #' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)

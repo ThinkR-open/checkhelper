@@ -126,7 +126,7 @@ the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FAL
 ```
 
 ```{r examples-check_as_cran, eval=FALSE}
-#' \dontrun{
+#' \donttest{
 # Directory to store the check outputs
 check_dir <- tempfile("example")
 # Check the current package
