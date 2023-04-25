@@ -183,7 +183,6 @@ find_missing_tags <- function(package.dir = ".",
       res %>% filter(rdname_value != "") %>% select(-rdname_value, -id),
       by = c("filename", "topic")
     ) %>%
-    set_correct_return_to_alias() %>%
     group_by(id, filename, topic) %>%
     summarise(
       has_export = any(has_export),
@@ -199,7 +198,8 @@ find_missing_tags <- function(package.dir = ".",
         "ok", "not_ok"
       ),
       test_has_export_or_has_nord = ifelse((!has_export & has_nord) | has_export, "ok", "not_ok")
-    )
+    ) %>%
+    set_correct_return_to_alias()
 
   res_return_error <- res_join[res_join$test_has_export_and_return == "not_ok", ]
   if (nrow(res_return_error) != 0) {
@@ -230,5 +230,13 @@ find_missing_tags <- function(package.dir = ".",
 set_correct_return_to_alias <- function(res) {
   res %>%
     group_by(rdname_value) %>%
-    mutate(has_return = any(has_return))
+    mutate(
+      has_return = any(has_return),
+      not_empty_return_value = any(not_empty_return_value),
+      return_value = ifelse(
+        any(return_value != ""),
+        first(return_value[return_value != ""]),
+        ""
+      ),
+    )
 }
