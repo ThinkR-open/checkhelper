@@ -59,6 +59,55 @@ test_that("find_missing_tags works", {
     usethis::use_data(iris)
     use_data_doc("iris")
 
+    cat(
+      "
+#' title
+#' @param x x
+#' @export
+#' @return something
+the_function <- function(x) x
+
+#' @rdname the_function
+#' @inheritParams the_function
+#' @export
+the_alias <- the_function
+
+#' @rdname the_function
+#' @inheritParams the_function
+the_alias2 <- the_function
+
+#' @rdname the_function
+#' @inheritParams the_function
+#' @noRd
+the_alias3 <- the_function",
+      file = "R/function.R",
+      append = TRUE
+    )
+
+    cat(
+      "
+#' title
+#' @param x x
+#' @export
+#' @return something
+the_other_function <- function(x) x
+
+#' @rdname the_other_function
+#' @inheritParams the_other_function
+#' @export
+the_other_alias <- the_other_function
+
+#' @rdname the_other_function
+#' @inheritParams the_other_function
+the_other_alias2 <- the_other_function
+
+#' @rdname the_other_function
+#' @inheritParams the_other_function
+#' @noRd
+the_other_alias3 <- the_other_function",
+      file = "R/function2.R"
+    )
+
     expect_warning(
       attachment::att_amend_desc(),
       regexp = "@return"
@@ -84,6 +133,13 @@ test_that("find_missing_tags works", {
     dplyr::filter(
       filename %in% c("checkpackage-package.R", "doc_iris.R", "utils-pipe.R")
     )
+
+  expect_equal(nrow(false_positive), 3) # 3 false positives
+
+  expect_equal(
+    false_positive$has_export,
+    c(FALSE, FALSE, TRUE)
+  )
 
   expect_equal(
     false_positive$has_nord,
