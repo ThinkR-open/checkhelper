@@ -193,13 +193,15 @@ find_missing_tags <- function(package.dir = ".",
       .groups = "drop"
     ) %>%
     mutate(
-      not_empty_return_value = (return_value != ""),
+      not_empty_return_value = (return_value != "")
+    ) %>%
+    set_correct_return_to_alias() %>%
+    mutate(
       test_has_export_and_return = ifelse((has_export & has_return & not_empty_return_value) | !has_export,
         "ok", "not_ok"
       ),
       test_has_export_or_has_nord = ifelse((!has_export & has_nord) | has_export, "ok", "not_ok")
-    ) %>%
-    set_correct_return_to_alias()
+    )
 
   res_return_error <- res_join[res_join$test_has_export_and_return == "not_ok", ]
   if (nrow(res_return_error) != 0) {
@@ -226,6 +228,8 @@ find_missing_tags <- function(package.dir = ".",
 #' When an alias is used with `@rdname`,
 #' the alias should have the same return value as the original function.
 #'
+#' @importFrom dplyr group_by mutate first ungroup
+#'
 #' @noRd
 set_correct_return_to_alias <- function(res) {
   res %>%
@@ -238,5 +242,6 @@ set_correct_return_to_alias <- function(res) {
         first(return_value[return_value != ""]),
         ""
       ),
-    )
+    ) %>%
+    ungroup()
 }

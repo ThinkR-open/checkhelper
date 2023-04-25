@@ -16,40 +16,52 @@ test_that("find_missing_tags works", {
     )
   }
 
-  expect_equal(nrow(out), 5)
-  expect_equal(out$filename, rep("function.R", 5))
+  expect_type(out, "list")
+  expect_length(out, 3)
   expect_equal(
-    out$topic,
+    names(out),
+    c("package_doc", "data", "functions")
+  )
+
+  functions <- out[["functions"]]
+
+  expect_equal(nrow(functions), 5)
+  expect_equal(functions$filename, rep("function.R", 5))
+  expect_equal(
+    functions$topic,
     c(
       "my_long_fun_name_for_multiple_lines_globals", "my_plot",
       "my_not_exported_doc", "my_not_exported_nord", "my_plot_rdname"
     )
   )
-  expect_false("my_not_exported_nodoc" %in% out$topic)
-  expect_equal(out$has_export, c(TRUE, TRUE, FALSE, FALSE, TRUE))
+  expect_false("my_not_exported_nodoc" %in% functions$topic)
+  expect_equal(functions$has_export, c(TRUE, TRUE, FALSE, FALSE, TRUE))
   # last is true because of rdname tag
 
   if (packageVersion("roxygen2") > "7.1.2") {
     expect_equal(
-      out$has_return,
+      functions$has_return,
       c(FALSE, TRUE, FALSE, FALSE, TRUE)
     )
   } else {
     expect_equal(
-      out$has_return,
+      functions$has_return,
       c(TRUE, TRUE, FALSE, FALSE, TRUE)
     )
   }
+
   expect_equal(
-    out$has_nord,
+    functions$has_nord,
     c(FALSE, FALSE, FALSE, TRUE, FALSE)
   )
+
   expect_equal(
-    out$test_has_export_and_return,
+    functions$test_has_export_and_return,
     c("not_ok", "ok", "ok", "ok", "ok")
   )
+
   expect_equal(
-    out$test_has_export_or_has_nord,
+    functions$test_has_export_or_has_nord,
     c("ok", "ok", "not_ok", "ok", "ok")
   )
 
@@ -119,31 +131,96 @@ the_other_alias3 <- the_function",
     )
   }
 
-  false_positive <- out %>%
-    dplyr::filter(
-      filename %in% c("checkpackage-package.R", "doc_iris.R", "utils-pipe.R")
+  expect_type(out, "list")
+  expect_length(out, 3)
+  expect_equal(
+    names(out),
+    c("package_doc", "data", "functions")
+  )
+
+  expect_equal(
+    out[["package_doc"]],
+    structure(
+      list(
+        filename = "checkpackage-package.R",
+        has_keywords = TRUE
+      ),
+      class = c("tbl_df", "tbl", "data.frame"),
+      row.names = c(NA, -1L)
     )
-
-  expect_equal(nrow(false_positive), 3) # 3 false positives
-
-  expect_equal(
-    false_positive$has_export,
-    c(FALSE, FALSE, TRUE)
   )
 
   expect_equal(
-    false_positive$has_nord,
-    c(FALSE, FALSE, FALSE)
+    out[["data"]],
+    structure(
+      list(
+        filename = "doc_iris.R",
+        has_format = TRUE,
+        has_title = TRUE,
+        has_description = TRUE
+      ),
+      class = c("tbl_df", "tbl", "data.frame"),
+      row.names = c(NA, -1L)
+    )
   )
 
   expect_equal(
-    false_positive$test_has_export_and_return,
-    c("ok", "ok", "ok")
-  )
-
-  expect_equal(
-    false_positive$test_has_export_or_has_nord,
-    c("not_ok", "not_ok", "ok")
+    out[["functions"]],
+    structure(
+      list(
+        id = 1:12,
+        filename = c(
+          "function.R", "function.R",
+          "function.R", "function.R", "function.R", "function.R", "function.R",
+          "function.R", "function.R", "function2.R", "function2.R", "function2.R"
+        ),
+        topic = c(
+          "my_long_fun_name_for_multiple_lines_globals", "my_plot",
+          "my_not_exported_doc", "my_not_exported_nord", "my_plot_rdname",
+          "the_function", "the_alias", "the_alias2", "the_alias3", "the_other_alias",
+          "the_other_alias2", "the_other_alias3"
+        ),
+        has_export = c(
+          TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE,
+          FALSE, FALSE, TRUE, FALSE, FALSE
+        ),
+        has_return = c(
+          FALSE, TRUE, FALSE, FALSE, TRUE, TRUE,
+          TRUE, TRUE, TRUE, TRUE, TRUE, TRUE
+        ),
+        return_value = c(
+          "", "GGplot for data", "", "", "GGplot for data",
+          "something", "something", "something",
+          "something", "something", "something", "something"
+        ),
+        has_nord = c(
+          FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE,
+          FALSE, TRUE, FALSE, FALSE, TRUE
+        ),
+        rdname_value = c(
+          "my_long_fun_name_for_multiple_lines_globals",
+          "my_plot", "my_not_exported_doc", "my_not_exported_nord", "my_plot",
+          "the_function", "the_function", "the_function", "the_function",
+          "the_function", "the_function", "the_function"
+        ),
+        not_empty_return_value = c(
+          FALSE, TRUE, FALSE, FALSE, TRUE, TRUE,
+          TRUE, TRUE, TRUE, TRUE, TRUE, TRUE
+        ),
+        test_has_export_and_return = c(
+          "not_ok", "ok", "ok", "ok",
+          "ok", "ok", "ok", "ok", "ok", "ok", "ok", "ok"
+        ),
+        test_has_export_or_has_nord = c(
+          "ok",
+          "ok", "not_ok", "ok", "ok", "ok", "ok", "not_ok", "ok", "ok",
+          "not_ok", "ok"
+        )
+      ),
+      row.names = c(NA, -12L),
+      class = c("tbl_df", "tbl", "data.frame"
+      )
+    )
   )
 })
 
