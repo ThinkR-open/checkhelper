@@ -107,10 +107,12 @@ find_missing_tags <- function(package.dir = ".",
 
   ### Package documentation
   ###
+  res_package_filename <- lapply(res_package, function(x) basename(x[["file"]]))
   res_package_keywords <- purrr::map(res_package, roxygen2::block_has_tags, tags = list("keywords"))
 
   ### Data documentation
   ###
+  res_data_filename <- lapply(res_data, function(x) basename(x[["file"]]))
   res_data_format <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("format"))
   res_data_title <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("title"))
   res_data_description <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("description"))
@@ -124,14 +126,14 @@ find_missing_tags <- function(package.dir = ".",
       topic
     }
   })
+browser()
+  res_find_filename <- lapply(res_functions, function(x) basename(x[["file"]]))
 
-  res_find_filename <- lapply(blocks, function(x) basename(x[["file"]]))
+  res_find_export <- lapply(res_functions, roxygen2::block_has_tags, tags = list("export"))
+  res_find_return <- lapply(res_functions, roxygen2::block_has_tags, tags = list("return"))
+  res_find_nord <- lapply(res_functions, roxygen2::block_has_tags, tags = list("noRd"))
 
-  res_find_export <- lapply(blocks, roxygen2::block_has_tags, tags = list("export"))
-  res_find_return <- lapply(blocks, roxygen2::block_has_tags, tags = list("return"))
-  res_find_nord <- lapply(blocks, roxygen2::block_has_tags, tags = list("noRd"))
-
-  res_find_rdname_value <- lapply(blocks, function(x) {
+  res_find_rdname_value <- lapply(res_functions, function(x) {
     rdname <- roxygen2::block_get_tag_value(x, tag = "rdname")
     if (is.null(rdname)) {
       ""
@@ -139,7 +141,7 @@ find_missing_tags <- function(package.dir = ".",
       rdname
     }
   })
-  res_find_return_value <- lapply(blocks, function(x) {
+  res_find_return_value <- lapply(res_functions, function(x) {
     return <- roxygen2::block_get_tag_value(x, tag = "return")
     if (is.null(return)) {
       ""
@@ -147,6 +149,19 @@ find_missing_tags <- function(package.dir = ".",
       return
     }
   })
+
+  res_package_doc <- tibble(
+    filename = unlist(res_package_filename),
+    has_keywords = unlist(res_package_keywords)
+  )
+
+  res_package_data <- tibble(
+    filename = unlist(res_data_filename),
+    has_format = unlist(res_data_format),
+    has_title = unlist(res_data_title),
+    has_description = unlist(res_data_description)
+  )
+
 
   res <- tibble(
     filename = unlist(res_find_filename),
@@ -166,8 +181,8 @@ find_missing_tags <- function(package.dir = ".",
   res_join <- res %>%
     select(filename, id, topic, rdname_value) %>%
     left_join(
-      res %>% filter(rdname_value != "") %>% select(-topic, -id),
-      by = c("filename", "rdname_value")
+      res %>% filter(rdname_value != "") %>% select(-rdname_value, -id),
+      by = c("filename", "topic")
     ) %>%
     group_by(id, filename, topic) %>%
     summarise(
@@ -197,11 +212,21 @@ find_missing_tags <- function(package.dir = ".",
 
   # Set NAMESPACE back to normal
   roxygen2::roxygenise(package.dir = package.dir)
-  res <- split(res_join, res_join$has_nord)
-  return(res)
-  # results <- lapply(roclets, roxygen2:::roclet_process, blocks = blocks,
-  #                   env = env, base_path = base_path)
-  # out <- purrr::map2(roclets, results, roxygen2:::roclet_output, base_path = base_path,
-  #                    is_first = is_first)
-  # invisible(out)
+
+  final_res <- list(
+    res_package_doc = list(
+      title = "This is the package documentation file.",
+      result = res_package_doc
+    ),
+    res_package_data = list(
+      title = "This is the data documentation file(s).",
+      result = res_package_data
+    ),
+    res_package_functions = list(
+      title = "This is the function file(s).",
+      result = res_join
+    )
+  )
+
+  return(final_res)
 }
