@@ -214,18 +214,9 @@ find_missing_tags <- function(package.dir = ".",
   roxygen2::roxygenise(package.dir = package.dir)
 
   final_res <- list(
-    res_package_doc = list(
-      title = "This is the package documentation file.",
-      result = res_package_doc
-    ),
-    res_package_data = list(
-      title = "This is the data documentation file(s).",
-      result = res_package_data
-    ),
-    res_package_functions = list(
-      title = "This is the function file(s).",
-      result = res_join
-    )
+    package_doc = res_package_doc,
+    data = res_package_data,
+    functions = res_join
   )
 
   return(final_res)
