@@ -68,16 +68,13 @@ test_that("find_missing_tags works", {
 the_function <- function(x) x
 
 #' @rdname the_function
-#' @inheritParams the_function
 #' @export
 the_alias <- the_function
 
 #' @rdname the_function
-#' @inheritParams the_function
 the_alias2 <- the_function
 
 #' @rdname the_function
-#' @inheritParams the_function
 #' @noRd
 the_alias3 <- the_function",
       file = "R/function.R",
@@ -86,25 +83,18 @@ the_alias3 <- the_function",
 
     cat(
       "
-#' title
-#' @param x x
+
+
+#' @rdname the_function
 #' @export
-#' @return something
-the_other_function <- function(x) x
+the_other_alias <- the_function
 
-#' @rdname the_other_function
-#' @inheritParams the_other_function
-#' @export
-the_other_alias <- the_other_function
+#' @rdname the_function
+the_other_alias2 <- the_function
 
-#' @rdname the_other_function
-#' @inheritParams the_other_function
-the_other_alias2 <- the_other_function
-
-#' @rdname the_other_function
-#' @inheritParams the_other_function
+#' @rdname the_function
 #' @noRd
-the_other_alias3 <- the_other_function",
+the_other_alias3 <- the_function",
       file = "R/function2.R"
     )
 

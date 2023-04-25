@@ -142,6 +142,9 @@ find_missing_tags <- function(package.dir = ".",
     }
   })
   res_find_return_value <- lapply(res_functions, function(x) {
+
+
+
     return <- roxygen2::block_get_tag_value(x, tag = "return")
     if (is.null(return)) {
       ""
@@ -176,14 +179,13 @@ find_missing_tags <- function(package.dir = ".",
       rdname_value = if_else(rdname_value == "", topic, rdname_value),
       id = 1:n()
     )
-
   # Join with itself to find common rdname
   res_join <- res %>%
     select(filename, id, topic, rdname_value) %>%
     left_join(
       res %>% filter(rdname_value != "") %>% select(-rdname_value, -id),
       by = c("filename", "topic")
-    ) %>%
+    ) %>% set_correct_return_to_alias()   %>%
     group_by(id, filename, topic) %>%
     summarise(
       has_export = any(has_export),
@@ -220,4 +222,11 @@ find_missing_tags <- function(package.dir = ".",
   )
 
   return(final_res)
+}
+
+
+set_correct_return_to_alias <- function(res){
+  res %>%
+    group_by(rdname_value) %>%
+    mutate(has_return = any(has_return))
 }
