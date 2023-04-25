@@ -126,7 +126,7 @@ find_missing_tags <- function(package.dir = ".",
       topic
     }
   })
-browser()
+
   res_find_filename <- lapply(res_functions, function(x) basename(x[["file"]]))
 
   res_find_export <- lapply(res_functions, roxygen2::block_has_tags, tags = list("export"))
