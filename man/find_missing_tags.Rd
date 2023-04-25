@@ -28,7 +28,7 @@ See \link[roxygen2]{load} for more details.}
 created by roxygen before running each roclet.}
 }
 \value{
-a list with the 3 data.frames
+a list with the 3 data.frames with the missing tags
 }
 \description{
 Find missing 'return' tag when function exported

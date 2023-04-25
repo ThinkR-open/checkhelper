@@ -2,11 +2,11 @@
 #'
 #' @inheritParams roxygen2::roxygenise
 #'
-#' @return a list with the 3 data.frames
+#' @return a list with the 3 data.frames with the missing tags
 #' @importFrom utils getFromNamespace
 #' @importFrom dplyr mutate filter left_join if_else tibble
 #' @importFrom dplyr group_by summarise first select n
-#' @importFrom purrr walk map keep
+#' @importFrom purrr walk map keep compact
 #' @export
 #'
 #' @examples
@@ -84,23 +84,23 @@ find_missing_tags <- function(package.dir = ".",
   ##
   ## Split blocks into functions or documentations
   ##
-  res_functions <- purrr::map(
+  res_functions <- map(
     .x = blocks,
     .f = ~ if (class(.x[["object"]])[1] == "function") .x
   ) %>%
-    purrr::compact()
+    compact()
 
-  res_package <- purrr::map(
+  res_package <- map(
     .x = blocks,
     .f = ~ if (class(.x[["object"]])[1] == "package") .x
   ) %>%
-    purrr::compact()
+    compact()
 
-  res_data <- purrr::map(
+  res_data <- map(
     .x = blocks,
     .f = ~ if (class(.x[["object"]])[1] == "data") .x
   ) %>%
-    purrr::compact()
+    compact()
 
 
   ## Check for missing tags
@@ -113,9 +113,9 @@ find_missing_tags <- function(package.dir = ".",
   ### Data documentation
   ###
   res_data_filename <- lapply(res_data, function(x) basename(x[["file"]]))
-  res_data_format <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("format"))
-  res_data_title <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("title"))
-  res_data_description <- purrr::map(res_data, roxygen2::block_has_tags, tags = list("description"))
+  res_data_format <- map(res_data, roxygen2::block_has_tags, tags = list("format"))
+  res_data_title <- map(res_data, roxygen2::block_has_tags, tags = list("title"))
+  res_data_description <- map(res_data, roxygen2::block_has_tags, tags = list("description"))
 
 
   res_topic <- lapply(res_functions, function(x) {
@@ -142,9 +142,6 @@ find_missing_tags <- function(package.dir = ".",
     }
   })
   res_find_return_value <- lapply(res_functions, function(x) {
-
-
-
     return <- roxygen2::block_get_tag_value(x, tag = "return")
     if (is.null(return)) {
       ""
@@ -185,7 +182,8 @@ find_missing_tags <- function(package.dir = ".",
     left_join(
       res %>% filter(rdname_value != "") %>% select(-rdname_value, -id),
       by = c("filename", "topic")
-    ) %>% set_correct_return_to_alias()   %>%
+    ) %>%
+    set_correct_return_to_alias() %>%
     group_by(id, filename, topic) %>%
     summarise(
       has_export = any(has_export),
@@ -224,8 +222,12 @@ find_missing_tags <- function(package.dir = ".",
   return(final_res)
 }
 
-
-set_correct_return_to_alias <- function(res){
+#' This is an internal function
+#' When an alias is used with `@rdname`,
+#' the alias should have the same return value as the original function.
+#'
+#' @noRd
+set_correct_return_to_alias <- function(res) {
   res %>%
     group_by(rdname_value) %>%
     mutate(has_return = any(has_return))
