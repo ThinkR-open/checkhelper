@@ -2,7 +2,7 @@
 #'
 #' @inheritParams roxygen2::roxygenise
 #'
-#' @return Tibble of all functions with information whether documentation is correct or not
+#' @return a list with the 3 data.frames
 #' @importFrom utils getFromNamespace
 #' @importFrom dplyr mutate filter left_join if_else tibble
 #' @importFrom dplyr group_by summarise first select n
