@@ -27,7 +27,7 @@ Create a data documentation and return path to the file
 Documentation of .rda in package
 }
 \examples{
-\donttest{
+\dontrun{
 use_data_doc("my_data", description = "Desc of my_data", source = "Here my source")
 }
 }

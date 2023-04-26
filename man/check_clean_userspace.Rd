@@ -18,7 +18,7 @@ data.frame of files that are left after checks
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
-\donttest{
+\dontrun{
 all_files <- check_clean_userspace()
 all_files
 }

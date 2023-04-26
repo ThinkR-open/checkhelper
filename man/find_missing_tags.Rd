@@ -34,7 +34,7 @@ a list with the 3 data.frames with the missing tags
 Find missing 'return' tag when function exported
 }
 \examples{
-\donttest{
+\dontrun{
 # What you will do from inside your package
 find_missing_tags()
 }

@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # What you will do from inside your package
 #' find_missing_tags()
 #' }

@@ -20,7 +20,7 @@ A list with no visible globals
 List no visible globals from check and separate by category
 }
 \examples{
-\donttest{
+\dontrun{
 tempdir <- tempdir()
 # Create fake package
 usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
