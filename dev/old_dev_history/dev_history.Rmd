@@ -22,17 +22,17 @@ pkgload::load_all(export_all = FALSE)
 ```{r function}
 #' Check that my package dont write in the user's home filespace, package directory and getwd().
 #' @inheritParams get_notes
-#' @params check_dir the directory in which the package was checked (if realised already) 
+#' @params check_output the directory in which the package was checked (if realised already) 
 
-check_write_users <- function(path = ".", checks, check_dir, ...) {
-  if (missing(check_dir)) {
-    check_dir <- tempfile("check")
-    dir.create(check_dir)
+check_write_users <- function(path = ".", checks, check_output, ...) {
+  if (missing(check_output)) {
+    check_output <- tempfile("check")
+    dir.create(check_output)
     checks <- rcmdcheck(path = path, ...)
   }
   
   # Take
-  local <- utils::fileSnapshot (check_dir, timestamp = tempfile("timestamp"), md5sum = TRUE)
+  local <- utils::fileSnapshot (check_output, timestamp = tempfile("timestamp"), md5sum = TRUE)
 }
 ```
 

@@ -6,11 +6,11 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param pkg pkg directory to check
-#' @param check_dir Where to store check outputs. Default is a temporary directory
+#' @param check_output Where to store check outputs. Default is a temporary directory
 #' @param scratch Where to store temporary files (cleaned after). Default is another temporary directory
 #' @param Ncpus Number of CPU used to build the package
 #' @param as_command Whether to run the check as Linux command line, instead of directly in R
-#' @param clean_before Whether to delete the previous check_dir
+#' @param clean_before Whether to delete the previous check_output
 #' @param open Whether to open the check dir at the end of the process
 #'
 #' @return An object containing errors, warnings, and notes.
@@ -22,32 +22,33 @@
 #' Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.
 #' Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.
 #'
-#' In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+#' In the `check_output`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 #'
 #' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/
 #' @export
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Directory to store the check outputs
-#' check_dir <- tempfile("example")
+#' check_output <- tempfile("example")
 #' # Check the current package
-#' check_as_cran(check_dir = check_dir)
+#'
+#' check_as_cran(check_output = check_output)
 #' # Open directory with all outputs
-#' utils::browseURL(check_dir)
+#' utils::browseURL(check_output)
 #' }
-check_as_cran <- function(pkg = ".", check_dir = tempfile("check_dir"), 
-                          scratch = tempfile("scratch_dir"), 
+check_as_cran <- function(pkg = ".", check_output = tempfile("check_output"),
+                          scratch = tempfile("scratch_dir"),
                           Ncpus = 1, as_command = FALSE,
                           clean_before = TRUE,
                           open = FALSE) {
   pkg <- normalizePath(pkg)
 
-  if (isTRUE(clean_before) | !dir.exists(check_dir)) {
-    if (dir.exists(check_dir)) {
-      unlink(check_dir, recursive = TRUE)
+  if (isTRUE(clean_before) | !dir.exists(check_output)) {
+    if (dir.exists(check_output)) {
+      unlink(check_output, recursive = TRUE)
     }
-    dir.create(check_dir)
+    dir.create(check_output)
   }
 
   if (dir.exists(scratch)) {
@@ -58,32 +59,32 @@ check_as_cran <- function(pkg = ".", check_dir = tempfile("check_dir"),
 
   results <- the_check(
     pkg = pkg,
-    check_dir = check_dir,
+    check_output = check_output,
     scratch = scratch,
     Ncpus = Ncpus,
     clean_before = clean_before
   )
 
   writeLines("\nDepends:")
-  tools::summarize_check_packages_in_dir_depends(check_dir)
+  tools::summarize_check_packages_in_dir_depends(check_output)
   writeLines("\nTimings:")
-  tools::summarize_check_packages_in_dir_timings(check_dir)
+  tools::summarize_check_packages_in_dir_timings(check_output)
   writeLines("\nResults:")
-  tools::summarize_check_packages_in_dir_results(check_dir)
+  tools::summarize_check_packages_in_dir_results(check_output)
   writeLines("\nDetails:")
-  tools::check_packages_in_dir_details(check_dir)
-  message("\nSee all check outputs in: ", check_dir)
+  tools::check_packages_in_dir_details(check_output)
+  message("\nSee all check outputs in: ", check_output)
 
   if (isTRUE(open)) {
-    utils::browseURL(check_dir)
+    utils::browseURL(check_output)
   }
   return(results)
 }
 
 
 #' @noRd
-the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FALSE, clean_before = TRUE) {
-  pkgbuild::build(path = pkg, dest_path = check_dir)
+the_check <- function(pkg = ".", check_output, scratch, Ncpus = 1, as_command = FALSE, clean_before = TRUE) {
+  pkgbuild::build(path = pkg, dest_path = check_output)
 
   envfile <- system.file("cran/CRAN_incoming/check.Renviron", package = "checkhelper")
   # read.table does not read comment, which is good
@@ -96,7 +97,7 @@ the_check <- function(pkg = ".", check_dir, scratch, Ncpus = 1, as_command = FAL
   withr::with_envvar(new = env_values, {
     if (!as_command) {
       Sys.setenv("TMPDIR" = scratch)
-      check_unique(check_dir, lib_dir, scratch, Ncpus)
+      check_unique(check_output, lib_dir, scratch, Ncpus)
     } else {
       message("This may only run on Linux OS with sh")
       # Run as command line for Linux only

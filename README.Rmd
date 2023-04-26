@@ -163,10 +163,10 @@ file = file.path(path, "R", "in_example.R"))
 
 suppressWarnings(attachment::att_amend_desc(path = path))
 
-check_dir <- tempfile("check_dir")
+check_output <- tempfile("check_output")
 
 suppressMessages(
-  all_files <- check_clean_userspace(pkg = path, check_dir = check_dir),
+  all_files <- check_clean_userspace(pkg = path, check_output = check_output),
 )
   all_files
 ```
@@ -177,11 +177,11 @@ suppressMessages(
 Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
 
 ```{r eval=FALSE}
-check_dir <- tempfile("example")
+check_output <- tempfile("example")
 # Check the current directory
-check_as_cran(check_dir = check_dir)
+check_as_cran(check_output = check_output)
 # Open directory with all outputs
-utils::browseURL(check_dir)
+utils::browseURL(check_output)
 ```
 
 ## Code of Conduct

@@ -6,7 +6,7 @@
 \usage{
 check_as_cran(
   pkg = ".",
-  check_dir = tempfile("check_dir"),
+  check_output = tempfile("check_output"),
   scratch = tempfile("scratch_dir"),
   Ncpus = 1,
   as_command = FALSE,
@@ -17,7 +17,7 @@ check_as_cran(
 \arguments{
 \item{pkg}{pkg directory to check}
 
-\item{check_dir}{Where to store check outputs. Default is a temporary directory}
+\item{check_output}{Where to store check outputs. Default is a temporary directory}
 
 \item{scratch}{Where to store temporary files (cleaned after). Default is another temporary directory}
 
@@ -25,7 +25,7 @@ check_as_cran(
 
 \item{as_command}{Whether to run the check as Linux command line, instead of directly in R}
 
-\item{clean_before}{Whether to delete the previous check_dir}
+\item{clean_before}{Whether to delete the previous check_output}
 
 \item{open}{Whether to open the check dir at the end of the process}
 }
@@ -42,16 +42,16 @@ Here we use the CRAN settings and way of managing incoming packages used for Lin
 Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: \url{https://github.com/r-devel/r-dev-web/tree/master/CRAN/}.
 Although \code{check_as_cran()} should run on any OS, it will run CRAN parameters originally set up for Linux machines.
 
-In the \code{check_dir}, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+In the \code{check_output}, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 }
 \examples{
 \donttest{
 # Directory to store the check outputs
-check_dir <- tempfile("example")
+check_output <- tempfile("example")
 # Check the current package
-check_as_cran(check_dir = check_dir)
+check_as_cran(check_output = check_output)
 # Open directory with all outputs
-utils::browseURL(check_dir)
+utils::browseURL(check_output)
 }
 }
 \references{

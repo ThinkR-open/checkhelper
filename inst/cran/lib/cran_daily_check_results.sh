@@ -1,5 +1,5 @@
-check_dir="${HOME}/tmp/R.check"
-lock_file="${check_dir}/.lock"
+check_output="${HOME}/tmp/R.check"
+lock_file="${check_output}/.lock"
 
 if test -f ${lock_file}; then
   echo  "Old process still running ... aborting." | \
@@ -41,28 +41,28 @@ echo ${!} > ${lock_file}
 ## r-devel-linux-x86_64-debian-clang
 sh ${HOME}/lib/bash/rsync_daily_check_flavor.sh \
   gimli.wu.ac.at::R.check/r-devel-clang/ \
-  ${check_dir}/r-devel-linux-x86_64-debian-clang/
+  ${check_output}/r-devel-linux-x86_64-debian-clang/
 
 ## r-devel-linux-x86_64-debian-gcc
 sh ${HOME}/lib/bash/rsync_daily_check_flavor.sh \
   gimli2.wu.ac.at::R.check/r-devel-gcc/ \
-  ${check_dir}/r-devel-linux-x86_64-debian-gcc/
+  ${check_output}/r-devel-linux-x86_64-debian-gcc/
 
 ## r-prerel-linux-x86_64
 sh ${HOME}/lib/bash/rsync_daily_check_flavor.sh \
   gimli.wu.ac.at::R.check/r-patched-gcc/ \
-  ${check_dir}/r-patched-linux-x86_64/
+  ${check_output}/r-patched-linux-x86_64/
 
 ## r-release-linux-x86_64
 sh ${HOME}/lib/bash/rsync_daily_check_flavor.sh \
   gimli.wu.ac.at::R.check/r-release-gcc/ \
-  ${check_dir}/r-release-linux-x86_64/
+  ${check_output}/r-release-linux-x86_64/
 
 ## Hand-crafted procedures for getting the results for other layouts.
 
 ## r-devel-linux-x86_64-fedora-clang
-mkdir -p "${check_dir}/r-devel-linux-x86_64-fedora-clang"
-(cd "${check_dir}/r-devel-linux-x86_64-fedora-clang";
+mkdir -p "${check_output}/r-devel-linux-x86_64-fedora-clang"
+(cd "${check_output}/r-devel-linux-x86_64-fedora-clang";
   rsync -q --times \
     --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
     r-proj@gannet.stats.ox.ac.uk::Rlogs/clang-times.tab .;
@@ -73,8 +73,8 @@ mkdir -p "${check_dir}/r-devel-linux-x86_64-fedora-clang"
     rm -rf PKGS && mkdir PKGS && cd PKGS && tar xf ../clang.tar.xz)
 
 ## r-devel-linux-x86_64-fedora-gcc
-mkdir -p "${check_dir}/r-devel-linux-x86_64-fedora-gcc"
-(cd "${check_dir}/r-devel-linux-x86_64-fedora-gcc";
+mkdir -p "${check_output}/r-devel-linux-x86_64-fedora-gcc"
+(cd "${check_output}/r-devel-linux-x86_64-fedora-gcc";
   rsync -q --times \
     --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
     r-proj@gannet.stats.ox.ac.uk::Rlogs/gcc-times.tab .;
@@ -85,25 +85,25 @@ mkdir -p "${check_dir}/r-devel-linux-x86_64-fedora-gcc"
     rm -rf PKGS && mkdir PKGS && cd PKGS && tar xf ../gcc.tar.xz)
 
 ## r-devel-windows-x86_64
-mkdir -p "${check_dir}/r-devel-windows-x86_64/PKGS"
+mkdir -p "${check_output}/r-devel-windows-x86_64/PKGS"
 rsync --recursive --delete --times \
   129.217.206.10::CRAN-bin-windows-check/4.3/ \
-  ${check_dir}/r-devel-windows-x86_64/PKGS
+  ${check_output}/r-devel-windows-x86_64/PKGS
 
 ## ## r-devel-windows-x86_64-new-TK
-## mkdir -p "${check_dir}/r-devel-windows-x86_64-new-TK/PKGS"
+## mkdir -p "${check_output}/r-devel-windows-x86_64-new-TK/PKGS"
 ## rsync --recursive --delete --times \
 ##   /home/kalibera/winutf8/ucrt3/CRAN/checks/gcc10-UCRT/export/ \
-##   ${check_dir}/r-devel-windows-x86_64-new-TK/PKGS
+##   ${check_output}/r-devel-windows-x86_64-new-TK/PKGS
 
 ## r-release-windows-x86_64
-mkdir -p "${check_dir}/r-release-windows-x86_64/PKGS"
+mkdir -p "${check_output}/r-release-windows-x86_64/PKGS"
 rsync --recursive --delete --times \
   129.217.206.10::CRAN-bin-windows-check/4.2/ \
-  ${check_dir}/r-release-windows-x86_64/PKGS
+  ${check_output}/r-release-windows-x86_64/PKGS
 
 ## r-release-macos-arm64
-mkdir -p "${check_dir}/r-release-macos-arm64/PKGS"
+mkdir -p "${check_output}/r-release-macos-arm64/PKGS"
 ## FIXME nz.build.rsync.urbanek.info
 rsync --recursive --delete --times \
   --include="/*.Rcheck" \
@@ -112,10 +112,10 @@ rsync --recursive --delete --times \
   --include="/00_*" \
   --exclude="*" \
   cran@nz.build.rsync.urbanek.info:/data/results/big-sur-arm64/results/4.2/ \
-  ${check_dir}/r-release-macos-arm64/PKGS/
+  ${check_output}/r-release-macos-arm64/PKGS/
 
 ## r-release-macos-x86_64
-mkdir -p "${check_dir}/r-release-macos-x86_64/PKGS"
+mkdir -p "${check_output}/r-release-macos-x86_64/PKGS"
 ## FIXME nz.build.rsync.urbanek.info
 rsync --recursive --delete --times \
   --include="/*.Rcheck" \
@@ -124,12 +124,12 @@ rsync --recursive --delete --times \
   --include="/00_*" \
   --exclude="*" \
   cran@nz.build.rsync.urbanek.info:/data/results/high-sierra/4.2/ \
-  ${check_dir}/r-release-macos-x86_64/PKGS/
+  ${check_output}/r-release-macos-x86_64/PKGS/
 
 ## Discontinued as of 2021-12.
 ## ## r-patched-solaris-x86
-## mkdir -p "${check_dir}/r-patched-solaris-x86/PKGS"
-## (cd "${check_dir}/r-patched-solaris-x86";
+## mkdir -p "${check_output}/r-patched-solaris-x86/PKGS"
+## (cd "${check_output}/r-patched-solaris-x86";
 ##   rsync -q --times \
 ##     --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
 ##     r-proj@gannet.stats.ox.ac.uk::Rlogs/Solx86-times.tab .;
@@ -140,13 +140,13 @@ rsync --recursive --delete --times \
 ##     rm -rf PKGS && mkdir PKGS && cd PKGS && tar xf ../Solx86.tar.xz)
 
 ## r-oldrel-windows-ix86+x86_64
-mkdir -p "${check_dir}/r-oldrel-windows-ix86+x86_64/PKGS"
+mkdir -p "${check_output}/r-oldrel-windows-ix86+x86_64/PKGS"
 rsync --recursive --delete --times \
   129.217.206.10::CRAN-bin-windows-check/4.1/ \
-  ${check_dir}/r-oldrel-windows-ix86+x86_64/PKGS
+  ${check_output}/r-oldrel-windows-ix86+x86_64/PKGS
 
 ## r-oldrel-macos-arm64
-mkdir -p "${check_dir}/r-oldrel-macos-arm64/PKGS"
+mkdir -p "${check_output}/r-oldrel-macos-arm64/PKGS"
 ## FIXME nz.build.rsync.urbanek.info
 rsync --recursive --delete --times \
   --include="/*.Rcheck" \
@@ -155,10 +155,10 @@ rsync --recursive --delete --times \
   --include="/00_*" \
   --exclude="*" \
   cran@nz.build.rsync.urbanek.info:/data/results/big-sur-arm64/results/4.1/ \
-  ${check_dir}/r-oldrel-macos-arm64/PKGS/
+  ${check_output}/r-oldrel-macos-arm64/PKGS/
 
 ## r-oldrel-macos-x86_64
-mkdir -p "${check_dir}/r-oldrel-macos-x86_64/PKGS"
+mkdir -p "${check_output}/r-oldrel-macos-x86_64/PKGS"
 ## FIXME nz.build.rsync.urbanek.info
 rsync --recursive --delete --times \
   --include="/*.Rcheck" \
@@ -167,54 +167,54 @@ rsync --recursive --delete --times \
   --include="/00_*" \
   --exclude="*" \
   cran@nz.build.rsync.urbanek.info:/data/results/high-sierra/4.1/ \
-  ${check_dir}/r-oldrel-macos-x86_64/PKGS/
+  ${check_output}/r-oldrel-macos-x86_64/PKGS/
 
 ## BDR memtests
-## mkdir -p "${check_dir}/bdr-memtests"
+## mkdir -p "${check_output}/bdr-memtests"
 ## rsync -q --recursive --delete --times \
 ##   --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
 ##   r-proj@gannet.stats.ox.ac.uk::Rlogs/memtests/ \
-##   ${check_dir}/bdr-memtests
+##   ${check_output}/bdr-memtests
 
 ## Issues
-mkdir -p "${check_dir}/issues/"
+mkdir -p "${check_output}/issues/"
 rsync -q --recursive --delete --times \
   --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
   r-proj@gannet.stats.ox.ac.uk::Rlogs/memtests/*.csv \
-  ${check_dir}/issues
+  ${check_output}/issues
 ## rsync -q --recursive --delete --times \
 ##   --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
 ##   r-proj@gannet.stats.ox.ac.uk::Rlogs/noLD/*.csv \
-##   ${check_dir}/issues
+##   ${check_output}/issues
 ## rsync -q --recursive --delete --times \
 ##   --password-file="${HOME}/lib/bash/rsync_password_file_gannet.txt" \
 ##   r-proj@gannet.stats.ox.ac.uk::Rlogs/LTO.csv \
-##   ${check_dir}/issues
+##   ${check_output}/issues
 
 wget -q \
   https://raw.githubusercontent.com/kalibera/cran-checks/master/rchk/rchk.csv \
-  -O ${check_dir}/issues/rchk.csv
+  -O ${check_output}/issues/rchk.csv
 wget -q \
   https://raw.githubusercontent.com/kalibera/cran-checks/master/rcnst/rcnst.csv \
-  -O ${check_dir}/issues/rcnst.csv
+  -O ${check_output}/issues/rcnst.csv
 wget -q \
   https://raw.githubusercontent.com/kalibera/cran-checks/master/rlibro/rlibro.csv \
-  -O ${check_dir}/issues/rlibro.csv
+  -O ${check_output}/issues/rlibro.csv
 
 ## Dbs.
 
-mkdir -p "${check_dir}/dbs"
+mkdir -p "${check_output}/dbs"
 rsync -q --recursive --times \
   gimli.wu.ac.at::R.check/*.rds \
-  ${check_dir}/dbs  
+  ${check_output}/dbs  
 rsync -q --recursive --times \
   gimli2.wu.ac.at::R.check/*.rds \
-  ${check_dir}/dbs
+  ${check_output}/dbs
 R --slave --no-save <<EOF
   files <- Sys.glob("/srv/www/cran-archive/web/checks/*/*.rds")
   infos <- lapply(files, readRDS)
   names(infos) <- files
-  saveRDS(infos, "${check_dir}/dbs/archive.rds")
+  saveRDS(infos, "${check_output}/dbs/archive.rds")
 EOF
 
 ## Summaries and logs.
@@ -230,10 +230,10 @@ manuals_dir=/srv/ftp/pub/R/doc/manuals
 for flavor in devel ${flavors} ; do
     rm -rf ${manuals_dir}/r-${flavor}
 done    
-cp -pr ${check_dir}/r-devel-linux-x86_64-debian-gcc/Manuals \
+cp -pr ${check_output}/r-devel-linux-x86_64-debian-gcc/Manuals \
     ${manuals_dir}/r-devel
 for flavor in ${flavors} ; do
-  cp -pr ${check_dir}/r-${flavor}-linux-x86_64/Manuals \
+  cp -pr ${check_output}/r-${flavor}-linux-x86_64/Manuals \
     ${manuals_dir}/r-${flavor}
 done  
 

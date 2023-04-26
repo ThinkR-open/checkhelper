@@ -30,13 +30,13 @@ in_example <- function() {
     
     suppressWarnings(attachment::att_amend_desc(path = path))
       
-  check_dir <- tempfile("check_dir")
+  check_output <- tempfile("check_output")
   scratch_dir <- tempfile("dirtmp")
   
   # debugonce(check_clean_userspace)
   expect_warning(
     expect_message(
-      all_files <- check_clean_userspace(pkg = path, check_dir = check_dir),
+      all_files <- check_clean_userspace(pkg = path, check_output = check_output),
       "Some files"),
     "One of the 'Run examples'")
   
@@ -92,6 +92,6 @@ in_example <- function() {
   }
 
   unlink(path, recursive = TRUE)
-  unlink(check_dir, recursive = TRUE)
+  unlink(check_output, recursive = TRUE)
   unlink(scratch_dir, recursive = TRUE)
 })
