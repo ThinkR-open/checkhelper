@@ -45,7 +45,7 @@ Although \code{check_as_cran()} should run on any OS, it will run CRAN parameter
 In the \code{check_output}, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 }
 \examples{
-\donttest{
+\dontrun{
 # Directory to store the check outputs
 check_output <- tempfile("example")
 # Check the current package
