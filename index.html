@@ -175,7 +175,7 @@
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ✔ Setting active project to '/tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4'</span></span>
+<span><span class="co">#&gt; ✔ Setting active project to '/tmp/Rtmp5aSosg/pkg.3df95bd0f67f'</span></span>
 <span><span class="co">#&gt; ✔ Creating 'R/'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
@@ -202,8 +202,8 @@
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Updating pkg.91a53e683a4 documentation</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.91a53e683a4Writing ']8;;file:///tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpWS1RKv/RtmpYskIAy/pkg.91a53e683a4/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.91a53e683a4[+] 1 package(s) added: dplyr.</span></span>
+<span><span class="co">#&gt; Updating pkg.3df95bd0f67f documentation</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.3df95bd0f67fWriting ']8;;file:///tmp/Rtmp5aSosg/pkg.3df95bd0f67f/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/Rtmp5aSosg/pkg.3df95bd0f67f/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.3df95bd0f67f[+] 1 package(s) added: dplyr.</span></span>
 <span></span>
 <span><span class="co"># Files of the package</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -212,7 +212,7 @@
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.91a53e683a4</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.3df95bd0f67f</span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
@@ -221,7 +221,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.91a53e683a4</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.3df95bd0f67f</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 11</span></span>
 <span><span class="co">#&gt;      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷</span></span>
 <span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
@@ -307,146 +307,145 @@ They could be issued from examples, tests or vignettes: <code><a href="reference
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ⠏ |         0 | in_test                                                         </span></span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ══ Results ═════════════════════════════════════════════════════════════════════</span></span>
 <span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =</span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou</span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dossier de ce type</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; type</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ── Running 4 example files ───────────────────────────────────── checkpackage ──</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &gt; cat("#in example", file = tempfile("in_example"))</span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =</span></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou</span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dossier de ce type</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce</span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; type</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 🧿 Your tests look perfect 🧿</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ce type</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ── Running 4 example files ───────────────────────────────────── checkpackage ──</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &gt; cat("#in example", file = tempfile("in_example"))</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ce type</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):</span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in check_clean_userspace(pkg = path, check_output = check_output): One of the</span></span>
 <span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 'Run examples' .R file was created to run examples. You should not bother about</span></span>
 <span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; it</span></span>
 <span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):</span></span>
-<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/callr-": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/callr-": Aucun fichier ou dossier de ce type</span></span>
 <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =</span></span>
-<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/test.*[.](o|c|so)$": Aucun fichier ou</span></span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; dossier de ce type</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; "/"): path[1]="/tmp/Rtmp5aSosg/test.*[.](o|c|so)$": Aucun fichier ou dossier de</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ce type</span></span>
 <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):</span></span>
-<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/foo[.]o$": Aucun fichier ou dossier de ce</span></span>
-<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; type</span></span>
-<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4_0.0.0.9000.tar.gz":</span></span>
-<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[2]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/DESCRIPTION":</span></span>
-<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[3]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/man/my_fun.Rd":</span></span>
-<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[4]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/man/my_not_exported_doc.Rd":</span></span>
-<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[5]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/NAMESPACE":</span></span>
-<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[6]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00_pkg_src/pkg.91a53e683a4/R/function.R":</span></span>
-<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[7]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00check.log":</span></span>
-<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[8]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/00install.out":</span></span>
-<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[9]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4-manual.log":</span></span>
-<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[10]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4-manual.pdf":</span></span>
-<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[11]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/DESCRIPTION":</span></span>
-<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[12]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/aliases.rds":</span></span>
-<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[13]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/AnIndex":</span></span>
-<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[14]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/paths.rds":</span></span>
-<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[15]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/pkg.91a53e683a4.rdb":</span></span>
-<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[16]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/help/pkg.91a53e683a4.rdx":</span></span>
-<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[17]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/html/00Index.html":</span></span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[18]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/html/R.css":</span></span>
-<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[19]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/INDEX":</span></span>
-<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[20]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/features.rds":</span></span>
-<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[21]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/hsearch.rds":</span></span>
-<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[22]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/links.rds":</span></span>
-<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[23]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/nsInfo.rds":</span></span>
-<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[24]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/package.rds":</span></span>
-<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[25]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/Meta/Rd.rds":</span></span>
-<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[26]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/NAMESPACE":</span></span>
-<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[27]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4":</span></span>
-<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[28]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4.rdb":</span></span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[29]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/pkg.91a53e683a4/R/pkg.91a53e683a4.rdx":</span></span>
-<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
-<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[30]="/tmp/RtmpWS1RKv/RtmpYskIAy/file91a55996461d/pkg.91a53e683a4.Rcheck/Rdlatex.log":</span></span>
-<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
-<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
-<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   source       problem where                                               file </span></span>
-<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;                                               &lt;chr&gt;</span></span>
-<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Unit tests   added   /tmp/RtmpWS1RKv/RtmpYskIAy/pkg-91a5111d5f0c/checkp… /tmp…</span></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Unit tests   added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…</span></span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Run examples added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…</span></span>
-<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Run examples added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…</span></span>
-<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Full check   added   /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…</span></span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Full check   deleted /tmp/RtmpWS1RKv/RtmpYskIAy                          /tmp…</span></span></code></pre></div>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[1]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f_0.0.0.9000.tar.gz":</span></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[2]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/DESCRIPTION":</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[3]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/man/my_fun.Rd":</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[4]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/man/my_not_exported_doc.Rd":</span></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[5]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/NAMESPACE":</span></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[6]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00_pkg_src/pkg.3df95bd0f67f/R/function.R":</span></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[7]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00check.log":</span></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[8]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/00install.out":</span></span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[9]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f-manual.log":</span></span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[10]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f-manual.pdf":</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[11]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/DESCRIPTION":</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[12]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/aliases.rds":</span></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[13]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/AnIndex":</span></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[14]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/paths.rds":</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[15]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/pkg.3df95bd0f67f.rdb":</span></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[16]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/help/pkg.3df95bd0f67f.rdx":</span></span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[17]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/html/00Index.html":</span></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[18]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/html/R.css":</span></span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[19]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/INDEX":</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[20]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/features.rds":</span></span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[21]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/hsearch.rds":</span></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[22]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/links.rds":</span></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[23]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/nsInfo.rds":</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[24]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/package.rds":</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[25]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/Meta/Rd.rds":</span></span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[26]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/NAMESPACE":</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[27]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f":</span></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[28]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f.rdb":</span></span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[29]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/pkg.3df95bd0f67f/R/pkg.3df95bd0f67f.rdx":</span></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in normalizePath(all_local[[what]], winslash = "/"):</span></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; path[30]="/tmp/Rtmp5aSosg/file3df917cc1de8/pkg.3df95bd0f67f.Rcheck/Rdlatex.log":</span></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aucun fichier ou dossier de ce type</span></span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   source       problem where                                         file       </span></span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;                                         &lt;chr&gt;      </span></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Unit tests   added   /tmp/Rtmp5aSosg/pkg-3df94083dc98/checkpackage /tmp/Rtmp5…</span></span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Unit tests   added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…</span></span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Run examples added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…</span></span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Run examples added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…</span></span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 Full check   added   /tmp/Rtmp5aSosg                               /tmp/Rtmp5…</span></span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 Full check   deleted /tmp/Rtmp5aSosg                               /tmp/Rtmp5…</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="experimental-check-as-cran-with-cran-global-variables">Experimental: Check as CRAN with CRAN global variables<a class="anchor" aria-label="anchor" href="#experimental-check-as-cran-with-cran-global-variables"></a>
 </h3>
 <p>Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See <a href="https://github.com/RConsortium/r-repositories-wg/issues/17" class="external-link uri">https://github.com/RConsortium/r-repositories-wg/issues/17</a> for more details.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">check_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"example"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">check_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"example"</span><span class="op">)</span></span>
 <span><span class="co"># Check the current directory</span></span>
-<span><span class="fu"><a href="reference/check_as_cran.html">check_as_cran</a></span><span class="op">(</span>check_dir <span class="op">=</span> <span class="va">check_dir</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/check_as_cran.html">check_as_cran</a></span><span class="op">(</span>check_output <span class="op">=</span> <span class="va">check_output</span><span class="op">)</span></span>
 <span><span class="co"># Open directory with all outputs</span></span>
-<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">check_dir</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="va">check_output</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -492,8 +491,8 @@ They could be issued from examples, tests or vignettes: <code><a href="reference
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Sebastien Rochette <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1565-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Vincent Guyader <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0671-9270" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Sebastien Rochette <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-1565-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Vincent Guyader <br><small class="roles"> Maintainer </small> <a href="https://orcid.org/0000-0003-0671-9270" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Arthur Bréant <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1668-0963" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>

@@ -124,14 +124,70 @@ created by roxygen before running each roclet.</p></dd>
     <h2>Value</h2>
     
 
-<p>Tibble of all functions with information whether documentation is correct or not</p>
+<p>a list with the 3 data.frames with the missing tags</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># What you will do from inside your package</span></span></span>
 <span class="r-in"><span><span class="fu">find_missing_tags</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># A reproducible example on a test package</span></span></span>
+<span class="r-in"><span><span class="va">pkg_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'/tmp/RtmpAiHtaz/pkg-16df141aa4e7/checkpackage/'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/RtmpAiHtaz/pkg-16df141aa4e7/checkpackage'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'R/'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'DESCRIPTION'</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Package</span>: checkpackage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Title</span>: What the Package Does (One Line, Title Case)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Version</span>: 0.0.0.9000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Authors@R</span> (parsed):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     * First Last &lt;first.last@example.com&gt; [aut, cre] (YOUR-ORCID-ID)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Description</span>: What the package does (one paragraph).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">License</span>: `use_mit_license()`, `use_gpl3_license()` or friends to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pick a license</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Encoding</span>: UTF-8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Roxygen</span>: list(markdown = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">RoxygenNote</span>: 7.2.3</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'NAMESPACE'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'&lt;no active project&gt;'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Updating checkpackage documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">NAMESPACE</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">NAMESPACE</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">my_long_fun_name_for_multiple_lines_globals.Rd</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">my_plot.Rd</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">my_not_exported_doc.Rd</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [+] 1 package(s) added: dplyr.</span>
+<span class="r-in"><span><span class="fu">find_missing_tags</span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[function.R:4] @return requires a value</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Missing or empty return value for exported functions: my_long_fun_name_for_multiple_lines_globals</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[function.R:4] @return requires a value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $package_doc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $data</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $functions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 11</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      id filename  topic has_export has_return return_value has_nord rdname_value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1 function… my_l… TRUE       FALSE      <span style="color: #949494;">""</span>           FALSE    my_long_fun…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2 function… my_p… TRUE       TRUE       <span style="color: #949494;">"</span>GGplot for… FALSE    my_plot     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3 function… my_n… FALSE      FALSE      <span style="color: #949494;">""</span>           FALSE    my_not_expo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4 function… my_n… FALSE      FALSE      <span style="color: #949494;">""</span>           TRUE     my_not_expo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5 function… my_p… TRUE       TRUE       <span style="color: #949494;">"</span>GGplot for… FALSE    my_plot     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: not_empty_return_value &lt;lgl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   test_has_export_and_return &lt;chr&gt;, test_has_export_or_has_nord &lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </div>
