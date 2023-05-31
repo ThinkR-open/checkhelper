@@ -1,8 +1,8 @@
 #! /bin/sh
 
-check_output="${HOME}/tmp/CRAN"
+check_dir="${HOME}/tmp/CRAN"
 ## R_check_library="${HOME}/tmp/R.check/Library"
-R_check_library="${check_output}/Library"
+R_check_library="${check_dir}/Library"
 sh_scripts_dir="${HOME}/lib/bash"
 
 xvfb_run='xvfb-run -a --server-args="-screen 0 1024x768x24"'
@@ -13,7 +13,7 @@ export _R_CHECK_CRAN_INCOMING_USE_ASPELL_=true
 export R_GC_NGROWINCRFRAC=0.2
 export R_GC_VGROWINCRFRAC=0.2
 
-update_check_output=true
+update_check_dir=true
 ignore_check_stoplist=false
 check_reverse_depends=false
 which_reverse_depends=
@@ -25,7 +25,7 @@ cargs="--as-cran"
 while test -n "${1}"; do
     case ${1} in
 	-n)
-	    update_check_output=false ;;
+	    update_check_dir=false ;;
 	-f)
 	    ignore_check_stoplist=true ;;
 	-r)
@@ -50,13 +50,13 @@ done
 ## rm -rf "${R_check_library}"
 ## mkdir -p "${R_check_library}"
 
-if ${update_check_output}; then
-    rm -rf "${check_output}"
+if ${update_check_dir}; then
+    rm -rf "${check_dir}"
     getIncoming 2>/dev/null
     mkdir -p "${R_check_library}"
 fi
 
-cd ${check_output}
+cd ${check_dir}
 packages=`ls *.tar.gz 2>/dev/null`
 
 if test -z "${packages}"; then

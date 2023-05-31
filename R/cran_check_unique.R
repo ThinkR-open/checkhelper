@@ -1,14 +1,21 @@
 #' The code as issued from CRAN (almost) directly
 #'
-#' @param check_output file.path(normalizePath("~"), "tmp", "CRAN") where to put tar.gz
-#' @param lib_dir lib_dir <- "../lib/"
+#' @param check_dir Path where to store the tar.gz outputs of the checks
+#' @param lib_dir Path to "lib/" directory as download on CRAN servers
 #' @param scratch scratch directory (temporary)
 #' @param Ncpus Number of CPUS to use
 #'
-#' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
+#' @details
+#' This file should generally not be modified except to update according to last changes on CRAN
+#'
+#' @references https://svn.r-project.org/R-dev-web/trunk/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
 #'
 #' @noRd
-check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
+cran_check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
+
+  # Original check_dir
+  # check_dir <- file.path(normalizePath("~"), "tmp", "CRAN")
+
   user <- Sys.info()["user"]
   if (user == "unknown") user <- Sys.getenv("LOGNAME")
   # Sys.setenv(
@@ -51,7 +58,7 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
   # }
 
   check_args <- character() # No longer "--as-cran" ...
-  update_check_output <- TRUE
+  update_check_dir <- TRUE
   use_check_stoplists <- FALSE
   # Ncpus <- 6
 
@@ -157,14 +164,14 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
     q("no", runLast = FALSE)
   }
   if (any(ind <- (args == "-n"))) {
-    update_check_output <- FALSE
+    update_check_dir <- FALSE
     args <- args[!ind]
   }
   if (any(ind <- (args == "-s"))) {
     use_check_stoplists <- TRUE
     args <- args[!ind]
   }
-  run_CRAN_incoming_feasibility_checks <- update_check_output
+  run_CRAN_incoming_feasibility_checks <- update_check_dir
   if (any(ind <- (args == "-c"))) {
     run_CRAN_incoming_feasibility_checks <- TRUE
     args <- args[!ind]
@@ -200,7 +207,7 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
     args <- args[!ind]
   }
   if (any(ind <- startsWith(args, "-d="))) {
-    check_output <- substring(args[ind][1L], 4L)
+    check_dir <- substring(args[ind][1L], 4L)
     args <- args[!ind]
   }
   if (any(ind <- startsWith(args, "-a="))) {
@@ -214,10 +221,10 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
     ))
   }
 
-  # if (update_check_output) {
-  #   unlink(check_output, recursive = TRUE)
+  # if (update_check_dir) {
+  #   unlink(check_dir, recursive = TRUE)
   #   if (system2("getIncoming",
-  #     c("-p KH/*.tar.gz", "-d", check_output),
+  #     c("-p KH/*.tar.gz", "-d", check_dir),
   #     stderr = FALSE
   #   )) {
   #     message("no packages to check")
@@ -317,7 +324,7 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
   message("-- check_packages_in_dir --")
 
   pfiles <-
-    tools::check_packages_in_dir(check_output,
+    tools::check_packages_in_dir(check_dir,
       check_args = check_args,
       check_args_db = check_args_db,
       reverse = reverse,
@@ -328,13 +335,13 @@ check_unique <- function(check_output, lib_dir, scratch, Ncpus) {
 
   if (length(pfiles)) {
     writeLines("\nDepends:")
-    tools::summarize_check_packages_in_dir_depends(check_output)
+    tools::summarize_check_packages_in_dir_depends(check_dir)
     writeLines("\nTimings:")
-    tools::summarize_check_packages_in_dir_timings(check_output)
+    tools::summarize_check_packages_in_dir_timings(check_dir)
     writeLines("\nResults:")
-    tools::summarize_check_packages_in_dir_results(check_output)
+    tools::summarize_check_packages_in_dir_results(check_dir)
     writeLines("\nDetails:")
-    tools::check_packages_in_dir_details(check_output)
+    tools::check_packages_in_dir_details(check_dir)
   }
 }
 

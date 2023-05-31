@@ -1,6 +1,6 @@
 #! /bin/sh
 
-check_output="${HOME}/tmp/R.check"
+check_dir="${HOME}/tmp/R.check"
 target_dir="/srv/www/nosvn/R.check"
 target_url="https://www.r-project.org/nosvn/R.check"
 R_scripts_dir="${HOME}/lib/R/Scripts"
@@ -24,7 +24,7 @@ R_flavors=" \
 test -w ${target_dir} || exit 1
 
 for flavor in ${R_flavors}; do
-  timestamp="${check_output}/.cache/${flavor}/t_max.rds"
+  timestamp="${check_dir}/.cache/${flavor}/t_max.rds"
   test -d "${target_dir}/${flavor}" && test -f "${timestamp}" && \
     test "${target_dir}/${flavor}" -nt "${timestamp}" && continue
   case "${flavor}" in
@@ -39,9 +39,9 @@ for flavor in ${R_flavors}; do
   for f in ${target_dir}/${flavor}/*-00install.txt; do rm -f ${f}; done
   for f in ${target_dir}/${flavor}/*-00check.html; do rm -f ${f}; done
   for f in ${target_dir}/${flavor}/*-00install.html; do rm -f ${f}; done
-  test -d ${check_output}/${flavor}/PKGS || continue
-  check_outputs=`ls -d ${check_output}/${flavor}/PKGS/*.Rcheck 2>/dev/null`
-  for d in ${check_outputs}; do
+  test -d ${check_dir}/${flavor}/PKGS || continue
+  check_dirs=`ls -d ${check_dir}/${flavor}/PKGS/*.Rcheck 2>/dev/null`
+  for d in ${check_dirs}; do
     test -r ${d}/00check.log || continue
     ## A real check log should start with '* using log directory': skip
     ## everything else.

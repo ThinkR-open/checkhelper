@@ -10,6 +10,14 @@ flat_check_clean_userspace.Rmd:
   R: R/check_clean_userspace.R
   tests: tests/testthat/test-check_clean_userspace.R
   vignettes: vignettes/no-files-left-after-check.Rmd
+  inflate:
+    pkg: checkhelper
+    flat_file: dev/flat_check_clean_userspace.Rmd
+    vignette_name: No files left after check
+    open_vignette: no
+    check: no
+    document: no
+    overwrite: ask
 flat_create_example_pkg.Rmd:
   path: dev/flat_create_example_pkg.Rmd
   state: active

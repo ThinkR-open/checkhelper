@@ -1,7 +1,7 @@
-check_output <- file.path(normalizePath("~"), "tmp", "CRAN")
-if (!dir.exists(check_output)) {
-  dir.create(check_output)
-  message(check_output, " Created")
+check_dir <- file.path(normalizePath("~"), "tmp", "CRAN")
+if (!dir.exists(check_dir)) {
+  dir.create(check_dir)
+  message(check_dir, " Created")
 }
 
 # Place lib directory with all .sh files is
@@ -41,7 +41,7 @@ if(dir.exists(path <- file.path(normalizePath("~"), "tmp", "scratch")))
     Sys.setenv("TMPDIR" = path)
 
 check_args <- character()               # No longer "--as-cran" ...
-update_check_output <- TRUE
+update_check_dir <- TRUE
 use_check_stoplists <- FALSE
 Ncpus <- 6
 
@@ -128,14 +128,14 @@ if(any(ind <- (args %in% c("-h", "--help")))) {
     q("no", runLast = FALSE)
 }
 if(any(ind <- (args == "-n"))) {
-    update_check_output <- FALSE
+    update_check_dir <- FALSE
     args <- args[!ind]
 }
 if(any(ind <- (args == "-s"))) {
     use_check_stoplists <- TRUE
     args <- args[!ind]
 }
-run_CRAN_incoming_feasibility_checks <- update_check_output
+run_CRAN_incoming_feasibility_checks <- update_check_dir
 if(any(ind <- (args == "-c"))) {
     run_CRAN_incoming_feasibility_checks <- TRUE
     args <- args[!ind]
@@ -165,7 +165,7 @@ if(any(ind <- startsWith(args, "-N="))) {
     args <- args[!ind]
 }
 if(any(ind <- startsWith(args, "-d="))) {
-    check_output <- substring(args[ind][1L], 4L)
+    check_dir <- substring(args[ind][1L], 4L)
     args <- args[!ind]
 }
 if(any(ind <- startsWith(args, "-a="))) {
@@ -177,10 +177,10 @@ if(length(args)) {
                paste(sQuote(args), collapse = ", ")))
 }
 
-# if(update_check_output) {
-#     unlink(check_output, recursive = TRUE)
+# if(update_check_dir) {
+#     unlink(check_dir, recursive = TRUE)
 #     if(system2("getIncoming",
-#                c("-p KH/*.tar.gz", "-d", check_output),
+#                c("-p KH/*.tar.gz", "-d", check_dir),
 #                stderr = FALSE)) {
 #         message("no packages to check")
 #         q("no", status = 1, runLast = FALSE)
@@ -263,7 +263,7 @@ if(!is.null(reverse))
     reverse$repos <- getOption("repos")["CRAN"]
 
 pfiles <-
-    tools::check_packages_in_dir(check_output,
+    tools::check_packages_in_dir(check_dir,
                                  check_args = check_args,
                                  check_args_db = check_args_db,
                                  reverse = reverse,
@@ -273,10 +273,10 @@ pfiles <-
 
 if(length(pfiles)) {
     writeLines("\nDepends:")
-    tools::summarize_check_packages_in_dir_depends(check_output)
+    tools::summarize_check_packages_in_dir_depends(check_dir)
     writeLines("\nTimings:")
-    tools::summarize_check_packages_in_dir_timings(check_output)
+    tools::summarize_check_packages_in_dir_timings(check_dir)
     writeLines("\nResults:")
-    tools::summarize_check_packages_in_dir_results(check_output)
+    tools::summarize_check_packages_in_dir_results(check_dir)
 }
 

@@ -97,7 +97,7 @@ the_check <- function(pkg = ".", check_output, scratch, Ncpus = 1, as_command = 
   withr::with_envvar(new = env_values, {
     if (!as_command) {
       Sys.setenv("TMPDIR" = scratch)
-      check_unique(check_output, lib_dir, scratch, Ncpus)
+      cran_check_unique(check_output, lib_dir, scratch, Ncpus)
     } else {
       message("This may only run on Linux OS with sh")
       # Run as command line for Linux only

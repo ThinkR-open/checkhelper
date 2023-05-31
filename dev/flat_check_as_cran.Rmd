@@ -22,7 +22,7 @@ Here we use the CRAN settings and way of managing incoming packages used for Lin
 Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.  
 Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.  
 
-In the `check_output`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+In the `check_output` directory, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 
 
 
@@ -115,7 +115,7 @@ the_check <- function(pkg = ".", check_output, scratch, Ncpus = 1, as_command = 
   withr::with_envvar(new = env_values, {
     if (!as_command) {
       Sys.setenv("TMPDIR" = scratch)
-      check_unique(check_output, lib_dir, scratch, Ncpus)
+      cran_check_unique(check_output, lib_dir, scratch, Ncpus)
     } else {
       message("This may only run on Linux OS with sh")
       # Run as command line for Linux only
