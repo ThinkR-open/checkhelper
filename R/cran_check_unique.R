@@ -1,14 +1,21 @@
 #' The code as issued from CRAN (almost) directly
 #'
-#' @param check_dir file.path(normalizePath("~"), "tmp", "CRAN") where to put tar.gz
-#' @param lib_dir lib_dir <- "../lib/"
+#' @param check_dir Path where to store the tar.gz outputs of the checks
+#' @param lib_dir Path to "lib/" directory as download on CRAN servers
 #' @param scratch scratch directory (temporary)
 #' @param Ncpus Number of CPUS to use
 #'
-#' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
+#' @details
+#' This file should generally not be modified except to update according to last changes on CRAN
+#'
+#' @references https://svn.r-project.org/R-dev-web/trunk/CRAN/QA/Kurt/lib/R/Scripts/check_CRAN_incoming.R
 #'
 #' @noRd
-check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
+cran_check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
+
+  # Original check_dir
+  # check_dir <- file.path(normalizePath("~"), "tmp", "CRAN")
+
   user <- Sys.info()["user"]
   if (user == "unknown") user <- Sys.getenv("LOGNAME")
   # Sys.setenv(

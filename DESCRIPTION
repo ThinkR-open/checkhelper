@@ -1,10 +1,10 @@
 Package: checkhelper
 Title: Deal with Check Outputs
-Version: 0.1.0.9000
+Version: 0.1.0
 Authors@R: c(
-    person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = c("aut", "cre"),
+    person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = "aut",
            comment = c(ORCID = "0000-0002-1565-9313")),
-    person("Vincent", "Guyader", , "vincent@thinkr.fr", role = "aut",
+    person("Vincent", "Guyader", , "vincent@thinkr.fr", role = "cre",
            comment = c(ORCID = "0000-0003-0671-9270")),
     person("Arthur", "Bréant", , "arthur@thinkr.fr", role = "aut",
            comment = c(ORCID = "0000-0003-1668-0963")),
@@ -17,7 +17,6 @@ URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Imports: 
-    attachment,
     cli,
     desc,
     devtools,
@@ -31,18 +30,19 @@ Imports:
     roxygen2,
     stringr,
     tools,
-    usethis,
     utils,
     whisker (>= 0.4),
     withr
 Suggests: 
+    attachment,
     callr,
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    usethis
 VignetteBuilder: 
     knitr
-Config/fusen/version: 0.5.0.9000
+Config/fusen/version: 0.5.0.9001
 Config/Needs/website: ThinkR-open/thinkrtemplate
 Encoding: UTF-8
 Language: en-US

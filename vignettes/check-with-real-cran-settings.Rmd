@@ -28,7 +28,7 @@ Here we use the CRAN settings and way of managing incoming packages used for Lin
 Scripts and options used are directly issued from the GitHub mirror repository of the CRAN machines: <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>.  
 Although `check_as_cran()` should run on any OS, it will run CRAN parameters originally set up for Linux machines.  
 
-In the `check_dir`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
+In the `check_output` directory, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 
 
 
@@ -36,11 +36,11 @@ In the `check_dir`, you will get the same outputs, in the same format as used by
 ```{r examples-check_as_cran, eval = FALSE}
 #' \dontrun{
 # Directory to store the check outputs
-check_dir <- tempfile("example")
+check_output <- tempfile("example")
 # Check the current package
-check_as_cran(check_dir = check_dir)
+check_as_cran(check_output = check_output)
 # Open directory with all outputs
-utils::browseURL(check_dir)
+utils::browseURL(check_output)
 #' }
 ```
 

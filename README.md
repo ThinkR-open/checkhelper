@@ -242,7 +242,7 @@ check_clean_userspace()
     #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
     #> path[1]="/tmp/Rtmp5aSosg/foo[.]o$": Aucun fichier ou dossier de ce type
-    #> Warning in check_clean_userspace(pkg = path, check_dir = check_dir): One of the
+    #> Warning in check_clean_userspace(pkg = path, check_output = check_output): One of the
     #> 'Run examples' .R file was created to run examples. You should not bother about
     #> it
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
@@ -360,11 +360,11 @@ package as CRAN does it with their env. variables. See
 details.
 
 ``` r
-check_dir <- tempfile("example")
+check_output <- tempfile("example")
 # Check the current directory
-check_as_cran(check_dir = check_dir)
+check_as_cran(check_output = check_output)
 # Open directory with all outputs
-utils::browseURL(check_dir)
+utils::browseURL(check_output)
 ```
 
 ## Code of Conduct

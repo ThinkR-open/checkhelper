@@ -1,5 +1,3 @@
-# checkhelper (0.1.0.9000)
-
 # checkhelper 0.1.0
 
 ## Major changes
@@ -8,18 +6,15 @@
 
 ## Minor changes
 
-### Prepare for CRAN
-
 - Clean userspace after examples and tests
 - Export `create_example_pkg()` to get examples in functions documentation
 
-### Bring the package up to standard (#25)
+## Bring the package up to standard (#25)
 
 - Modify the LICENCE to MIT
 - Update Code Of Conduct to a recent version
 - Add a package documentation
 - Update Github Actions workflows
-- Propose a release of version 0.0.1
 
 # checkhelper 0.0.1
 

@@ -2,21 +2,21 @@
 
 test_that("check_as_cran works", {
   path <- suppressWarnings(create_example_pkg())
-  check_dir <- tempfile("example")
+  check_output <- tempfile("example")
 
   if (interactive()) {
-    expect_error(check_as_cran(pkg = path, check_dir = check_dir), regexp = NA)
+    expect_error(check_as_cran(pkg = path, check_output = check_output), regexp = NA)
   } else {
-    check_callr <- function(pkg, check_dir) {
+    check_callr <- function(pkg, check_output) {
       library(checkhelper)
-      check_as_cran(pkg = pkg, check_dir = check_dir)
+      check_as_cran(pkg = pkg, check_output = check_output)
     }
 
     # need to run in another env. inside check in check
-    expect_error(callr::r(check_callr, args = list(pkg = path, check_dir = check_dir)), regexp = NA)
+    expect_error(callr::r(check_callr, args = list(pkg = path, check_output = check_output)), regexp = NA)
   }
   # check_as_cran(pkg = "/mnt/Data/github/ThinkR-open/attachment")
   # Check that env is clean - only manually
   # Sys.getenv("_R_CHECK_AUTOCONF_")
-  unlink(check_dir, recursive = TRUE)
+  unlink(check_output, recursive = TRUE)
 })

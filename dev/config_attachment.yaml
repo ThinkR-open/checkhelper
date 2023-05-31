@@ -1,0 +1,16 @@
+path.n: NAMESPACE
+path.d: DESCRIPTION
+dir.r: R
+dir.v: vignettes
+dir.t: tests
+extra.suggests:
+  - attachment
+  - usethis
+pkg_ignore:
+  - attachment
+  - usethis
+document: yes
+normalize: yes
+inside_rmd: no
+must.exist: yes
+check_if_suggests_is_installed: yes

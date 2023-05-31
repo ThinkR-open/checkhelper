@@ -4,12 +4,12 @@
 \alias{check_clean_userspace}
 \title{check_clean_userspace}
 \usage{
-check_clean_userspace(pkg = ".", check_dir = tempfile("dircheck"))
+check_clean_userspace(pkg = ".", check_output = tempfile("dircheck"))
 }
 \arguments{
 \item{pkg}{Path to package to check}
 
-\item{check_dir}{Path to directory where to store check results}
+\item{check_output}{Path to directory where to store check results}
 }
 \value{
 data.frame of files that are left after checks

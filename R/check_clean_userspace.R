@@ -6,7 +6,7 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param pkg Path to package to check
-#' @param check_dir Path to directory where to store check results
+#' @param check_output Path to directory where to store check results
 #'
 #' @return data.frame of files that are left after checks
 #' @export
@@ -16,7 +16,7 @@
 #' all_files <- check_clean_userspace()
 #' all_files
 #' }
-check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
+check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")) {
 
   scratch_dir <- tempdir() #character(0)
 
@@ -28,7 +28,7 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
   on.exit(Sys.setenv("TMPDIR" = tmp_orig))
 
   if (!dir.exists(scratch_dir)) {dir.create(scratch_dir)}
-  if (!dir.exists(check_dir)) {dir.create(check_dir)}
+  if (!dir.exists(check_output)) {dir.create(check_output)}
 
   all_files <- tibble(
     source = character(0),
@@ -51,7 +51,7 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
     if (length(is.test) != 0) {
       cli::cli_rule("Unit tests")
       devtools::test(pkg = pkg, stop_on_failure = FALSE)
-      all_files <- what_changed(local_shot, scratch_shot, source = "Unit tests", all_files, check_dir = check_dir)
+      all_files <- what_changed(local_shot, scratch_shot, source = "Unit tests", all_files, check_output = check_output)
     }
 
     # Update shots
@@ -61,7 +61,7 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
     # Verify examples do not leave files ----
     cli::cli_rule("Run examples")
     devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
-    all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_dir)
+    all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
     if (any(all_files$source == "Run examples")) {
       warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
     }
@@ -72,14 +72,14 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
     # Verify Full check ----
     cli::cli_rule("Full check")
-    rcmdcheck::rcmdcheck(path = pkg, check_dir = check_dir, args = c("--no-manual", "--as-cran"), quiet = TRUE)
+    rcmdcheck::rcmdcheck(path = pkg, check_dir = check_output, args = c("--no-manual", "--as-cran"), quiet = TRUE)
     # browseURL(dircheck)
-    all_files <- what_changed(local_shot, scratch_shot, source = "Full check", all_files, check_dir)
+    all_files <- what_changed(local_shot, scratch_shot, source = "Full check", all_files, check_output)
 
     # Verify Full check - check dir ----
     pkgname <- read.dcf(file.path(pkg, "DESCRIPTION"))[,"Package"]
 
-    the_dir <- list.files(file.path(check_dir), pattern = paste0(pkgname, ".Rcheck"), full.names = TRUE)
+    the_dir <- list.files(file.path(check_output), pattern = paste0(pkgname, ".Rcheck"), full.names = TRUE)
     # Same tests, no new files in test during check
     still_files <- list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat"), full.names = TRUE)[
       !list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat")) %in%
@@ -108,7 +108,7 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
     the_v <- devtools::build_vignettes(pkg = pkg)
     if (!all(is.null(the_v))) {
       devtools::clean_vignettes(pkg = pkg)
-      all_files <- what_changed(local_shot, scratch_shot, source = "Build Vignettes", all_files, check_dir)
+      all_files <- what_changed(local_shot, scratch_shot, source = "Build Vignettes", all_files, check_output)
     }
 
   return(all_files)
@@ -116,11 +116,11 @@ check_clean_userspace <- function(pkg = ".", check_dir = tempfile("dircheck")) {
 
 
 #' @noRd
-what_changed <- function(local_shot, scratch_shot, source, all_files, check_dir) {
+what_changed <- function(local_shot, scratch_shot, source, all_files, check_output) {
 
   # Ignore files issued from checks themselves
   file.no.problem <- paste0(
-    normalizePath(check_dir, winslash = "/"),
+    normalizePath(check_output, winslash = "/"),
     "|[.]Rcheck/|",
     normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
     "|",
