@@ -95,14 +95,24 @@ pkgload::load_all()
 # Generate documentation and deal with dependencies
 attachment::att_amend_desc(
   pkg_ignore = c("attachment", "usethis"),
-  extra.suggests = c("attachment", "usethis"))
+  extra.suggests = c("attachment", "usethis"),
+  update.config = TRUE
+)
 
 # Check the package
 devtools::check()
 devtools::check(build_args = "no-vignettes")
 
+# Inflate all ----
+fusen::inflate_all_no_check()
+knitr::knit(
+  input = here::here("vignettes/deal-with-check-outputs.Rmd"),
+  output = here::here("vignettes/deal-with-check-outputs.Rmd")
+)
+
 # Styler ----
 styler::style_pkg()
+styler::style_file(list.files("dev", pattern = "[.](Rmd|qmd|rmd)$", full.names = TRUE))
 ```
 
 # Share the package

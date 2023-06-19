@@ -49,7 +49,6 @@ In the \code{check_output}, you will get the same outputs, in the same format as
 # Directory to store the check outputs
 check_output <- tempfile("example")
 # Check the current package
-
 check_as_cran(check_output = check_output)
 # Open directory with all outputs
 utils::browseURL(check_output)

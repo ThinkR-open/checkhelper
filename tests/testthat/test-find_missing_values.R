@@ -65,7 +65,7 @@ test_that("find_missing_tags works", {
     c("ok", "ok", "not_ok", "ok", "ok")
   )
 
-  withr::with_dir(path, {
+  usethis::with_project(path, {
     usethis::use_package_doc()
     usethis::use_pipe()
     usethis::use_data(iris)

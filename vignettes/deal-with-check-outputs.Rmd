@@ -2,7 +2,7 @@
 title: "Deal with check outputs"
 output: rmarkdown::html_vignette
 author: "Sébastien Rochette"
-date: "2023-02-17"
+date: "2023-06-19"
 vignette: >
   %\VignetteIndexEntry{deal-with-check-outputs}
   %\VignetteEngine{knitr::rmarkdown}
@@ -37,12 +37,12 @@ usethis::create_package(pkg_path, open = FALSE)
 ```
 
 ```
-#> ✔ Setting active project to '/tmp/RtmpUd8sdv/pkg.120b653df637d'
+#> ✔ Setting active project to '/tmp/RtmpOmxnjd/pkg.e0fa160b8054'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
-#> ✔ Writing 'pkg.120b653df637d.Rproj'
-#> ✔ Adding '^pkg\\.120b653df637d\\.Rproj$' to '.Rbuildignore'
+#> ✔ Writing 'pkg.e0fa160b8054.Rproj'
+#> ✔ Adding '^pkg\\.e0fa160b8054\\.Rproj$' to '.Rbuildignore'
 #> ✔ Adding '.Rproj.user' to '.gitignore'
 #> ✔ Adding '^\\.Rproj\\.user$' to '.Rbuildignore'
 #> ✔ Setting active project to '/mnt/Data/github/ThinkR-open/checkhelper'
@@ -68,13 +68,14 @@ attachment::att_amend_desc(path = pkg_path)
 ```
 
 ```
-#> Updating pkg.120b653df637d documentation
-#> ℹ Loading pkg.120b653df637dWriting ']8;;file:///tmp/RtmpUd8sdv/pkg.120b653df637d/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpUd8sdv/pkg.120b653df637d/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'ℹ Loading pkg.120b653df637d[+] 1 package(s) added: dplyr.
+#> Saving attachment parameters to yaml config file
+#> Updating pkg.e0fa160b8054 documentation
+#> ℹ Loading pkg.e0fa160b8054Writing ']8;;file:///tmp/RtmpOmxnjd/pkg.e0fa160b8054/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpOmxnjd/pkg.e0fa160b8054/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'ℹ Loading pkg.e0fa160b8054[+] 1 package(s) added: dplyr.
 ```
 
 ```r
 # Files of the package
-fs::dir_tree(pkg_path, recursive = TRUE)
+fs::dir_tree(pkg_path, recurse = TRUE)
 ```
 
 ## Avoid missing return value for exported functions
@@ -89,26 +90,31 @@ find_missing_tags(pkg_path)
 ```
 
 ```
-#> ℹ Loading pkg.120b653df637d
+#> ℹ Loading pkg.e0fa160b8054
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.120b653df637d
+#> ℹ Loading pkg.e0fa160b8054
 ```
 
 ```
+#> $package_doc
+#> # A tibble: 0 × 0
+#> 
+#> $data
+#> # A tibble: 0 × 0
+#> 
+#> $functions
 #> # A tibble: 1 × 11
-#>      id filename   topic  has_ex…¹ has_r…² retur…³
-#>   <int> <chr>      <chr>  <lgl>    <lgl>   <chr>  
-#> 1     1 function.R my_fun TRUE     FALSE   ""     
-#> # … with 5 more variables: has_nord <lgl>,
-#> #   rdname_value <chr>,
-#> #   not_empty_return_value <lgl>,
+#>      id filename   topic  has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵
+#>   <int> <chr>      <chr>  <lgl>   <lgl>   <chr>   <lgl>   <chr>  
+#> 1     1 function.R my_fun TRUE    FALSE   ""      FALSE   my_fun 
+#> # … with 3 more variables: not_empty_return_value <lgl>,
 #> #   test_has_export_and_return <chr>,
-#> #   test_has_export_or_has_nord <chr>, and
-#> #   abbreviated variable names ¹​has_export,
-#> #   ²​has_return, ³​return_value
+#> #   test_has_export_or_has_nord <chr>, and abbreviated variable
+#> #   names ¹​has_export, ²​has_return, ³​return_value, ⁴​has_nord,
+#> #   ⁵​rdname_value
 ```
 
 ## Deal with check outputs
@@ -128,28 +134,26 @@ globals
 ```
 #> $globalVariables
 #> # A tibble: 4 × 7
-#>   notes      filep…¹ fun   is_fu…² is_gl…³ varia…⁴
-#>   <chr>      <chr>   <chr> <lgl>   <lgl>   <chr>  
-#> 1 my_fun: n… -       my_f… FALSE   TRUE    data   
-#> 2 my_fun: n… -       my_f… FALSE   TRUE    x      
-#> 3 my_fun: n… -       my_f… FALSE   TRUE    y      
-#> 4 my_fun: n… -       my_f… FALSE   TRUE    new_col
-#> # … with 1 more variable: proposed <chr>, and
-#> #   abbreviated variable names ¹​filepath,
-#> #   ²​is_function, ³​is_global_variable, ⁴​variable
+#>   notes             filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>             <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visib… -       my_f… FALSE   TRUE    data    " impo…
+#> 2 my_fun: no visib… -       my_f… FALSE   TRUE    x        <NA>  
+#> 3 my_fun: no visib… -       my_f… FALSE   TRUE    y        <NA>  
+#> 4 my_fun: no visib… -       my_f… FALSE   TRUE    new_col  <NA>  
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 #> 
 #> $functions
 #> # A tibble: 5 × 7
-#>   notes      filep…¹ fun   is_fu…² is_gl…³ varia…⁴
-#>   <chr>      <chr>   <chr> <lgl>   <lgl>   <chr>  
-#> 1 my_fun: n… -       my_f… TRUE    FALSE   %>%    
-#> 2 my_fun: n… -       my_f… TRUE    FALSE   mutate 
-#> 3 my_fun: n… -       my_f… TRUE    FALSE   ggplot 
-#> 4 my_fun: n… -       my_f… TRUE    FALSE   aes    
-#> 5 my_fun: n… -       my_f… TRUE    FALSE   geom_p…
-#> # … with 1 more variable: proposed <chr>, and
-#> #   abbreviated variable names ¹​filepath,
-#> #   ²​is_function, ³​is_global_variable, ⁴​variable
+#>   notes             filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
+#>   <chr>             <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
+#> 1 my_fun: no visib… -       my_f… TRUE    FALSE   %>%     <NA>   
+#> 2 my_fun: no visib… -       my_f… TRUE    FALSE   mutate  <NA>   
+#> 3 my_fun: no visib… -       my_f… TRUE    FALSE   ggplot  <NA>   
+#> 4 my_fun: no visib… -       my_f… TRUE    FALSE   aes     <NA>   
+#> 5 my_fun: no visib… -       my_f… TRUE    FALSE   geom_p… <NA>   
+#> # … with abbreviated variable names ¹​filepath, ²​is_function,
+#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
 ```
 
 ```r

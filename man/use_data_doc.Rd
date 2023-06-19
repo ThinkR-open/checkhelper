@@ -2,7 +2,7 @@
 % Please edit documentation in R/use_data_doc.R
 \name{use_data_doc}
 \alias{use_data_doc}
-\title{Documentation of .rda in package}
+\title{Create documentation of a rda / RData dataset in a package}
 \usage{
 use_data_doc(
   name,
@@ -12,22 +12,27 @@ use_data_doc(
 )
 }
 \arguments{
-\item{name}{Name of your data. only the name,}
+\item{name}{Name of your data without extension}
 
-\item{prefix}{Add prefix for the name of R script}
+\item{prefix}{Add prefix for the name of the output R script}
 
-\item{description}{Add a description}
+\item{description}{Description of the dataset that will be added in the documentation}
 
-\item{source}{Add a source}
+\item{source}{Source of the dataset that will be presented in the documentation}
 }
 \value{
-Create a data documentation and return path to the file
+Creates a data documentation in a R file and returns path to the file
 }
 \description{
-Documentation of .rda in package
+Create documentation of a rda / RData dataset in a package
 }
 \examples{
 \dontrun{
-use_data_doc("my_data", description = "Desc of my_data", source = "Here my source")
+# This adds a R file in the current user directory
+# This works if there is a "my_data.rda" file in your "data/" directory
+use_data_doc("my_data", description = "Description of my_data", source = "Here the source")
 }
+}
+\seealso{
+\code{\link[=get_data_info]{get_data_info()}} to only retrieve information without writing the documentation
 }

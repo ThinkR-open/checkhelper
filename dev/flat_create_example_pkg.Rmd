@@ -18,46 +18,52 @@ pkgload::load_all(export_all = FALSE)
 
 ```{r function-create_example_pkg}
 #' Create a package example producing notes and errors
-#' 
+#'
 #' @param path Path where to store the example package
 #' @param with_functions Logical. Whether there will be functions or not (with notes)
 #' @param with_extra_notes Logical. Whether there are extra notes or not
 #' @rdname create_example_pkg
 #' @export
 #' @return Path where the example package is stored.
-create_example_pkg <- function(path = tempfile(pattern = "pkg-"), 
-                       with_functions = TRUE, 
-                       with_extra_notes = FALSE) {
-  
+create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
+                               with_functions = TRUE,
+                               with_extra_notes = FALSE) {
   if (!requireNamespace("usethis", quietly = TRUE) |
-      !requireNamespace("attachment", quietly = TRUE)) {return(NULL)} 
-  
+    !requireNamespace("attachment", quietly = TRUE)) {
+    return(NULL)
+  }
+
   # Create fake package ----
   if (!dir.exists(path)) {
     dir.create(path)
   } else {
     stop(path, " already exists")
   }
-  
+
   # Create fake package
   usethis::create_package(file.path(path, "checkpackage"), open = FALSE)
   # on.exit(unlink(file.path(path, "checkpackage"), recursive = TRUE))
 
   if (isTRUE(with_extra_notes)) {
-    extra_dir_path <- file.path(path, "checkpackage", "inst", "I build", "a very", "long_name",
-                                "that should be",
-                                "not_ok", "for_checks",
-                                "and hopefully", "lead to", "some", "extra_notes")
+    extra_dir_path <- file.path(
+      path, "checkpackage", "inst", "I build", "a very", "long_name",
+      "that should be",
+      "not_ok", "for_checks",
+      "and hopefully", "lead to", "some", "extra_notes"
+    )
     dir.create(extra_dir_path, recursive = TRUE)
     cat("for extra notes",
-        file = file.path(extra_dir_path, "super_long_file_name_for_tests_to_extra_notes"))
+      file = file.path(extra_dir_path, "super_long_file_name_for_tests_to_extra_notes")
+    )
   }
 
   if (isTRUE(with_functions)) {
     # Create function no visible global variables and missing documented functions
     # And return empty
-    file.copy(system.file("bad-function-examples.R", package = "checkhelper"), 
-              file.path(path, "checkpackage", "R", "function.R"))
+    file.copy(
+      system.file("bad-function-examples.R", package = "checkhelper"),
+      file.path(path, "checkpackage", "R", "function.R")
+    )
   }
 
   path <- file.path(path, "checkpackage")
@@ -66,7 +72,6 @@ create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
   suppressWarnings(attachment::att_amend_desc(path = path, must.exist = FALSE))
   return(path)
 }
-
 ```
 
 ```{r examples-create_example_pkg}
@@ -76,9 +81,9 @@ create_example_pkg()
 ```{r tests-create_example_pkg}
 test_that("create_example_pkg works", {
   expect_error(pkgdir <- create_example_pkg(), regexp = NA)
-  
+
   if (requireNamespace("usethis", quietly = TRUE) &
-      requireNamespace("attachment", quietly = TRUE)) {
+    requireNamespace("attachment", quietly = TRUE)) {
     expect_true(all(c("DESCRIPTION", "man", "NAMESPACE", "R") %in% list.files(pkgdir)))
     expect_true(file.exists(file.path(pkgdir, "R", "function.R")))
     # clean state
@@ -91,8 +96,10 @@ test_that("create_example_pkg works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_create_example_pkg.Rmd", vignette_name = NA,
-               check = FALSE, document = FALSE)
-rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
+fusen::inflate(
+  flat_file = "dev/flat_create_example_pkg.Rmd", vignette_name = NA,
+  check = FALSE, document = TRUE
+)
+# rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 

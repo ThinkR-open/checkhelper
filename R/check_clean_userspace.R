@@ -125,11 +125,11 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
   file.no.problem <- paste0(
     normalizePath(check_output, winslash = "/"),
     "|[.]Rcheck/|",
-    normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
+    normalizePath(file.path(tempdir(), "callr-"), winslash = "/", mustWork = FALSE),
     "|",
-    normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/"),
+    normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/", mustWork = FALSE),
     "|",
-    normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/")
+    normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/", mustWork = FALSE)
   )
 
   for (w.shot in c("local_shot", "scratch_shot")) {

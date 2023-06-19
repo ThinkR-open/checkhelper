@@ -4,6 +4,13 @@ flat_check_as_cran.Rmd:
   R: R/check_as_cran.R
   tests: tests/testthat/test-check_as_cran.R
   vignettes: vignettes/check-with-real-cran-settings.Rmd
+  inflate:
+    flat_file: dev/flat_check_as_cran.Rmd
+    vignette_name: Check with real CRAN settings
+    open_vignette: true
+    check: false
+    document: true
+    overwrite: ask
 flat_check_clean_userspace.Rmd:
   path: dev/flat_check_clean_userspace.Rmd
   state: active
@@ -11,12 +18,11 @@ flat_check_clean_userspace.Rmd:
   tests: tests/testthat/test-check_clean_userspace.R
   vignettes: vignettes/no-files-left-after-check.Rmd
   inflate:
-    pkg: checkhelper
     flat_file: dev/flat_check_clean_userspace.Rmd
     vignette_name: No files left after check
-    open_vignette: no
-    check: no
-    document: no
+    open_vignette: false
+    check: false
+    document: true
     overwrite: ask
 flat_create_example_pkg.Rmd:
   path: dev/flat_create_example_pkg.Rmd
@@ -24,9 +30,43 @@ flat_create_example_pkg.Rmd:
   R: R/create_example_pkg.R
   tests: tests/testthat/test-create_example_pkg.R
   vignettes: []
+  inflate:
+    flat_file: dev/flat_create_example_pkg.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: false
+    document: true
+    overwrite: ask
 flat_deal-with-check-outputs.Rmd:
   path: dev/flat_deal-with-check-outputs.Rmd
   state: active
   R: []
   tests: []
   vignettes: vignettes/deal-with-check-outputs.Rmd
+  inflate:
+    flat_file: dev/flat_deal-with-check-outputs.Rmd
+    vignette_name: Deal with check outputs
+    open_vignette: false
+    check: false
+    document: true
+    overwrite: ask
+keep:
+  path: keep
+  state: active
+  R:
+  - R/ch_list_globals.R
+  - R/checkhelper-package.R
+  - R/cran_check_unique.R
+  - R/find_missing_tags.R
+  - R/get_data_info.R
+  - R/globals.R
+  - R/render_template.R
+  - R/use_data_doc.R
+  - R/utils-pipe.R
+  tests:
+  - tests/testthat/test-checkhelper.R
+  - tests/testthat/test-find_missing_values.R
+  - tests/testthat/test-get_data_info.R
+  - tests/testthat/test-render_template.R
+  - tests/testthat/test-use_data_doc.R
+  vignettes: []

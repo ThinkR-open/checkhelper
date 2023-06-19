@@ -16,14 +16,17 @@ test_that("check_clean_userspace works", {
 
   # Add an example that let file in tempdir
   cat(
-    "#' Function
-#' @return 1
-#' @export
-#' @examples
-#' cat("#in example", file = tempfile("in_example"))
-in_example <- function() {
-1
-}",
+    "#' Function",
+    "#' @return 1",
+    "#' @export",
+    "#' @examples",
+    "#' text <- \"in_example\"",
+    "#' file <- tempfile(\"in_example\")",
+    "#' paste(text, file = file)",
+    "in_example <- function() {",
+    "1",
+    "}",
+    sep = "\n",
     file = file.path(path, "R", "in_example.R")
   )
 

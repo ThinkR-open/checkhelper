@@ -7,7 +7,6 @@ editor_options:
 ---
 
 ```{r dev}
-
 ```
 
 ```{r, echo=FALSE}
@@ -45,7 +44,7 @@ ggplot() +
 attachment::att_amend_desc(path = pkg_path)
 
 # Files of the package
-fs::dir_tree(pkg_path, recursive = TRUE)
+fs::dir_tree(pkg_path, recurse = TRUE)
 ```
 
 ## Avoid missing return value for exported functions
@@ -78,11 +77,13 @@ print_globals(globals)
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_deal-with-check-outputs.Rmd", vignette_name = "Deal with check outputs", check = FALSE, document = FALSE, open_vignette = FALSE)
+fusen::inflate(flat_file = "dev/flat_deal-with-check-outputs.Rmd", vignette_name = "Deal with check outputs", check = FALSE, document = TRUE, open_vignette = FALSE)
 
 # Pre-compilation of the vignette over itself to avoid too long calculation during checks
-knitr::knit(input = here::here("vignettes/deal-with-check-outputs.Rmd"),
-            output = here::here("vignettes/deal-with-check-outputs.Rmd"))
+knitr::knit(
+  input = here::here("vignettes/deal-with-check-outputs.Rmd"),
+  output = here::here("vignettes/deal-with-check-outputs.Rmd")
+)
 
 rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```

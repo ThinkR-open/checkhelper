@@ -79,7 +79,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/Rtmprn5VlQ/pkg.d47a45333dbe'
+#> ✔ Setting active project to '/tmp/RtmpDUCyiP/pkg.f98631da9d57'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -107,8 +107,8 @@ my_not_exported_doc <- function() {
 
 attachment::att_amend_desc(path = pkg_path)
 #> Saving attachment parameters to yaml config file
-#> Updating pkg.d47a45333dbe documentation
-#> ℹ Loading pkg.d47a45333dbeWriting ']8;;file:///tmp/Rtmprn5VlQ/pkg.d47a45333dbe/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/Rtmprn5VlQ/pkg.d47a45333dbe/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.d47a45333dbe[+] 1 package(s) added: dplyr.
+#> Updating pkg.f98631da9d57 documentation
+#> ℹ Loading pkg.f98631da9d57Writing ']8;;file:///tmp/RtmpDUCyiP/pkg.f98631da9d57/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpDUCyiP/pkg.f98631da9d57/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.f98631da9d57[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -119,7 +119,7 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.d47a45333dbe
+#> ℹ Loading pkg.f98631da9d57
 #> Missing or empty return value for exported functions: my_fun
 #> 
 #> 
@@ -128,7 +128,7 @@ find_missing_tags(pkg_path)
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.d47a45333dbe
+#> ℹ Loading pkg.f98631da9d57
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -224,43 +224,45 @@ check_clean_userspace()
     #> ⠏ |         0 | in_test                                                         
     #> ══ Results ═════════════════════════════════════════════════════════════════════
     #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
-    #> 
-    #> 😸
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/RtmpDUCyiP/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/Rtmprn5VlQ/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> "/"): path[1]="/tmp/RtmpDUCyiP/test.*[.](o|c|so)$": Aucun fichier ou dossier de
     #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/foo[.]o$": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/RtmpDUCyiP/foo[.]o$": Aucun fichier ou dossier de ce type
     #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
     #> 
-    #> > cat("#in example", file = tempfile("in_example"))
+    #> > text <- "in_example"
+    #> 
+    #> > file <- tempfile("in_example")
+    #> 
+    #> > paste(text, file = file)
+    #> [1] "in_example /tmp/RtmpDUCyiP/in_examplef986a09ab7"
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/RtmpDUCyiP/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/Rtmprn5VlQ/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> "/"): path[1]="/tmp/RtmpDUCyiP/test.*[.](o|c|so)$": Aucun fichier ou dossier de
     #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/foo[.]o$": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/RtmpDUCyiP/foo[.]o$": Aucun fichier ou dossier de ce type
     #> Warning in check_clean_userspace(pkg = path, check_output = check_output): One
     #> of the 'Run examples' .R file was created to run examples. You should not bother
     #> about it
     #> Warning in normalizePath(file.path(tempdir(), "callr-"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/callr-": Aucun fichier ou dossier de ce type
+    #> path[1]="/tmp/RtmpDUCyiP/callr-": Aucun fichier ou dossier de ce type
     #> Warning in normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash =
-    #> "/"): path[1]="/tmp/Rtmprn5VlQ/test.*[.](o|c|so)$": Aucun fichier ou dossier de
+    #> "/"): path[1]="/tmp/RtmpDUCyiP/test.*[.](o|c|so)$": Aucun fichier ou dossier de
     #> ce type
     #> Warning in normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/"):
-    #> path[1]="/tmp/Rtmprn5VlQ/foo[.]o$": Aucun fichier ou dossier de ce type
-    #> # A tibble: 5 × 4
+    #> path[1]="/tmp/RtmpDUCyiP/foo[.]o$": Aucun fichier ou dossier de ce type
+    #> # A tibble: 4 × 4
     #>   source       problem where                                         file       
     #>   <chr>        <chr>   <chr>                                         <chr>      
-    #> 1 Unit tests   added   /tmp/Rtmprn5VlQ/pkg-d47a4b1a04ef/checkpackage /tmp/Rtmpr…
-    #> 2 Unit tests   added   /tmp/Rtmprn5VlQ                               /tmp/Rtmpr…
-    #> 3 Run examples added   /tmp/Rtmprn5VlQ                               /tmp/Rtmpr…
-    #> 4 Run examples added   /tmp/Rtmprn5VlQ                               /tmp/Rtmpr…
-    #> 5 Full check   added   /tmp/Rtmprn5VlQ                               /tmp/Rtmpr…
+    #> 1 Unit tests   added   /tmp/RtmpDUCyiP/pkg-f9865139aca1/checkpackage /tmp/RtmpD…
+    #> 2 Unit tests   added   /tmp/RtmpDUCyiP                               /tmp/RtmpD…
+    #> 3 Run examples added   /tmp/RtmpDUCyiP                               /tmp/RtmpD…
+    #> 4 Full check   added   /tmp/RtmpDUCyiP                               /tmp/RtmpD…
 
 ### Experimental: Check as CRAN with CRAN global variables
 

@@ -34,7 +34,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 
 ```{r function-check_clean_userspace}
 #' check_clean_userspace
-#' 
+#'
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
@@ -46,8 +46,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 #'
 #' @examples
 check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")) {
-
-  scratch_dir <- tempdir() #character(0)
+  scratch_dir <- tempdir() # character(0)
 
   tmp_orig <- Sys.getenv("TMPDIR")
   Sys.setenv("TMPDIR" = scratch_dir)
@@ -56,8 +55,12 @@ check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")
 
   on.exit(Sys.setenv("TMPDIR" = tmp_orig))
 
-  if (!dir.exists(scratch_dir)) {dir.create(scratch_dir)}
-  if (!dir.exists(check_output)) {dir.create(check_output)}
+  if (!dir.exists(scratch_dir)) {
+    dir.create(scratch_dir)
+  }
+  if (!dir.exists(check_output)) {
+    dir.create(check_output)
+  }
 
   all_files <- tibble(
     source = character(0),
@@ -75,70 +78,71 @@ check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")
   scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
   # home <- utils::fileSnapshot ("~", timestamp = tempfile("timestamp"), md5sum = TRUE)
 
-    # Verify test do not leave files ----
-    is.test <- list.files(file.path(pkg, "tests"))
-    if (length(is.test) != 0) {
-      cli::cli_rule("Unit tests")
-      devtools::test(pkg = pkg, stop_on_failure = FALSE)
-      all_files <- what_changed(local_shot, scratch_shot, source = "Unit tests", all_files, check_output = check_output)
-    }
+  # Verify test do not leave files ----
+  is.test <- list.files(file.path(pkg, "tests"))
+  if (length(is.test) != 0) {
+    cli::cli_rule("Unit tests")
+    devtools::test(pkg = pkg, stop_on_failure = FALSE)
+    all_files <- what_changed(local_shot, scratch_shot, source = "Unit tests", all_files, check_output = check_output)
+  }
 
-    # Update shots
-    local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
-    scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  # Update shots
+  local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
-    # Verify examples do not leave files ----
-    cli::cli_rule("Run examples")
-    devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
-    all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
-    if (any(all_files$source == "Run examples")) {
-      warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
-    }
+  # Verify examples do not leave files ----
+  cli::cli_rule("Run examples")
+  devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
+  all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
+  if (any(all_files$source == "Run examples")) {
+    warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
+  }
 
-    # Update shots
-    local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
-    scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  # Update shots
+  local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
-    # Verify Full check ----
-    cli::cli_rule("Full check")
-    rcmdcheck::rcmdcheck(path = pkg, check_dir = check_output, args = c("--no-manual", "--as-cran"), quiet = TRUE)
-    # browseURL(dircheck)
-    all_files <- what_changed(local_shot, scratch_shot, source = "Full check", all_files, check_output)
+  # Verify Full check ----
+  cli::cli_rule("Full check")
+  rcmdcheck::rcmdcheck(path = pkg, check_dir = check_output, args = c("--no-manual", "--as-cran"), quiet = TRUE)
+  # browseURL(dircheck)
+  all_files <- what_changed(local_shot, scratch_shot, source = "Full check", all_files, check_output)
 
-    # Verify Full check - check dir ----
-    pkgname <- read.dcf(file.path(pkg, "DESCRIPTION"))[,"Package"]
+  # Verify Full check - check dir ----
+  pkgname <- read.dcf(file.path(pkg, "DESCRIPTION"))[, "Package"]
 
-    the_dir <- list.files(file.path(check_output), pattern = paste0(pkgname, ".Rcheck"), full.names = TRUE)
-    # Same tests, no new files in test during check
-    still_files <- list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat"), full.names = TRUE)[
-      !list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat")) %in%
-        list.files(file.path(pkg, "tests", "testthat"))]
+  the_dir <- list.files(file.path(check_output), pattern = paste0(pkgname, ".Rcheck"), full.names = TRUE)
+  # Same tests, no new files in test during check
+  still_files <- list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat"), full.names = TRUE)[
+    !list.files(file.path(the_dir, "00_pkg_src", pkgname, "tests", "testthat")) %in%
+      list.files(file.path(pkg, "tests", "testthat"))
+  ]
 
-    if (length(still_files) != 0) {
-      all_files <- all_files %>%
-            rbind(
-              tibble(
-                source = "Tests in check dir",
-                problem = "added",
-                where = the_dir,
-                file = still_files
-              )
-            )
+  if (length(still_files) != 0) {
+    all_files <- all_files %>%
+      rbind(
+        tibble(
+          source = "Tests in check dir",
+          problem = "added",
+          where = the_dir,
+          file = still_files
+        )
+      )
 
-      message("Some files were still in tests/testtthat dir after rcmdcheck: ", paste(still_files, collapse = ", "))
-    }
+    message("Some files were still in tests/testtthat dir after rcmdcheck: ", paste(still_files, collapse = ", "))
+  }
 
-    # Update shots
-    local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
-    scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  # Update shots
+  local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
+  scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
-    # After vignettes
-    cli::cli_rule("Build Vignettes")
-    the_v <- devtools::build_vignettes(pkg = pkg)
-    if (!all(is.null(the_v))) {
-      devtools::clean_vignettes(pkg = pkg)
-      all_files <- what_changed(local_shot, scratch_shot, source = "Build Vignettes", all_files, check_output)
-    }
+  # After vignettes
+  cli::cli_rule("Build Vignettes")
+  the_v <- devtools::build_vignettes(pkg = pkg)
+  if (!all(is.null(the_v))) {
+    devtools::clean_vignettes(pkg = pkg)
+    all_files <- what_changed(local_shot, scratch_shot, source = "Build Vignettes", all_files, check_output)
+  }
 
   return(all_files)
 }
@@ -146,21 +150,20 @@ check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")
 
 #' @noRd
 what_changed <- function(local_shot, scratch_shot, source, all_files, check_output) {
-
   # Ignore files issued from checks themselves
   file.no.problem <- paste0(
     normalizePath(check_output, winslash = "/"),
     "|[.]Rcheck/|",
-    normalizePath(file.path(tempdir(), "callr-"), winslash = "/"),
+    normalizePath(file.path(tempdir(), "callr-"), winslash = "/", mustWork = FALSE),
     "|",
-    normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/"),
+    normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/", mustWork = FALSE),
     "|",
-    normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/")
+    normalizePath(file.path(tempdir(), "foo[.]o$"), winslash = "/", mustWork = FALSE)
   )
 
   for (w.shot in c("local_shot", "scratch_shot")) {
     the_shot <- get(w.shot)
-  # File changed
+    # File changed
     all_local <- utils::changedFiles(the_shot, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
     for (what in c("added", "deleted", "changed")) {
@@ -180,8 +183,10 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
                 file = all_local[[what]]
               )
             )
-          message("Some files were ", what," in ", the_shot$path, " after ", source, ": ",
-                  paste(all_local[[what]], collapse = ", "))
+          message(
+            "Some files were ", what, " in ", the_shot$path, " after ", source, ": ",
+            paste(all_local[[what]], collapse = ", ")
+          )
         }
       }
     }
@@ -189,7 +194,6 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
 
   all_files
 }
-
 ```
 
 ```{r examples-check_clean_userspace, eval=FALSE}
@@ -201,7 +205,6 @@ all_files
 
 ```{r tests-check_clean_userspace}
 test_that("check_clean_userspace works", {
-
   if (!interactive()) {
     skip_on_os("windows")
     skip_on_os("mac")
@@ -211,54 +214,67 @@ test_that("check_clean_userspace works", {
   dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
   # Add a test that let file in the testthat dir
   cat(
-    "cat('#in tests', file = 'in_test.R')", 
-    file = file.path(path, "tests", "testthat", "test-in_test.R"))
-  
+    "cat('#in tests', file = 'in_test.R')",
+    file = file.path(path, "tests", "testthat", "test-in_test.R")
+  )
+
   # Add an example that let file in tempdir
-    cat(
-    "#' Function
-#' @return 1
-#' @export
-#' @examples
-#' cat('#in example', file = tempfile('in_example'))
-in_example <- function() {
-1
-}", 
-    file = file.path(path, "R", "in_example.R"))
-    
-    # Add a vignette that let file in local ?
-    
-    suppressWarnings(attachment::att_amend_desc(path = path))
-      
+  cat(
+    "#' Function",
+    "#' @return 1",
+    "#' @export",
+    "#' @examples",
+    "#' text <- \"in_example\"",
+    "#' file <- tempfile(\"in_example\")",
+    "#' paste(text, file = file)",
+    "in_example <- function() {",
+    "1",
+    "}",
+    sep = "\n",
+    file = file.path(path, "R", "in_example.R")
+  )
+
+  # Add a vignette that let file in local ?
+
+  suppressWarnings(attachment::att_amend_desc(path = path))
+
   check_output <- tempfile("check_output")
   scratch_dir <- tempfile("dirtmp")
-  
+
   # debugonce(check_clean_userspace)
   expect_warning(
     expect_message(
       all_files <- check_clean_userspace(pkg = path, check_output = check_output),
-      "Some files"),
-    "One of the 'Run examples'")
-  
+      "Some files"
+    ),
+    "One of the 'Run examples'"
+  )
+
   if (nrow(all_files) == 5) {
     # In some cases, the check updates the DESCRIPTION file as it run document()
-    expect_equal(all_files$source, c("Unit tests", "Unit tests", "Run examples", "Run examples", 
-                                     "Full check"))
+    expect_equal(all_files$source, c(
+      "Unit tests", "Unit tests", "Run examples", "Run examples",
+      "Full check"
+    ))
     expect_equal(all_files$problem, c("added", "added", "added", "added", "added"))
     expect_equal(
       normalizePath(all_files$where, winslash = "/"),
-      normalizePath(c(path, rep(tempdir(), 4)), winslash = "/"))
+      normalizePath(c(path, rep(tempdir(), 4)), winslash = "/")
+    )
     expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
     expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
   } else if (nrow(all_files) == 6) {
     # In some cases, the check updates the DESCRIPTION file as it run document()
-    expect_equal(all_files$source, c("Unit tests", "Unit tests", "Run examples", "Run examples", 
-                                     "Full check", "Full check"))
+    expect_equal(all_files$source, c(
+      "Unit tests", "Unit tests", "Run examples", "Run examples",
+      "Full check", "Full check"
+    ))
     expect_equal(all_files$problem, c("added", "added", "added", "added", "added", "added"))
     expect_equal(
       normalizePath(all_files$where, winslash = "/"),
-      normalizePath(c(path, rep(tempdir(), 5)), winslash = "/"))
+      normalizePath(c(path, rep(tempdir(), 5)), winslash = "/")
+    )
     expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
     expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
     expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
@@ -302,9 +318,9 @@ in_example <- function() {
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
 fusen::inflate(
-  flat_file = "dev/flat_check_clean_userspace.Rmd", 
-  vignette_name = "No files left after check", 
-  check = FALSE, document = FALSE, open_vignette = FALSE
+  flat_file = "dev/flat_check_clean_userspace.Rmd",
+  vignette_name = "No files left after check",
+  check = FALSE, document = TRUE, open_vignette = FALSE
 )
 rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
