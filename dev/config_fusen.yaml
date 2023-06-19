@@ -39,7 +39,7 @@ flat_create_example_pkg.Rmd:
     overwrite: ask
 flat_deal-with-check-outputs.Rmd:
   path: dev/flat_deal-with-check-outputs.Rmd
-  state: active
+  state: inactive
   R: []
   tests: []
   vignettes: vignettes/deal-with-check-outputs.Rmd

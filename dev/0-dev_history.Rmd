@@ -105,6 +105,9 @@ devtools::check(build_args = "no-vignettes")
 
 # Inflate all ----
 fusen::inflate_all_no_check()
+
+# Inflate this one manually only when needed and pre-knit its vignette
+fusen::inflate(flat_file = "dev/flat_deal-with-check-outputs.Rmd", vignette_name = "Deal with check outputs", check = FALSE, document = TRUE, open_vignette = FALSE)
 knitr::knit(
   input = here::here("vignettes/deal-with-check-outputs.Rmd"),
   output = here::here("vignettes/deal-with-check-outputs.Rmd")
@@ -113,6 +116,9 @@ knitr::knit(
 # Styler ----
 styler::style_pkg()
 styler::style_file(list.files("dev", pattern = "[.](Rmd|qmd|rmd)$", full.names = TRUE))
+
+# Run local coverage
+knitr::knit("dev/README.Rmd", output = "dev/README.md")
 ```
 
 # Share the package

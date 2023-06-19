@@ -226,7 +226,7 @@ test_that("check_clean_userspace works", {
     "#' @examples",
     "#' text <- \"in_example\"",
     "#' file <- tempfile(\"in_example\")",
-    "#' paste(text, file = file)",
+    "#' cat(text, file = file)",
     "in_example <- function() {",
     "1",
     "}",
