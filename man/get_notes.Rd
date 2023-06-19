@@ -21,6 +21,7 @@ List notes from check and identify global variables
 }
 \examples{
 \dontrun{
+# This runs a check of the example package
 tempdir <- tempdir()
 # Create fake package
 usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)

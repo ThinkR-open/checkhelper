@@ -184,7 +184,6 @@ rhub::check_on_solaris(show_status = FALSE, path = buildpath)
 rhub::check(platform = "debian-clang-devel", show_status = FALSE, path = buildpath)
 rhub::check(platform = "debian-gcc-devel", show_status = FALSE, path = buildpath)
 rhub::check(platform = "fedora-clang-devel", show_status = FALSE, path = buildpath)
-rhub::check(platform = "macos-highsierra-release-cran", show_status = FALSE, path = buildpath)
 rhub::check_for_cran(show_status = FALSE, path = buildpath)
 
 # _win devel

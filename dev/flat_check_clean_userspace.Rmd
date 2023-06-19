@@ -198,6 +198,7 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
 
 ```{r examples-check_clean_userspace, eval=FALSE}
 #' \dontrun{
+# This runs a check of the current package
 all_files <- check_clean_userspace()
 all_files
 #' }

@@ -205,11 +205,15 @@ find_missing_tags <- function(package.dir = ".",
 
   res_return_error <- res_join[res_join$test_has_export_and_return == "not_ok", ]
   if (nrow(res_return_error) != 0) {
-    message("Missing or empty return value for exported functions: ", paste(res_return_error$topic, collapse = ", "), "\n\n")
+    message("Problem: Missing or empty return value for exported functions: ", paste(res_return_error$topic, collapse = ", "), "\n\n")
+  } else {
+    message("Good! There is no missing or empty return value for exported functions")
   }
   res_export_error <- res_join[res_join$test_has_export_or_has_nord == "not_ok", ]
   if (nrow(res_export_error) != 0) {
-    message("Doc available but need to choose between `@export` or `@noRd`: ", paste(res_export_error$topic, collapse = ", "), "\n\n")
+    message("Problem: Doc available but need to choose between `@export` or `@noRd`: ", paste(res_export_error$topic, collapse = ", "), "\n\n")
+  } else {
+    message("Good! There is no missing `@export` or `@noRd` in your documentation")
   }
 
   # Set NAMESPACE back to normal

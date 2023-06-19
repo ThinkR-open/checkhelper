@@ -29,6 +29,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' # This runs a check of the current package
 #' # Directory to store the check outputs
 #' check_output <- tempfile("example")
 #' # Check the current package

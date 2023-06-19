@@ -21,6 +21,7 @@ List no visible globals from check and separate by category
 }
 \examples{
 \dontrun{
+# This runs a check of the example package
 tempdir <- tempdir()
 # Create fake package
 usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)

@@ -41,6 +41,7 @@ They could be issued from examples, tests or vignettes: `check_clean_userspace()
 
 ```{r examples-check_clean_userspace, eval = FALSE}
 #' \dontrun{
+# This runs a check of the current package
 all_files <- check_clean_userspace()
 all_files
 #' }

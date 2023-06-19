@@ -13,6 +13,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' # This runs a check of the current package
 #' all_files <- check_clean_userspace()
 #' all_files
 #' }

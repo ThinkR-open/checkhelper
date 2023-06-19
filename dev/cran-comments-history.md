@@ -1,3 +1,5 @@
+# checkhelper 0.1.0
+
 ## R CMD check results
 
 * Tested on GitHub Actions, {rhub} and Win-devel and Mac-release
@@ -36,7 +38,7 @@ the user. That's why wrapping examples in \dontrun{} adds the comment
 Please replace \dontrun with \donttest.
 Please unwrap the examples if they are executable in < 5 sec, or replace
 \dontrun{} with \donttest{}.
-=> We keep the use of \dontrun in majority in our examples. There are required in our function documentation because we cannot let open the possibility that checks may be run on the \donttest as we know they will fail. Indeed, we run checks inside checks which make it difficult to account for the side-effects on CRAN machines. The real use by package users will be on a direct use. 
+=> We keep the use of \dontrun in majority in our examples. There are required in our function documentation because we cannot let open the possibility that checks may be run on the \donttest as we know they will fail. Indeed, we run checks inside checks which make it difficult to account for the side-effects on CRAN machines. The real use by users will be a direct use during their package development and the majority of these examples will have a direct effect on their current project. 
 
 
 - Please ensure that your functions do not write by default or in your
@@ -44,4 +46,4 @@ examples/vignettes/tests in the user's home filespace (including the
 package directory and getwd()). This is not allowed by CRAN policies.
 Please omit any default path in writing functions. In your
 examples/vignettes/tests you can write to tempdir(). -> R/check_as_cran.R
-=> 
+=> check_as_cran() is now tested on a package saved in a temporary directory.
