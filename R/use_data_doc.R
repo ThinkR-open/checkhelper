@@ -20,7 +20,9 @@
 #' use_data_doc("my_data", description = "Description of my_data", source = "Here the source")
 #' }
 use_data_doc <- function(name, prefix = "doc_", description = "Description", source = "Source") {
-  if (!dir.exists("R")) {dir.create("R")}
+  if (!dir.exists("R")) {
+    dir.create("R")
+  }
   if (!file.exists("DESCRIPTION")) {
     stop("There is no DESCRIPTION file. Are you sure to develop a R package ?")
   }

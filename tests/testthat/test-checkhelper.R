@@ -25,19 +25,25 @@ path <- suppressWarnings(create_example_pkg())
 
 
 # withr::local_environment({
-  # test_env({
-  globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
-  # saveRDS(globals, "~/Bureau/globals.rds")
+# test_env({
+globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
+# saveRDS(globals, "~/Bureau/globals.rds")
 # })
 
 test_that("get_no_visible works", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
-  expect_equal(globals$globalVariables$fun,
-               c(rep("my_long_fun_name_for_multiple_lines_globals", 3),
-                 rep("my_plot", 3), rep("my_plot_rdname", 3)))
+  expect_equal(
+    globals$globalVariables$fun,
+    c(
+      rep("my_long_fun_name_for_multiple_lines_globals", 3),
+      rep("my_plot", 3), rep("my_plot_rdname", 3)
+    )
+  )
   # glue("\"", paste(globals$globalVariables$variable, collapse = "\", \""), "\"")
-  expect_equal(globals$globalVariables$variable,
-               c("x", "y", "new_col", "x", "y", "new_col2", "x", "y", "new_col2"))
+  expect_equal(
+    globals$globalVariables$variable,
+    c("x", "y", "new_col", "x", "y", "new_col2", "x", "y", "new_col2")
+  )
 })
 
 # print_globals ----
@@ -101,12 +107,18 @@ globals <- get_no_visible(path, checks, quiet = TRUE)
 
 test_that("get_no_visible works after checks", {
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
-  expect_equal(globals$globalVariables$fun,
-               c(rep("my_long_fun_name_for_multiple_lines_globals", 3),
-                 rep("my_plot", 3), rep("my_plot_rdname", 3)))
+  expect_equal(
+    globals$globalVariables$fun,
+    c(
+      rep("my_long_fun_name_for_multiple_lines_globals", 3),
+      rep("my_plot", 3), rep("my_plot_rdname", 3)
+    )
+  )
   # glue("\"", paste(globals$globalVariables$variable, collapse = "\", \""), "\"")
-  expect_equal(globals$globalVariables$variable,
-               c("x", "y", "new_col", "x", "y", "new_col2", "x", "y", "new_col2"))
+  expect_equal(
+    globals$globalVariables$variable,
+    c("x", "y", "new_col", "x", "y", "new_col2", "x", "y", "new_col2")
+  )
 })
 
 # Remove path
@@ -127,11 +139,14 @@ test_that("Check with path in outputs works", {
   res <- get_notes(checks = fake_check)
 
   expect_true(all(res[["filepath"]] == "-"))
-  expect_equal(res[["fun"]],
-               c(NA,
-                 rep("my_long_fun_name_for_multiple_lines_globals", 8),
-                 rep("my_plot", 8), rep("my_plot_rdname", 8),
-                 "Undefined global functions or variables")
+  expect_equal(
+    res[["fun"]],
+    c(
+      NA,
+      rep("my_long_fun_name_for_multiple_lines_globals", 8),
+      rep("my_plot", 8), rep("my_plot_rdname", 8),
+      "Undefined global functions or variables"
+    )
   )
 
   notes_with_globals_with_path <-
@@ -144,10 +159,13 @@ test_that("Check with path in outputs works", {
 
   expect_true(all(res[["filepath"]][-2] == "-"))
   expect_true(res[["filepath"]][2] == "  (/tmp/RtmpkW3scz/working_dir/RtmpMNu2An/file348c18e5542c/checkpackage.Rcheck/00_pkg_src/checkpackage/R/function.R:7-12) ")
-  expect_equal(res[["fun"]],
-               c(NA,
-                 rep("my_long_fun_name_for_multiple_lines_globals", 8),
-                 rep("my_plot", 8), rep("my_plot_rdname", 8),
-                 "Undefined global functions or variables")
+  expect_equal(
+    res[["fun"]],
+    c(
+      NA,
+      rep("my_long_fun_name_for_multiple_lines_globals", 8),
+      rep("my_plot", 8), rep("my_plot_rdname", 8),
+      "Undefined global functions or variables"
+    )
   )
 })

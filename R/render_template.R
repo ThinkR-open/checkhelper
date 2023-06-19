@@ -7,7 +7,7 @@
 #'
 #' @return use for this side effect. Make a file
 #' @noRd
-render_template <- function(path_template, path_to_save ,data){
+render_template <- function(path_template, path_to_save, data) {
   render <- whisker::whisker.render(readLines(path_template, encoding = "UTF-8", warn = FALSE), data)
   writeLines(render, con = path_to_save)
 }

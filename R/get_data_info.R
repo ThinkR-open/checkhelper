@@ -19,9 +19,11 @@
 #'
 #' # Get its information
 #' withr::with_dir(
-#'   path_project, {
-#'    get_data_info("iris", "Iris data frame", source = "ThinkR")
-#'   })
+#'   path_project,
+#'   {
+#'     get_data_info("iris", "Iris data frame", source = "ThinkR")
+#'   }
+#' )
 #'
 #' # Clean userspace
 #' unlink(path_project, recursive = TRUE)
@@ -31,11 +33,12 @@ get_data_info <- function(name, description, source) {
     stop("'data/' folder does not exist, hence there is no data file to look for.")
   }
   file <- list.files("data",
-               pattern = glue::glue("^{name}\\.(r|R).+$"),
-               full.names = TRUE)
-  if(purrr::is_empty(file)){
+    pattern = glue::glue("^{name}\\.(r|R).+$"),
+    full.names = TRUE
+  )
+  if (purrr::is_empty(file)) {
     stop("Data object was not found. It must be the name of one .rda in your 'data/' directory, without extension")
-  }else if(length(file) > 1){
+  } else if (length(file) > 1) {
     stop("There are multiple files with the same name")
   }
   dataset <- get(load(file))

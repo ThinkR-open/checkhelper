@@ -146,8 +146,9 @@ path <- suppressWarnings(create_example_pkg())
 dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
 # Add a test that let file in the testthat dir
 cat(
-  "cat('#in tests', file = 'in_test.R')", 
-  file = file.path(path, "tests", "testthat", "test-in_test.R"))
+  "cat(\"#in tests\", file = \"in_test.R\")",
+  file = file.path(path, "tests", "testthat", "test-in_test.R")
+)
 
 # Add an example that let file in tempdir
 cat(
@@ -155,11 +156,12 @@ cat(
 #' @return 1
 #' @export
 #' @examples
-#' cat('#in example', file = tempfile('in_example'))
+#' cat(\"#in example\", file = tempfile(\"in_example\"))
 in_example <- function() {
 1
-}", 
-file = file.path(path, "R", "in_example.R"))
+}",
+  file = file.path(path, "R", "in_example.R")
+)
 
 suppressWarnings(attachment::att_amend_desc(path = path))
 
@@ -168,7 +170,7 @@ check_output <- tempfile("check_output")
 suppressMessages(
   all_files <- check_clean_userspace(pkg = path, check_output = check_output),
 )
-  all_files
+all_files
 ```
 
 

@@ -218,8 +218,7 @@ the_other_alias3 <- the_function",
         )
       ),
       row.names = c(NA, -12L),
-      class = c("tbl_df", "tbl", "data.frame"
-      )
+      class = c("tbl_df", "tbl", "data.frame")
     )
   )
 })

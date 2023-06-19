@@ -12,7 +12,6 @@
 #'
 #' @noRd
 cran_check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
-
   # Original check_dir
   # check_dir <- file.path(normalizePath("~"), "tmp", "CRAN")
 

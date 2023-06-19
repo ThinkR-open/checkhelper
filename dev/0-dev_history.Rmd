@@ -100,6 +100,9 @@ attachment::att_amend_desc(
 # Check the package
 devtools::check()
 devtools::check(build_args = "no-vignettes")
+
+# Styler ----
+styler::style_pkg()
 ```
 
 # Share the package
