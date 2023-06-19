@@ -6,7 +6,7 @@ path_rda <- file.path(path_data, "iris.rda")
 save(iris, file = path_rda)
 withr::with_dir(
   temp_dir, {
-  result<-  get_data_info("iris", "Iris data frame", source = "Thinkr") 
+  result<-  get_data_info("iris", "Iris data frame", source = "Thinkr")
   })
 expect_is(result, 'list')
 expect_equal(length(result), 6)

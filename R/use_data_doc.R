@@ -1,23 +1,28 @@
-#' Documentation of .rda in package
+#' Create documentation of a rda / RData dataset in a package
 #'
-#' @param name Name of your data. only the name,
-#' @param prefix Add prefix for the name of R script
-#' @param description Add a description
-#' @param source Add a source
+#' @param name Name of your data without extension
+#' @param prefix Add prefix for the name of the output R script
+#' @param description Description of the dataset that will be added in the documentation
+#' @param source Source of the dataset that will be presented in the documentation
 #'
-#' @return Create a data documentation and return path to the file
+#' @return Creates a data documentation in a R file and returns path to the file
 #'
 #' @export
 #'
 #' @importFrom glue glue
 #'
+#' @seealso [get_data_info()] to only retrieve information without writing the documentation
+#'
 #' @examples
 #' \dontrun{
-#' use_data_doc("my_data", description = "Desc of my_data", source = "Here my source")
+#' # This adds a R file in the current user directory
+#' # This works if there is a "my_data.rda" file in your "data/" directory
+#' use_data_doc("my_data", description = "Description of my_data", source = "Here the source")
 #' }
 use_data_doc <- function(name, prefix = "doc_", description = "Description", source = "Source") {
-  if (!file.exists("DESCRIPTION") & dir.exists("R")) {
-    stop("You have to be in package.")
+  if (!dir.exists("R")) {dir.create("R")}
+  if (!file.exists("DESCRIPTION")) {
+    stop("There is no DESCRIPTION file. Are you sure to develop a R package ?")
   }
 
   path <- glue("R/{prefix}{name}.R")
