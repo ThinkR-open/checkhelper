@@ -61,10 +61,11 @@ cran_check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   use_check_stoplists <- FALSE
   # Ncpus <- 6
 
-  hostname <- system2("hostname", "-f", stdout = TRUE)
-  if (length(hostname) == 0) {
-    hostname <- "windows"
-  }
+  # if (grepl("ubuntu|debian", utils::osVersion)) {
+  #   hostname <- system2("hostname", "-f", stdout = TRUE)
+  # } else {
+  #   hostname <- "windows"
+  # }
   # if (hostname == "xmanduin.wu.ac.at") {
   #   Sys.setenv("_R_CHECK_EXAMPLE_TIMING_THRESHOLD_" = "10")
   #   Ncpus <- 10

@@ -44,7 +44,7 @@ Suggests:
     usethis
 VignetteBuilder: 
     knitr
-Config/fusen/version: 0.5.0.9008
+Config/fusen/version: 0.5.0.9009
 Config/Needs/website: ThinkR-open/thinkrtemplate
 Encoding: UTF-8
 Language: en-US

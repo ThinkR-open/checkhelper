@@ -186,6 +186,17 @@ rhub::check(platform = "debian-gcc-devel", show_status = FALSE, path = buildpath
 rhub::check(platform = "fedora-clang-devel", show_status = FALSE, path = buildpath)
 rhub::check_for_cran(show_status = FALSE, path = buildpath)
 
+# rhub local
+# docker pull rhub/debian-clang-devel
+# docker run -ti rhub/debian-clang-devel bash
+# docker run -v /mnt/Data/github/ThinkR-open/checkhelper:/home/root/checkhelper -it rhub/fedora-clang-devel:latest bash
+# docker run -v /mnt/Data/github/ThinkR-open/checkhelper:/home/root/checkhelper -it fedora-checkhelper:latest bash
+# /opt/R-devel/bin/R
+# setwd("/home/root/checkhelper")
+## commit the current running image to use for later
+# docker commit clever_nobel fedora-checkhelper:latest
+rhub::local_check_linux(image = "rhub/fedora-clang-devel")
+
 # _win devel
 devtools::check_win_devel()
 devtools::check_win_release()

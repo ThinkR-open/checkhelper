@@ -15,7 +15,7 @@ create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
                                with_extra_notes = FALSE) {
   if (!requireNamespace("usethis", quietly = TRUE) |
     !requireNamespace("attachment", quietly = TRUE)) {
-    return(NULL)
+    stop("Packages 'usethis' and 'attachment' are required to use this function in our examples and tests.")
   }
 
   # Create fake package ----
