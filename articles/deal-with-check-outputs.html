@@ -114,7 +114,7 @@
                         <h4 data-toc-skip class="author">Sébastien
 Rochette</h4>
             
-            <h4 data-toc-skip class="date">2023-02-17</h4>
+            <h4 data-toc-skip class="date">2023-06-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/HEAD/vignettes/deal-with-check-outputs.Rmd" class="external-link"><code>vignettes/deal-with-check-outputs.Rmd</code></a></small>
       <div class="hidden name"><code>deal-with-check-outputs.Rmd</code></div>
@@ -142,12 +142,12 @@ functions</li>
 <span></span>
 <span><span class="co"># Create fake package</span></span>
 <span><span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html" class="external-link">create_package</a></span><span class="op">(</span><span class="va">pkg_path</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; ✔ Setting active project to '/tmp/RtmpUd8sdv/pkg.120b653df637d'</span></span>
+<pre><code><span><span class="co">#&gt; ✔ Setting active project to '/tmp/RtmpOmxnjd/pkg.e0fa160b8054'</span></span>
 <span><span class="co">#&gt; ✔ Creating 'R/'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></span>
 <span><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></span>
-<span><span class="co">#&gt; ✔ Writing 'pkg.120b653df637d.Rproj'</span></span>
-<span><span class="co">#&gt; ✔ Adding '^pkg\\.120b653df637d\\.Rproj$' to '.Rbuildignore'</span></span>
+<span><span class="co">#&gt; ✔ Writing 'pkg.e0fa160b8054.Rproj'</span></span>
+<span><span class="co">#&gt; ✔ Adding '^pkg\\.e0fa160b8054\\.Rproj$' to '.Rbuildignore'</span></span>
 <span><span class="co">#&gt; ✔ Adding '.Rproj.user' to '.gitignore'</span></span>
 <span><span class="co">#&gt; ✔ Adding '^\\.Rproj\\.user$' to '.Rbuildignore'</span></span>
 <span><span class="co">#&gt; ✔ Setting active project to '/mnt/Data/github/ThinkR-open/checkhelper'</span></span></code></pre>
@@ -168,11 +168,12 @@ functions</li>
 <span><span class="st">"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">pkg_path</span>, <span class="st">"R"</span>, <span class="st">"function.R"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">attachment</span><span class="fu">::</span><span class="fu"><a href="https://thinkr-open.github.io/attachment/reference/att_amend_desc.html" class="external-link">att_amend_desc</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">pkg_path</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Updating pkg.120b653df637d documentation</span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.120b653df637dWriting '</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Saving attachment parameters to yaml config file</span></span>
+<span><span class="co">#&gt; Updating pkg.e0fa160b8054 documentation</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.e0fa160b8054Writing '</span></span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Files of the package</span></span>
-<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_tree.html" class="external-link">dir_tree</a></span><span class="op">(</span><span class="va">pkg_path</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="avoid-missing-return-value-for-exported-functions">Avoid missing return value for exported functions<a class="anchor" aria-label="anchor" href="#avoid-missing-return-value-for-exported-functions"></a>
@@ -182,23 +183,28 @@ value. Using <code><a href="../reference/find_missing_tags.html">find_missing_ta
 functions with missing or empty <code>@return</code> tag</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/find_missing_tags.html">find_missing_tags</a></span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; ℹ Loading pkg.120b653df637d</span></span>
+<pre><code><span><span class="co">#&gt; ℹ Loading pkg.e0fa160b8054</span></span>
 <span><span class="co">#&gt; Missing or empty return value for exported functions: my_fun</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ Loading pkg.120b653df637d</span></span></code></pre>
-<pre><code><span><span class="co">#&gt; # A tibble: 1 × 11</span></span>
-<span><span class="co">#&gt;      id filename   topic  has_ex…¹ has_r…² retur…³</span></span>
-<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;lgl&gt;    &lt;lgl&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1     1 function.R my_fun TRUE     FALSE   ""     </span></span>
-<span><span class="co">#&gt; # … with 5 more variables: has_nord &lt;lgl&gt;,</span></span>
-<span><span class="co">#&gt; #   rdname_value &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   not_empty_return_value &lt;lgl&gt;,</span></span>
+<span><span class="co">#&gt; ℹ Loading pkg.e0fa160b8054</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; $package_doc</span></span>
+<span><span class="co">#&gt; # A tibble: 0 × 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $data</span></span>
+<span><span class="co">#&gt; # A tibble: 0 × 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $functions</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 11</span></span>
+<span><span class="co">#&gt;      id filename   topic  has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;  &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1     1 function.R my_fun TRUE    FALSE   ""      FALSE   my_fun </span></span>
+<span><span class="co">#&gt; # … with 3 more variables: not_empty_return_value &lt;lgl&gt;,</span></span>
 <span><span class="co">#&gt; #   test_has_export_and_return &lt;chr&gt;,</span></span>
-<span><span class="co">#&gt; #   test_has_export_or_has_nord &lt;chr&gt;, and</span></span>
-<span><span class="co">#&gt; #   abbreviated variable names ¹​has_export,</span></span>
-<span><span class="co">#&gt; #   ²​has_return, ³​return_value</span></span></code></pre>
+<span><span class="co">#&gt; #   test_has_export_or_has_nord &lt;chr&gt;, and abbreviated variable</span></span>
+<span><span class="co">#&gt; #   names ¹​has_export, ²​has_return, ³​return_value, ⁴​has_nord,</span></span>
+<span><span class="co">#&gt; #   ⁵​rdname_value</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="deal-with-check-outputs">Deal with check outputs<a class="anchor" aria-label="anchor" href="#deal-with-check-outputs"></a>
@@ -220,28 +226,26 @@ also transform all these variables with
 <span><span class="va">globals</span></span></code></pre></div>
 <pre><code><span><span class="co">#&gt; $globalVariables</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 7</span></span>
-<span><span class="co">#&gt;   notes      filep…¹ fun   is_fu…² is_gl…³ varia…⁴</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1 my_fun: n… -       my_f… FALSE   TRUE    data   </span></span>
-<span><span class="co">#&gt; 2 my_fun: n… -       my_f… FALSE   TRUE    x      </span></span>
-<span><span class="co">#&gt; 3 my_fun: n… -       my_f… FALSE   TRUE    y      </span></span>
-<span><span class="co">#&gt; 4 my_fun: n… -       my_f… FALSE   TRUE    new_col</span></span>
-<span><span class="co">#&gt; # … with 1 more variable: proposed &lt;chr&gt;, and</span></span>
-<span><span class="co">#&gt; #   abbreviated variable names ¹​filepath,</span></span>
-<span><span class="co">#&gt; #   ²​is_function, ³​is_global_variable, ⁴​variable</span></span>
+<span><span class="co">#&gt;   notes             filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 my_fun: no visib… -       my_f… FALSE   TRUE    data    " impo…</span></span>
+<span><span class="co">#&gt; 2 my_fun: no visib… -       my_f… FALSE   TRUE    x        &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 3 my_fun: no visib… -       my_f… FALSE   TRUE    y        &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; 4 my_fun: no visib… -       my_f… FALSE   TRUE    new_col  &lt;NA&gt;  </span></span>
+<span><span class="co">#&gt; # … with abbreviated variable names ¹​filepath, ²​is_function,</span></span>
+<span><span class="co">#&gt; #   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $functions</span></span>
 <span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
-<span><span class="co">#&gt;   notes      filep…¹ fun   is_fu…² is_gl…³ varia…⁴</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;  </span></span>
-<span><span class="co">#&gt; 1 my_fun: n… -       my_f… TRUE    FALSE   %&gt;%    </span></span>
-<span><span class="co">#&gt; 2 my_fun: n… -       my_f… TRUE    FALSE   mutate </span></span>
-<span><span class="co">#&gt; 3 my_fun: n… -       my_f… TRUE    FALSE   ggplot </span></span>
-<span><span class="co">#&gt; 4 my_fun: n… -       my_f… TRUE    FALSE   aes    </span></span>
-<span><span class="co">#&gt; 5 my_fun: n… -       my_f… TRUE    FALSE   geom_p…</span></span>
-<span><span class="co">#&gt; # … with 1 more variable: proposed &lt;chr&gt;, and</span></span>
-<span><span class="co">#&gt; #   abbreviated variable names ¹​filepath,</span></span>
-<span><span class="co">#&gt; #   ²​is_function, ³​is_global_variable, ⁴​variable</span></span></code></pre>
+<span><span class="co">#&gt;   notes             filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt; &lt;lgl&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;chr&gt;  </span></span>
+<span><span class="co">#&gt; 1 my_fun: no visib… -       my_f… TRUE    FALSE   %&gt;%     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 2 my_fun: no visib… -       my_f… TRUE    FALSE   mutate  &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 3 my_fun: no visib… -       my_f… TRUE    FALSE   ggplot  &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 4 my_fun: no visib… -       my_f… TRUE    FALSE   aes     &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; 5 my_fun: no visib… -       my_f… TRUE    FALSE   geom_p… &lt;NA&gt;   </span></span>
+<span><span class="co">#&gt; # … with abbreviated variable names ¹​filepath, ²​is_function,</span></span>
+<span><span class="co">#&gt; #   ³​is_global_variable, ⁴​variable, ⁵​proposed</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Print globals to copy-paste</span></span>
 <span><span class="fu"><a href="../reference/print_globals.html">print_globals</a></span><span class="op">(</span><span class="va">globals</span><span class="op">)</span></span></code></pre></div>
