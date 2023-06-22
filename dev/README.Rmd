@@ -1,0 +1,9 @@
+---
+output: github_document
+---
+
+```{r}
+# Check package coverage
+covr::package_coverage()
+```
+

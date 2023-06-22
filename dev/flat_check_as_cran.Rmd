@@ -55,8 +55,8 @@ In the `check_output` directory, you will get the same outputs, in the same form
 #' @export
 #'
 #' @examples
-check_as_cran <- function(pkg = ".", check_output = tempfile("check_output"), 
-                          scratch = tempfile("scratch_dir"), 
+check_as_cran <- function(pkg = ".", check_output = tempfile("check_output"),
+                          scratch = tempfile("scratch_dir"),
                           Ncpus = 1, as_command = FALSE,
                           clean_before = TRUE,
                           open = FALSE) {
@@ -127,6 +127,7 @@ the_check <- function(pkg = ".", check_output, scratch, Ncpus = 1, as_command = 
 
 ```{r examples-check_as_cran, eval=FALSE}
 #' \dontrun{
+# This runs a check of the current package
 # Directory to store the check outputs
 check_output <- tempfile("example")
 # Check the current package
@@ -139,7 +140,7 @@ utils::browseURL(check_output)
 ```{r tests-check_as_cran}
 test_that("check_as_cran works", {
   path <- suppressWarnings(create_example_pkg())
-    check_output <- tempfile("example")
+  check_output <- tempfile("example")
 
   if (interactive()) {
     expect_error(check_as_cran(pkg = path, check_output = check_output), regexp = NA)
@@ -163,7 +164,7 @@ test_that("check_as_cran works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "Check with real CRAN settings", check = FALSE, document = FALSE)
-rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
+fusen::inflate(flat_file = "dev/flat_check_as_cran.Rmd", vignette_name = "Check with real CRAN settings", check = FALSE, document = TRUE)
+# rstudioapi::navigateToFile("dev/0-dev_history.Rmd", line = 96)
 ```
 

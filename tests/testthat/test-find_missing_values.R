@@ -65,7 +65,7 @@ test_that("find_missing_tags works", {
     c("ok", "ok", "not_ok", "ok", "ok")
   )
 
-  withr::with_dir(path, {
+  usethis::with_project(path, {
     usethis::use_package_doc()
     usethis::use_pipe()
     usethis::use_data(iris)
@@ -218,8 +218,7 @@ the_other_alias3 <- the_function",
         )
       ),
       row.names = c(NA, -12L),
-      class = c("tbl_df", "tbl", "data.frame"
-      )
+      class = c("tbl_df", "tbl", "data.frame")
     )
   )
 })

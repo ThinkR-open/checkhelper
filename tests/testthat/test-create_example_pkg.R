@@ -2,9 +2,9 @@
 
 test_that("create_example_pkg works", {
   expect_error(pkgdir <- create_example_pkg(), regexp = NA)
-  
+
   if (requireNamespace("usethis", quietly = TRUE) &
-      requireNamespace("attachment", quietly = TRUE)) {
+    requireNamespace("attachment", quietly = TRUE)) {
     expect_true(all(c("DESCRIPTION", "man", "NAMESPACE", "R") %in% list.files(pkgdir)))
     expect_true(file.exists(file.path(pkgdir, "R", "function.R")))
     # clean state

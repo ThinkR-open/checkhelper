@@ -2,35 +2,43 @@
 % Please edit documentation in R/get_data_info.R
 \name{get_data_info}
 \alias{get_data_info}
-\title{Get infos form .Rdata inside data folder}
+\title{Get information of a .Rda file stored inside the 'data/' folder}
 \usage{
 get_data_info(name, description, source)
 }
 \arguments{
-\item{name}{name of file}
+\item{name}{name of the file that exists in "data/"}
 
 \item{description}{description for the data}
 
 \item{source}{source of data}
 }
 \value{
-list of infos form data
+list of information from a data.frame
 }
 \description{
-Get infos form .Rdata inside data folder
+Get information of a .Rda file stored inside the 'data/' folder
 }
 \examples{
+# Store a dataset as rda file
 path_project <- tempfile(pattern = "data-")
 path_data <- file.path(path_project, "data")
 dir.create(path_data, recursive = TRUE)
 path_rda <- file.path(path_data, "iris.rda")
 save(iris, file = path_rda)
+
+# Get its information
 withr::with_dir(
-  path_project, {
-   get_data_info("iris", "Iris data frame", source = "ThinkR")
-  })
+  path_project,
+  {
+    get_data_info("iris", "Iris data frame", source = "ThinkR")
+  }
+)
 
 # Clean userspace
 unlink(path_project, recursive = TRUE)
 
+}
+\seealso{
+\code{\link[=use_data_doc]{use_data_doc()}} to add the information directly as roxygen documentation in your package.
 }
