@@ -22,6 +22,12 @@ Complete documentation in the {pkgdown} site:
 
 ## Installation
 
+Install from CRAN
+
+``` r
+install.packages("checkhelper")
+```
+
 You can install the last version of checkhelper from r-universe with:
 
 ``` r
@@ -79,7 +85,7 @@ dir.create(pkg_path)
 
 # Create fake package
 usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmpDXxNUX/pkg.1309653b0a9f1'
+#> ✔ Setting active project to '/tmp/RtmprzMcDg/pkg.2b822dec9ea8'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> ✔ Writing 'NAMESPACE'
@@ -107,8 +113,8 @@ my_not_exported_doc <- function() {
 
 attachment::att_amend_desc(path = pkg_path)
 #> Saving attachment parameters to yaml config file
-#> Updating pkg.1309653b0a9f1 documentation
-#> ℹ Loading pkg.1309653b0a9f1Writing ']8;;file:///tmp/RtmpDXxNUX/pkg.1309653b0a9f1/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmpDXxNUX/pkg.1309653b0a9f1/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.1309653b0a9f1[+] 1 package(s) added: dplyr.
+#> Updating pkg.2b822dec9ea8 documentation
+#> ℹ Loading pkg.2b822dec9ea8Writing ']8;;file:///tmp/RtmprzMcDg/pkg.2b822dec9ea8/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmprzMcDg/pkg.2b822dec9ea8/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2b822dec9ea8[+] 1 package(s) added: dplyr.
 
 # Files of the package
 fs::dir_tree(pkg_path, recurse = TRUE)
@@ -119,16 +125,23 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 
 ``` r
 find_missing_tags(pkg_path)
-#> ℹ Loading pkg.1309653b0a9f1
-#> Missing or empty return value for exported functions: my_fun
+#> ℹ Loading pkg.2b822dec9ea8
+#> Problem: Missing or empty return value for exported functions: my_fun
 #> 
 #> 
 #> 
-#> Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
+#> Problem: Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
 #> 
 #> 
 #> 
-#> ℹ Loading pkg.1309653b0a9f1
+#> ℹ Loading pkg.2b822dec9ea8
+#> $package_doc
+#> # A tibble: 0 × 0
+#> 
+#> $data
+#> # A tibble: 0 × 0
+#> 
+#> $functions
 #> # A tibble: 2 × 11
 #>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
 #>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
@@ -224,6 +237,8 @@ check_clean_userspace()
     #> ⠏ |         0 | in_test                                                         
     #> ══ Results ═════════════════════════════════════════════════════════════════════
     #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
+    #> 
+    #> 🌈 Your tests are over the rainbow 🌈
     #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
     #> 
     #> > text <- "in_example"
@@ -235,13 +250,13 @@ check_clean_userspace()
     #> of the 'Run examples' .R file was created to run examples. You should not bother
     #> about it
     #> # A tibble: 5 × 4
-    #>   source       problem where                                          file      
-    #>   <chr>        <chr>   <chr>                                          <chr>     
-    #> 1 Unit tests   added   /tmp/RtmpDXxNUX/pkg-13096344ad851/checkpackage /tmp/Rtmp…
-    #> 2 Unit tests   added   /tmp/RtmpDXxNUX                                /tmp/Rtmp…
-    #> 3 Run examples added   /tmp/RtmpDXxNUX                                /tmp/Rtmp…
-    #> 4 Run examples added   /tmp/RtmpDXxNUX                                /tmp/Rtmp…
-    #> 5 Full check   added   /tmp/RtmpDXxNUX                                /tmp/Rtmp…
+    #>   source       problem where                                        file        
+    #>   <chr>        <chr>   <chr>                                        <chr>       
+    #> 1 Unit tests   added   /tmp/RtmprzMcDg/pkg-2b82ce31126/checkpackage /tmp/Rtmprz…
+    #> 2 Unit tests   added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
+    #> 3 Run examples added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
+    #> 4 Run examples added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
+    #> 5 Full check   added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
 
 ### Experimental: Check as CRAN with CRAN global variables
 
@@ -251,11 +266,8 @@ package as CRAN does it with their env. variables. See
 details.
 
 ``` r
-check_output <- tempfile("example")
 # Check the current directory
-check_as_cran(check_output = check_output)
-# Open directory with all outputs
-utils::browseURL(check_output)
+check_as_cran()
 ```
 
 ## Code of Conduct

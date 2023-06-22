@@ -28,6 +28,13 @@ knitr::opts_chunk$set(
 
 ## Installation
 
+Install from CRAN
+
+```r
+install.packages("checkhelper")
+```
+
+
 You can install the last version of checkhelper from r-universe with:
 
 ```r
@@ -182,11 +189,8 @@ all_files
 Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
 
 ```{r eval=FALSE}
-check_output <- tempfile("example")
 # Check the current directory
-check_as_cran(check_output = check_output)
-# Open directory with all outputs
-utils::browseURL(check_output)
+check_as_cran()
 ```
 
 ## Code of Conduct
