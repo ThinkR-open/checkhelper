@@ -1,5 +1,9 @@
 # checkhelper (development)
 
+## Bug fixes 
+
+- Modification of unit tests following {roxygen2} changes. `find_missing_values` only return messages instead of warnings. (@MurielleDelmotte) 
+
 # checkhelper 0.1.0
 
 ## Major changes
