@@ -50,6 +50,9 @@ usethis::use_readme_rmd()
 usethis::use_code_of_conduct("codeofconduct@thinkr.fr")
 # NEWS
 usethis::use_news_md()
+# contributing
+usethis::use_tidy_contributing()
+usethis::use_build_ignore("CONTRIBUTING.md")
 ```
 
 **From now, you will need to "inflate" your package at least once to be able to use the following commands. Let's go to your flat template, and come back here later if/when needed.**
