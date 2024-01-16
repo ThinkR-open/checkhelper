@@ -1,18 +1,29 @@
 path <- suppressWarnings(create_example_pkg())
 
 test_that("find_missing_tags works", {
-  if (packageVersion("roxygen2") > "7.1.2") {
+
+  # Check that the information transmitted by roxygen2 is correctly retransmitted by checkhelper
+
+  if (packageVersion("roxygen2") >= "7.3.0") {
+    # roxygen > 7.3.0 only generates messages
+    out <- expect_message(
+      find_missing_tags(path),
+      "my_long_fun_name_for_multiple_lines_globals"
+    )
+
+    expect_message(
+      find_missing_tags(path),
+      "@return"
+    )
+
+  } else {
+    # roxygen > 7.1.2 generates warnings and messages
     expect_warning(
       out <- expect_message(
         find_missing_tags(path),
         "my_long_fun_name_for_multiple_lines_globals"
       ),
       regexp = "@return"
-    )
-  } else {
-    out <- expect_message(
-      find_missing_tags(path),
-      "my_long_fun_name_for_multiple_lines_globals"
     )
   }
 
@@ -38,17 +49,10 @@ test_that("find_missing_tags works", {
   expect_equal(functions$has_export, c(TRUE, TRUE, FALSE, FALSE, TRUE))
   # last is true because of rdname tag
 
-  if (packageVersion("roxygen2") > "7.1.2") {
     expect_equal(
       functions$has_return,
       c(FALSE, TRUE, FALSE, FALSE, TRUE)
     )
-  } else {
-    expect_equal(
-      functions$has_return,
-      c(TRUE, TRUE, FALSE, FALSE, TRUE)
-    )
-  }
 
   expect_equal(
     functions$has_nord,
@@ -110,13 +114,35 @@ the_other_alias3 <- the_function",
       file = "R/function2.R"
     )
 
-    expect_warning(
-      attachment::att_amend_desc(),
-      regexp = "@return"
-    )
+    if (packageVersion("roxygen2") >= "7.3.0") {
+      # roxygen > 7.3.0 generates a message
+
+      expect_message(attachment::att_amend_desc(),
+                     regexp = "@return")
+    } else {
+      # roxygen > 7.1.2 generates a warning
+      expect_warning(attachment::att_amend_desc(),
+                     regexp = "@return")
+    }
+
   })
 
-  if (packageVersion("roxygen2") > "7.1.2") {
+  if (packageVersion("roxygen2") >= "7.3.0") {
+    # roxygen > 7.3.0 only generates messages
+
+    out <- expect_message(
+      find_missing_tags(path),
+      "my_long_fun_name_for_multiple_lines_globals"
+    )
+
+    expect_message(
+      find_missing_tags(path),
+      "@return"
+    )
+
+  } else {
+    # roxygen > 7.1.2 generates warnings and messages
+
     expect_warning(
       out <- expect_message(
         find_missing_tags(path),
@@ -124,11 +150,7 @@ the_other_alias3 <- the_function",
       ),
       regexp = "@return"
     )
-  } else {
-    out <- expect_message(
-      find_missing_tags(path),
-      "my_long_fun_name_for_multiple_lines_globals"
-    )
+
   }
 
   expect_type(out, "list")
