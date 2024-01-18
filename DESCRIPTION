@@ -1,6 +1,6 @@
 Package: checkhelper
 Title: Deal with Check Outputs
-Version: 0.1.0.9001
+Version: 0.1.1
 Authors@R: c(
     person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1565-9313")),
@@ -8,6 +8,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-0671-9270")),
     person("Arthur", "Bréant", , "arthur@thinkr.fr", role = "aut",
            comment = c(ORCID = "0000-0003-1668-0963")),
+    person("Murielle", "Delmotte", , "murielle@thinkr.fr", role = "aut",
+           comment = c(ORCID = "0000-0002-1339-2424")),
     person("ThinkR", role = "cph")
   )
 Description: Deal with packages 'check' outputs and reduce the risk of
@@ -50,4 +52,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
