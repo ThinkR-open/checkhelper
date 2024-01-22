@@ -5,7 +5,7 @@ articles:
   check-with-real-cran-settings: check-with-real-cran-settings.html
   deal-with-check-outputs: deal-with-check-outputs.html
   no-files-left-after-check: no-files-left-after-check.html
-last_built: 2024-01-22T12:34Z
+last_built: 2024-01-22T12:39Z
 urls:
   reference: https://thinkr-open.github.io/checkhelper/reference
   article: https://thinkr-open.github.io/checkhelper/articles
