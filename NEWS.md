@@ -1,4 +1,4 @@
-# checkhelper (development)
+# checkhelper 0.1.1
 
 ## Bug fixes 
 
