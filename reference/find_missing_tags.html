@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">checkhelper</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -135,8 +135,8 @@ created by roxygen before running each roclet.</p></dd>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span><span class="co"># A reproducible example on a test package</span></span></span>
 <span class="r-in"><span><span class="va">pkg_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'/tmp/Rtmp9r2lLp/pkg-15934ae2007f/checkpackage/'</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/Rtmp9r2lLp/pkg-15934ae2007f/checkpackage'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'/tmp/RtmpqmRy2q/pkg-186e2ef92091/checkpackage/'</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'/tmp/RtmpqmRy2q/pkg-186e2ef92091/checkpackage'</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">'R/'</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'DESCRIPTION'</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Package</span>: checkpackage</span>
@@ -149,13 +149,14 @@ created by roxygen before running each roclet.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     pick a license</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Encoding</span>: UTF-8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Roxygen</span>: list(markdown = TRUE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">RoxygenNote</span>: 7.2.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">RoxygenNote</span>: 7.3.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">'NAMESPACE'</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">'&lt;no active project&gt;'</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Saving attachment parameters to yaml config file</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Updating checkpackage documentation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">NAMESPACE</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> function.R:4: <span style="font-weight: bold;">@return</span> requires a value.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">NAMESPACE</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">my_long_fun_name_for_multiple_lines_globals.Rd</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Writing <span style="color: #0000BB;">my_plot.Rd</span></span>
@@ -164,13 +165,13 @@ created by roxygen before running each roclet.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [+] 1 package(s) added: dplyr.</span>
 <span class="r-in"><span><span class="fu">find_missing_tags</span><span class="op">(</span><span class="va">pkg_path</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[function.R:4] @return requires a value</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> function.R:4: <span style="font-weight: bold;">@return</span> requires a value.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Problem: Missing or empty return value for exported functions: my_long_fun_name_for_multiple_lines_globals</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Problem: Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>[function.R:4] @return requires a value</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> function.R:4: <span style="font-weight: bold;">@return</span> requires a value.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $package_doc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 0 × 0</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -199,7 +200,7 @@ created by roxygen before running each roclet.</p></dd>
 
 
       <footer><div class="thinkr">
-  <p></p><p>Developed by Sebastien Rochette, Vincent Guyader, Arthur Bréant.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Developed by Sebastien Rochette, Vincent Guyader, Arthur Bréant, Murielle Delmotte.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
 <div class="author">
