@@ -4,6 +4,10 @@
 #' @param prefix Add prefix for the name of the output R script
 #' @param description Description of the dataset that will be added in the documentation
 #' @param source Source of the dataset that will be presented in the documentation
+#' @param overwrite Logical. If `FALSE` (default) and the target documentation
+#'   file already exists, the function errors out instead of silently
+#'   replacing the user's edits. Set to `TRUE` to regenerate the file
+#'   in place (#19).
 #'
 #' @return Creates a data documentation in a R file and returns path to the file
 #'
@@ -19,7 +23,11 @@
 #' # This works if there is a "my_data.rda" file in your "data/" directory
 #' use_data_doc("my_data", description = "Description of my_data", source = "Here the source")
 #' }
-use_data_doc <- function(name, prefix = "doc_", description = "Description", source = "Source") {
+use_data_doc <- function(name,
+                         prefix = "doc_",
+                         description = "Description",
+                         source = "Source",
+                         overwrite = FALSE) {
   if (!dir.exists("R")) {
     dir.create("R")
   }
@@ -27,7 +35,15 @@ use_data_doc <- function(name, prefix = "doc_", description = "Description", sou
     stop("There is no DESCRIPTION file. Are you sure to develop a R package ?")
   }
 
-  path <- glue("R/{prefix}{name}.R")
+  path <- as.character(glue("R/{prefix}{name}.R"))
+
+  if (file.exists(path) && !isTRUE(overwrite)) {
+    stop(
+      "Documentation file already exists: ", path, ".\n",
+      "Pass `overwrite = TRUE` to regenerate it.",
+      call. = FALSE
+    )
+  }
 
   render_template(
     path_template = system.file("template", "data-doc.R", package = "checkhelper"),

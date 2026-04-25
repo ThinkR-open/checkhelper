@@ -8,7 +8,8 @@ use_data_doc(
   name,
   prefix = "doc_",
   description = "Description",
-  source = "Source"
+  source = "Source",
+  overwrite = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,11 @@ use_data_doc(
 \item{description}{Description of the dataset that will be added in the documentation}
 
 \item{source}{Source of the dataset that will be presented in the documentation}
+
+\item{overwrite}{Logical. If \code{FALSE} (default) and the target documentation
+file already exists, the function errors out instead of silently
+replacing the user's edits. Set to \code{TRUE} to regenerate the file
+in place (#19).}
 }
 \value{
 Creates a data documentation in a R file and returns path to the file
