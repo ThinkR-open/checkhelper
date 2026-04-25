@@ -29,6 +29,6 @@ a data.frame with columns \code{file}, \code{line}, \code{text}, \code{n_tokens}
 sorted by file then line. Empty if nothing is found.
 }
 \description{
-Lightweight cousin of \code{dreamRs/prefixer::show_nonascii_file()} — returns a
+Lightweight cousin of \code{dreamRs/prefixer::show_nonascii_file()} - returns a
 tidy data.frame instead of pushing markers to the RStudio editor.
 }

@@ -15,9 +15,9 @@ asciify_r_source(
 
 \item{strategy}{one of:
 \itemize{
-\item \code{"auto"} (default): per-token policy — \verb{\\\\uXXXX} escape inside
+\item \code{"auto"} (default): per-token policy - \verb{\\\\uXXXX} escape inside
 string literals (so they remain semantically equivalent and CRAN-safe);
-\code{Latin-ASCII} transliteration (\code{é} → \code{e}) inside comments and roxygen
+\code{Latin-ASCII} transliteration (\code{e} -> \code{e}) inside comments and roxygen
 blocks (where escapes would not be interpreted).
 \item \code{"escape"}: force \verb{\\\\uXXXX} escape on every non-identifier token.
 \item \code{"translit"}: force ASCII transliteration on every non-identifier token.
@@ -26,7 +26,7 @@ in conjunction with \code{\link[=find_nonascii_tokens]{find_nonascii_tokens()}} 
 }}
 
 \item{identifiers}{what to do when a non-ASCII identifier (variable,
-function name, formal, slot…) is found:
+function name, formal, slot...) is found:
 \itemize{
 \item \code{"error"} (default): stop. Renaming an identifier changes the API
 surface and is not safe to automate.
@@ -48,14 +48,14 @@ but rewriting them automatically is unsafe (it would silently rename the
 user's exported API). Use \code{\link[=find_nonascii_tokens]{find_nonascii_tokens()}} to surface them.
 
 Strings declared with the R 4.0 raw form (\code{r"(...)"}, \code{R"---(...)---"})
-are detected — by default they are still treated like regular \code{STR_CONST}
+are detected - by default they are still treated like regular \code{STR_CONST}
 (escaped); pass \code{strategy = "translit"} if you want to keep them raw and
 lose the accents instead.
 }
 \examples{
 src <- '
-# accent dans un commentaire: été
-x <- "déjà vu"
+# accent dans un commentaire: ete
+x <- "deja vu"
 '
 cat(asciify_r_source(src))
 }
