@@ -1,4 +1,14 @@
-# checkhelper (development version)
+# checkhelper 1.0.0
+
+## New features
+
+- `asciify_pkg()`, `asciify_file()`, `asciify_r_source()`,
+  `find_nonascii_tokens()` and `find_nonascii_files()` rewrite
+  non-ASCII characters in an R package the way CRAN expects: `\uXXXX`
+  escapes in string literals, `Latin-ASCII` transliteration in
+  comments and roxygen blocks, refusal to auto-rename non-ASCII
+  identifiers. AST-based via `getParseData()`. Defaults to a dry run
+  for whole-package rewrites.
 
 # checkhelper 0.1.1
 
