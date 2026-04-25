@@ -171,18 +171,21 @@ find_missing_tags <- function(package.dir = ".",
   )
 
 
+  # Pre-coerce so empty packages produce a 0-row tibble with the right
+  # columns (#18). Without this, unlist(list()) returns NULL and tibble()
+  # silently drops the column, making downstream mutate() fail.
   res <- tibble(
-    filename = unlist(res_find_filename),
-    topic = unlist(res_topic),
-    has_export = unlist(res_find_export),
-    has_return = unlist(res_find_return),
-    return_value = unlist(res_find_return_value),
-    has_nord = unlist(res_find_nord),
-    rdname_value = unlist(res_find_rdname_value)
+    filename = as.character(unlist(res_find_filename)),
+    topic = as.character(unlist(res_topic)),
+    has_export = as.logical(unlist(res_find_export)),
+    has_return = as.logical(unlist(res_find_return)),
+    return_value = as.character(unlist(res_find_return_value)),
+    has_nord = as.logical(unlist(res_find_nord)),
+    rdname_value = as.character(unlist(res_find_rdname_value))
   ) %>%
     mutate(
       rdname_value = if_else(rdname_value == "", topic, rdname_value),
-      id = 1:n()
+      id = if (n() == 0L) integer() else seq_len(n())
     )
 
   # Pull `@return` values from topic-only blocks (`#' @name foo \n NULL`) so
