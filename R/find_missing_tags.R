@@ -130,7 +130,11 @@ find_missing_tags <- function(package.dir = ".",
   res_find_filename <- lapply(res_functions, function(x) basename(x[["file"]]))
 
   res_find_export <- lapply(res_functions, roxygen2::block_has_tags, tags = list("export"))
-  res_find_return <- lapply(res_functions, roxygen2::block_has_tags, tags = list("return"))
+  # @return and @returns are aliases (#81). Also count an explicit
+  # @inherit X return as providing a return tag (#84).
+  res_find_return <- lapply(res_functions, function(b) {
+    block_has_return_tag(b)
+  })
   res_find_nord <- lapply(res_functions, roxygen2::block_has_tags, tags = list("noRd"))
 
   res_find_rdname_value <- lapply(res_functions, function(x) {
@@ -142,12 +146,7 @@ find_missing_tags <- function(package.dir = ".",
     }
   })
   res_find_return_value <- lapply(res_functions, function(x) {
-    return <- roxygen2::block_get_tag_value(x, tag = "return")
-    if (is.null(return)) {
-      ""
-    } else {
-      return
-    }
+    block_get_return_value(x)
   })
 
   res_package_doc <- tibble(
@@ -226,6 +225,58 @@ find_missing_tags <- function(package.dir = ".",
   )
 
   return(final_res)
+}
+
+#' Does the block carry a return tag?
+#'
+#' Treats `@return`, `@returns` (alias added in roxygen2 7.2+, see issue #81)
+#' and `@inherit X return` (see issue #84) as equivalent.
+#'
+#' @param block A roxygen2 block.
+#' @return TRUE if any of those forms is present.
+#' @noRd
+block_has_return_tag <- function(block) {
+  hits <- roxygen2::block_has_tags(block, tags = list("return", "returns"))
+  if (any(hits)) {
+    return(TRUE)
+  }
+  inherit <- roxygen2::block_get_tag_value(block, tag = "inherit")
+  if (is.null(inherit)) {
+    return(FALSE)
+  }
+  fields <- inherit$fields
+  if (is.null(fields)) {
+    # roxygen2 default: when @inherit X is given without explicit fields,
+    # everything is inherited (description, details, return, ...)
+    return(TRUE)
+  }
+  any(c("return", "returns") %in% fields)
+}
+
+#' Pull the literal return / returns text from a block, "" if none.
+#'
+#' For inherited returns we substitute the @inherit source so the value is
+#' non-empty (the actual rendered text would come from the source).
+#'
+#' @param block A roxygen2 block.
+#' @return character(1).
+#' @noRd
+block_get_return_value <- function(block) {
+  for (tag in c("return", "returns")) {
+    val <- roxygen2::block_get_tag_value(block, tag = tag)
+    if (!is.null(val) && nzchar(as.character(val))) {
+      return(as.character(val))
+    }
+  }
+  inherit <- roxygen2::block_get_tag_value(block, tag = "inherit")
+  if (!is.null(inherit)) {
+    fields <- inherit$fields
+    if (is.null(fields) ||
+        any(c("return", "returns") %in% fields)) {
+      return(paste0("@inherit ", inherit$source))
+    }
+  }
+  ""
 }
 
 #' This is an internal function
