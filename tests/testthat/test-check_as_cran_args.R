@@ -1,0 +1,18 @@
+test_that("check_as_cran() exposes a `repos` argument and a sensible default check_output (#79, #85)", {
+  # We only assert on the formal API of the function — running an actual
+  # CRAN-style check against a fake package is heavy and is already
+  # covered (and flaky-skipped) by tests/testthat/test-check_as_cran.R.
+  fmls <- formals(check_as_cran)
+  expect_true("repos" %in% names(fmls), info = "should accept a `repos` argument (#79)")
+  expect_true("check_output" %in% names(fmls))
+
+  # check_output default should resolve to a directory adjacent to `pkg`,
+  # not the session tempdir, so the user can find their logs (#85).
+  default_out <- paste(deparse(fmls[["check_output"]]), collapse = " ")
+  # We accept either dirname(pkg) or file.path(pkg, …) — anything that
+  # references `pkg` works. The point is: not a session-only tempfile.
+  expect_true(grepl("pkg", default_out, fixed = TRUE),
+    info = "default check_output should reference the package path")
+  expect_false(grepl("^tempfile", default_out),
+    info = "default check_output should not be a session tempfile")
+})

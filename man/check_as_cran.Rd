@@ -6,18 +6,22 @@
 \usage{
 check_as_cran(
   pkg = ".",
-  check_output = tempfile("check_output"),
+  check_output = file.path(dirname(normalizePath(pkg, mustWork = FALSE)), "check"),
   scratch = tempfile("scratch_dir"),
   Ncpus = 1,
   as_command = FALSE,
   clean_before = TRUE,
-  open = FALSE
+  open = FALSE,
+  repos = getOption("repos")
 )
 }
 \arguments{
 \item{pkg}{pkg directory to check}
 
-\item{check_output}{Where to store check outputs. Default is a temporary directory}
+\item{check_output}{Where to store check outputs. Default is a \code{check}
+subdirectory next to \code{pkg}, so the logs survive the R session and can
+easily be found by the developer (#85). Set explicitly to a \code{tempfile()}
+to keep the previous behaviour.}
 
 \item{scratch}{Where to store temporary files (cleaned after). Default is another temporary directory}
 
@@ -28,6 +32,11 @@ check_as_cran(
 \item{clean_before}{Whether to delete the previous check_output}
 
 \item{open}{Whether to open the check dir at the end of the process}
+
+\item{repos}{Character vector of CRAN-like repositories to use when
+resolving dependencies during the check, passed via the \code{repos}
+option (#79). Defaults to the current \code{getOption("repos")}, falling
+back to the RStudio CRAN mirror when that is unset.}
 }
 \value{
 An object containing errors, warnings, and notes.

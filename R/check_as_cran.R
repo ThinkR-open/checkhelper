@@ -6,12 +6,19 @@
 #' `r lifecycle::badge("experimental")`
 #'
 #' @param pkg pkg directory to check
-#' @param check_output Where to store check outputs. Default is a temporary directory
+#' @param check_output Where to store check outputs. Default is a `check`
+#'   subdirectory next to `pkg`, so the logs survive the R session and can
+#'   easily be found by the developer (#85). Set explicitly to a `tempfile()`
+#'   to keep the previous behaviour.
 #' @param scratch Where to store temporary files (cleaned after). Default is another temporary directory
 #' @param Ncpus Number of CPU used to build the package
 #' @param as_command Whether to run the check as Linux command line, instead of directly in R
 #' @param clean_before Whether to delete the previous check_output
 #' @param open Whether to open the check dir at the end of the process
+#' @param repos Character vector of CRAN-like repositories to use when
+#'   resolving dependencies during the check, passed via the `repos`
+#'   option (#79). Defaults to the current `getOption("repos")`, falling
+#'   back to the RStudio CRAN mirror when that is unset.
 #'
 #' @return An object containing errors, warnings, and notes.
 #'
@@ -37,18 +44,20 @@
 #' # Open directory with all outputs
 #' utils::browseURL(check_output)
 #' }
-check_as_cran <- function(pkg = ".", check_output = tempfile("check_output"),
+check_as_cran <- function(pkg = ".",
+                          check_output = file.path(dirname(normalizePath(pkg, mustWork = FALSE)), "check"),
                           scratch = tempfile("scratch_dir"),
                           Ncpus = 1, as_command = FALSE,
                           clean_before = TRUE,
-                          open = FALSE) {
+                          open = FALSE,
+                          repos = getOption("repos")) {
   pkg <- normalizePath(pkg)
 
   if (isTRUE(clean_before) | !dir.exists(check_output)) {
     if (dir.exists(check_output)) {
       unlink(check_output, recursive = TRUE)
     }
-    dir.create(check_output)
+    dir.create(check_output, recursive = TRUE)
   }
 
   if (dir.exists(scratch)) {
@@ -57,12 +66,23 @@ check_as_cran <- function(pkg = ".", check_output = tempfile("check_output"),
     dir.create(scratch)
   }
 
-  results <- the_check(
-    pkg = pkg,
-    check_output = check_output,
-    scratch = scratch,
-    Ncpus = Ncpus,
-    clean_before = clean_before
+  # Honour user-provided `repos` (#79). If the option is unset (e.g. running
+  # in a fresh callr/Rscript session), fall back to a public CRAN mirror so
+  # the check can resolve packages.
+  if (is.null(repos) || identical(unname(repos), "@CRAN@") ||
+        identical(unname(repos), character(0))) {
+    repos <- c(CRAN = "https://cloud.r-project.org")
+  }
+
+  results <- withr::with_options(
+    list(repos = repos),
+    the_check(
+      pkg = pkg,
+      check_output = check_output,
+      scratch = scratch,
+      Ncpus = Ncpus,
+      clean_before = clean_before
+    )
   )
 
   writeLines("\nDepends:")
