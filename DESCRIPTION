@@ -29,6 +29,7 @@ Imports:
     lifecycle,
     magrittr,
     pkgbuild,
+    pkgload,
     purrr,
     rcmdcheck,
     roxygen2,
@@ -52,4 +53,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.3

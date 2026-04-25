@@ -29,6 +29,16 @@ find_missing_tags <- function(package.dir = ".",
     warning("roxygen2 requires Encoding: UTF-8", call. = FALSE)
   }
 
+  # Track which namespaces and search-path attachments are present before
+  # we start, so we can roll back any new ones added by load_all/roxygenise
+  # at the end. Without this, the target package leaks into the caller's
+  # session: its namespace stays loaded and `package:<pkg>` lingers on the
+  # search path (#77).
+  pkg_name <- desc::desc_get("Package", file = base_path)[[1]]
+  ns_before <- loadedNamespaces()
+  search_before <- search()
+  on.exit(unload_target_pkg(pkg_name, ns_before, search_before), add = TRUE)
+
   getFromNamespace("roxy_meta_load", "roxygen2")(base_path)
 
   packages <- roxygen2::roxy_meta_get("packages")
@@ -296,6 +306,39 @@ block_get_return_value <- function(block) {
     }
   }
   ""
+}
+
+#' Detach + unload the target package if find_missing_tags() introduced it
+#' on the search path / namespace registry (#77). Best-effort; failures are
+#' swallowed because this only runs in on.exit.
+#'
+#' @param pkg_name name of the target package.
+#' @param ns_before character vector of namespaces loaded on entry.
+#' @param search_before character vector of search() entries on entry.
+#' @noRd
+unload_target_pkg <- function(pkg_name, ns_before, search_before) {
+  if (is.null(pkg_name) || !nzchar(pkg_name)) {
+    return(invisible())
+  }
+  newly_attached <- !paste0("package:", pkg_name) %in% search_before &&
+    paste0("package:", pkg_name) %in% search()
+  newly_loaded <- !pkg_name %in% ns_before && pkg_name %in% loadedNamespaces()
+
+  if (newly_attached || newly_loaded) {
+    # pkgload::unload() handles both the search-path attachment and the
+    # namespace, including the dev versions left around by load_all().
+    try(pkgload::unload(pkg_name), silent = TRUE)
+  }
+  # Belt-and-braces: if pkgload::unload didn't tear everything down (older
+  # versions, or attachment via library()), drop what's left manually.
+  attached <- paste0("package:", pkg_name)
+  if (attached %in% search() && !attached %in% search_before) {
+    try(detach(attached, character.only = TRUE, unload = TRUE), silent = TRUE)
+  }
+  if (pkg_name %in% loadedNamespaces() && !pkg_name %in% ns_before) {
+    try(unloadNamespace(pkg_name), silent = TRUE)
+  }
+  invisible()
 }
 
 #' Build a (rdname -> return_value) lookup from topic-only blocks (#82).
