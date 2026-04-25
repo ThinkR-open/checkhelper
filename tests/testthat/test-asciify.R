@@ -3,7 +3,7 @@
 # ---- find_nonascii_tokens ---------------------------------------------------
 
 test_that("find_nonascii_tokens spots non-ASCII string literals and comments", {
-  src <- '# pure ascii\nx <- "déjà"\n# célébre\nx'
+  src <- '# pure ascii\nx <- "d\u00e9j\u00e0"\n# c\u00e9l\u00e9bre\nx'
   pd <- find_nonascii_tokens(src)
   expect_true(any(pd$token == "STR_CONST"))
   expect_true(any(pd$token == "COMMENT"))
@@ -13,10 +13,10 @@ test_that("find_nonascii_tokens spots non-ASCII string literals and comments", {
 })
 
 test_that("find_nonascii_tokens flags non-ASCII identifiers", {
-  src <- "façon <- 1\nfaçon"
+  src <- "fa\u00e7on <- 1\nfa\u00e7on"
   pd <- find_nonascii_tokens(src)
   expect_true(any(pd$is_identifier))
-  expect_true(all(pd$text[pd$is_identifier] == "façon"))
+  expect_true(all(pd$text[pd$is_identifier] == "fa\u00e7on"))
 })
 
 test_that("find_nonascii_tokens returns an empty pd on pure-ASCII input", {
@@ -31,7 +31,7 @@ test_that("find_nonascii_tokens errors on unparseable input", {
 # ---- asciify_r_source: string literals --------------------------------------
 
 test_that("asciify_r_source escapes non-ASCII inside string literals (auto)", {
-  src <- 'x <- "déjà vu"'
+  src <- 'x <- "d\u00e9j\u00e0 vu"'
   out <- asciify_r_source(src)
   expect_true(stringi::stri_enc_isascii(out))
   # Semantic value of x is preserved when the rewritten source is re-evaluated.
@@ -40,24 +40,24 @@ test_that("asciify_r_source escapes non-ASCII inside string literals (auto)", {
   expect_identical(e_in$x, e_out$x)
 })
 
-test_that("escape strategy turns `é` into the canonical `\\u00e9`", {
-  out <- asciify_r_source('x <- "é"', strategy = "escape")
+test_that("escape strategy turns `\u00e9` into the canonical `\\u00e9`", {
+  out <- asciify_r_source('x <- "\u00e9"', strategy = "escape")
   expect_match(out, "\\\\u00e9", fixed = FALSE)
   expect_true(stringi::stri_enc_isascii(out))
 })
 
 test_that("non-ASCII inside string literals stays the same string when re-evaluated", {
-  src <- 'x <- "café"'
+  src <- 'x <- "caf\u00e9"'
   out <- asciify_r_source(src)
   e <- new.env(parent = baseenv())
   eval(parse(text = out), envir = e)
-  expect_identical(e$x, "café")
+  expect_identical(e$x, "caf\u00e9")
 })
 
 # ---- asciify_r_source: comments --------------------------------------------
 
 test_that("asciify_r_source transliterates non-ASCII inside comments (auto)", {
-  src <- '# accents été\nx <- 1'
+  src <- '# accents \u00e9t\u00e9\nx <- 1'
   out <- asciify_r_source(src)
   expect_true(stringi::stri_enc_isascii(out))
   expect_match(out, "ete", fixed = TRUE)
@@ -66,7 +66,7 @@ test_that("asciify_r_source transliterates non-ASCII inside comments (auto)", {
 })
 
 test_that("asciify_r_source transliterates roxygen comments (#') the same way", {
-  src <- "#' Description: café\n#' @return rien\nf <- function() NULL"
+  src <- "#' Description: caf\u00e9\n#' @return rien\nf <- function() NULL"
   out <- asciify_r_source(src)
   expect_true(stringi::stri_enc_isascii(out))
   expect_match(out, "Description: cafe", fixed = TRUE)
@@ -75,17 +75,17 @@ test_that("asciify_r_source transliterates roxygen comments (#') the same way", 
 # ---- asciify_r_source: mixed contexts ---------------------------------------
 
 test_that("asciify_r_source applies the per-token policy in mixed contexts", {
-  src <- '# header é\nx <- "déjà"\n# trailer'
+  src <- '# header \u00e9\nx <- "d\u00e9j\u00e0"\n# trailer'
   out <- asciify_r_source(src)
   expect_true(stringi::stri_enc_isascii(out))
   # comment was transliterated
   expect_match(out, "# header e", fixed = TRUE)
-  # string literal was escaped (literal é followed by 'j' followed by à)
+  # string literal was escaped (literal e followed by 'j' followed by a)
   expect_match(out, "\\u00e9j\\u00e0", fixed = TRUE)
 })
 
 test_that("asciify_r_source preserves a trailing newline", {
-  src <- 'x <- "é"\n'
+  src <- 'x <- "\u00e9"\n'
   out <- asciify_r_source(src)
   expect_true(endsWith(out, "\n"))
 })
@@ -98,43 +98,43 @@ test_that("asciify_r_source returns the input unchanged when nothing to do", {
 # ---- identifier policy ------------------------------------------------------
 
 test_that("asciify_r_source errors by default on a non-ASCII identifier", {
-  src <- "façon <- 1"
+  src <- "fa\u00e7on <- 1"
   expect_error(asciify_r_source(src), regexp = "Non-ASCII identifier")
 })
 
 test_that("asciify_r_source(identifiers='warn') warns and leaves the id alone", {
-  src <- "façon <- 1"
+  src <- "fa\u00e7on <- 1"
   expect_warning(out <- asciify_r_source(src, identifiers = "warn"))
   # the identifier stayed (still non-ASCII), but no other token was rewritten
-  expect_match(out, "façon", fixed = TRUE)
+  expect_match(out, "fa\u00e7on", fixed = TRUE)
 })
 
 test_that("asciify_r_source(identifiers='skip') stays silent and unchanged", {
-  src <- "façon <- 1"
+  src <- "fa\u00e7on <- 1"
   out <- asciify_r_source(src, identifiers = "skip")
   expect_identical(out, src)
 })
 
 test_that("asciify_r_source rewrites strings even in a file with a non-ASCII id (warn)", {
-  src <- "façon <- \"café\""
+  src <- "fa\u00e7on <- \"caf\u00e9\""
   out <- expect_warning(asciify_r_source(src, identifiers = "warn"))
   # the string was escaped
   expect_match(out, "\\\\u00e9", fixed = FALSE)
   # the identifier stays
-  expect_match(out, "façon", fixed = TRUE)
+  expect_match(out, "fa\u00e7on", fixed = TRUE)
 })
 
 # ---- strategy = "report" ----------------------------------------------------
 
 test_that("asciify_r_source(strategy='report') is a pure read", {
-  src <- '# accent é\nx <- "é"'
+  src <- '# accent \u00e9\nx <- "\u00e9"'
   expect_identical(asciify_r_source(src, strategy = "report"), src)
 })
 
 # ---- multi-line string ------------------------------------------------------
 
 test_that("asciify_r_source handles a multi-line string literal", {
-  src <- 'x <- "ligneé 1\nligneà 2"'
+  src <- 'x <- "ligne\u00e9 1\nligne\u00e0 2"'
   out <- asciify_r_source(src)
   expect_true(stringi::stri_enc_isascii(out))
   # round-trip: the two strings hold the same characters
@@ -147,7 +147,7 @@ test_that("asciify_r_source handles a multi-line string literal", {
 
 test_that("asciify_file rewrites a .R file in place", {
   tmp <- tempfile(fileext = ".R")
-  writeLines('x <- "déjà"', tmp, useBytes = FALSE)
+  writeLines('x <- "d\u00e9j\u00e0"', tmp, useBytes = FALSE)
   on.exit(unlink(tmp), add = TRUE)
   res <- asciify_file(tmp)
   expect_true(res$changed)
@@ -157,7 +157,7 @@ test_that("asciify_file rewrites a .R file in place", {
 
 test_that("asciify_file with dry_run=TRUE leaves the file untouched", {
   tmp <- tempfile(fileext = ".R")
-  src <- 'x <- "déjà"'
+  src <- 'x <- "d\u00e9j\u00e0"'
   writeLines(src, tmp, useBytes = FALSE)
   on.exit(unlink(tmp), add = TRUE)
   before <- readLines(tmp, warn = FALSE)
@@ -185,12 +185,12 @@ test_that("asciify_file rewrites only the R chunks of an Rmd, leaving prose alon
   tmp <- tempfile(fileext = ".Rmd")
   writeLines(
     c(
-      "# Titre avec accent: été",
+      "# Titre avec accent: \u00e9t\u00e9",
       "",
-      "Ceci est un **paragraphe** avec un café.",
+      "Ceci est un **paragraphe** avec un caf\u00e9.",
       "",
       "```{r}",
-      "x <- \"déjà\"",
+      "x <- \"d\u00e9j\u00e0\"",
       "```",
       ""
     ),
@@ -199,11 +199,11 @@ test_that("asciify_file rewrites only the R chunks of an Rmd, leaving prose alon
   on.exit(unlink(tmp), add = TRUE)
   asciify_file(tmp)
   txt <- paste(readLines(tmp, warn = FALSE), collapse = "\n")
-  # prose untouched: still contains "été" / "café"
-  expect_true(grepl("été", txt, fixed = TRUE))
-  expect_true(grepl("café", txt, fixed = TRUE))
+  # prose untouched: still contains "ete" / "cafe"
+  expect_true(grepl("\u00e9t\u00e9", txt, fixed = TRUE))
+  expect_true(grepl("caf\u00e9", txt, fixed = TRUE))
   # but the chunk is asciified
-  expect_false(grepl("déjà", txt, fixed = TRUE))
+  expect_false(grepl("d\u00e9j\u00e0", txt, fixed = TRUE))
   expect_true(grepl("\\\\u00e9", txt, fixed = FALSE))
 })
 
@@ -215,7 +215,7 @@ test_that("asciify_pkg(dry_run = TRUE) reports without writing", {
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
   dir.create(file.path(pkg_path, "R"))
   writeLines(
-    'x <- "déjà"\n# comment é',
+    'x <- "d\u00e9j\u00e0"\n# comment \u00e9',
     file.path(pkg_path, "R", "f.R"),
     useBytes = FALSE
   )
@@ -233,12 +233,12 @@ test_that("asciify_pkg(dry_run = FALSE) actually rewrites every R file in scope"
   for (sub in c("R", "tests/testthat", "vignettes")) {
     dir.create(file.path(pkg_path, sub), recursive = TRUE)
   }
-  writeLines('x <- "déjà"',
+  writeLines('x <- "d\u00e9j\u00e0"',
              file.path(pkg_path, "R", "f.R"), useBytes = FALSE)
-  writeLines('expect_equal("été", "été")',
+  writeLines('expect_equal("\u00e9t\u00e9", "\u00e9t\u00e9")',
              file.path(pkg_path, "tests/testthat", "test-x.R"), useBytes = FALSE)
   writeLines(
-    c("```{r}", 'x <- "café"', "```"),
+    c("```{r}", 'x <- "caf\u00e9"', "```"),
     file.path(pkg_path, "vignettes", "v.Rmd"), useBytes = FALSE
   )
 
@@ -275,7 +275,7 @@ test_that("find_nonascii_files returns one row per offending line", {
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
   dir.create(file.path(pkg_path, "R"))
   writeLines(
-    c('x <- "ok"', 'y <- "café"', "# pure", "# accent é"),
+    c('x <- "ok"', 'y <- "caf\u00e9"', "# pure", "# accent \u00e9"),
     file.path(pkg_path, "R", "f.R"), useBytes = FALSE
   )
   out <- find_nonascii_files(pkg_path)
@@ -296,11 +296,11 @@ test_that("find_nonascii_files returns an empty frame when there is nothing to f
 
 # ---- CRAN check sanity: rewritten code parses back identically ------------
 
-test_that("CRAN sanity — every rewritten R source still parses and evaluates the same", {
+test_that("CRAN sanity \u2014 every rewritten R source still parses and evaluates the same", {
   src <- c(
-    "# résultat",
-    "f <- function(x = \"défaut\") {",
-    "  paste0(x, \" casé\")",
+    "# r\u00e9sultat",
+    "f <- function(x = \"d\u00e9faut\") {",
+    "  paste0(x, \" cas\u00e9\")",
     "}",
     "f()"
   )

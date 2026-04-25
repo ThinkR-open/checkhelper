@@ -40,8 +40,20 @@ find_nonascii_tokens <- function(text) {
   pd <- pd[!is.na(pd$text) & nzchar(pd$text), , drop = FALSE]
   # `expr` rows wrap their children and would cause overlapping rewrites
   # (e.g. an expr containing both an identifier and a string literal). Keep
-  # only terminal tokens — those are the source-faithful leaves.
+  # only terminal tokens - those are the source-faithful leaves.
   pd <- pd[isTRUE_each(pd$terminal), , drop = FALSE]
+
+  # getParseData() truncates long STR_CONST text to a placeholder
+  # ("[NNN chars quoted with 'x']") past an internal limit that
+  # `keep.source.maxchars` does not actually control. Re-extract the
+  # literal source for each terminal token from `text` so the ASCII check
+  # sees the real bytes.
+  pd$text <- vapply(
+    seq_len(nrow(pd)),
+    function(i) extract_token_source(text, pd[i, ]),
+    character(1L)
+  )
+
   hits <- !stringi::stri_enc_isascii(pd$text)
   pd <- pd[hits, , drop = FALSE]
   if (!nrow(pd)) return(empty_token_pd())
@@ -57,6 +69,29 @@ find_nonascii_tokens <- function(text) {
 #' @noRd
 isTRUE_each <- function(x) {
   vapply(x, isTRUE, logical(1L))
+}
+
+#' Re-extract the literal source of a token from the original text.
+#'
+#' Workaround for getParseData()'s STR_CONST-text truncation: it falls back
+#' to a "[NNN chars quoted with 'x']" placeholder for long literals,
+#' regardless of `keep.source.maxchars`.
+#'
+#' @noRd
+extract_token_source <- function(text, row) {
+  lines <- strsplit(text, "\n", fixed = TRUE)[[1L]]
+  if (row$line1 < 1L || row$line2 > length(lines)) return(row$text)
+  if (row$line1 == row$line2) {
+    return(stringi::stri_sub(lines[row$line1], row$col1, row$col2))
+  }
+  head <- stringi::stri_sub(lines[row$line1], row$col1, -1L)
+  tail <- stringi::stri_sub(lines[row$line2], 1L, row$col2)
+  middle <- if (row$line2 - row$line1 > 1L) {
+    lines[seq.int(row$line1 + 1L, row$line2 - 1L)]
+  } else {
+    character()
+  }
+  paste(c(head, middle, tail), collapse = "\n")
 }
 
 #' @noRd
@@ -107,7 +142,7 @@ rewrite_nonascii_token <- function(text, token, strategy) {
 #' Replace each non-ASCII code point by its `\\uXXXX` / `\\UXXXXXXXX` escape.
 #'
 #' Unlike [stringi::stri_escape_unicode()], this leaves backslashes,
-#' quotes and newlines alone — so an R STR_CONST text like `"d\\nej\\\\a"`
+#' quotes and newlines alone - so an R STR_CONST text like `"d\\nej\\\\a"`
 #' round-trips correctly when only the diacritic needs escaping.
 #'
 #' @noRd
@@ -158,16 +193,16 @@ escape_str_const <- function(text) {
 #'
 #' @param text character(1), the full source of an R script.
 #' @param strategy one of:
-#'   * `"auto"` (default): per-token policy — `\\uXXXX` escape inside
+#'   * `"auto"` (default): per-token policy - `\\uXXXX` escape inside
 #'     string literals (so they remain semantically equivalent and CRAN-safe);
-#'     `Latin-ASCII` transliteration (`é` → `e`) inside comments and roxygen
+#'     `Latin-ASCII` transliteration (`e` -> `e`) inside comments and roxygen
 #'     blocks (where escapes would not be interpreted).
 #'   * `"escape"`: force `\\uXXXX` escape on every non-identifier token.
 #'   * `"translit"`: force ASCII transliteration on every non-identifier token.
 #'   * `"report"`: rewrite nothing, just return the input unchanged. Useful
 #'     in conjunction with [find_nonascii_tokens()] for a dry run.
 #' @param identifiers what to do when a non-ASCII identifier (variable,
-#'   function name, formal, slot…) is found:
+#'   function name, formal, slot...) is found:
 #'   * `"error"` (default): stop. Renaming an identifier changes the API
 #'     surface and is not safe to automate.
 #'   * `"warn"`: warn and leave the token unchanged.
@@ -183,14 +218,14 @@ escape_str_const <- function(text) {
 #' user's exported API). Use [find_nonascii_tokens()] to surface them.
 #'
 #' Strings declared with the R 4.0 raw form (`r"(...)"`, `R"---(...)---"`)
-#' are detected — by default they are still treated like regular `STR_CONST`
+#' are detected - by default they are still treated like regular `STR_CONST`
 #' (escaped); pass `strategy = "translit"` if you want to keep them raw and
 #' lose the accents instead.
 #'
 #' @examples
 #' src <- '
-#' # accent dans un commentaire: été
-#' x <- "déjà vu"
+#' # accent dans un commentaire: ete
+#' x <- "deja vu"
 #' '
 #' cat(asciify_r_source(src))
 #' @export
@@ -236,7 +271,7 @@ asciify_r_source <- function(text,
       lines[tok$line1] <- char_splice(lines[tok$line1], tok$col1, tok$col2, new)
     } else {
       # Multi-line token (typically a multi-line STR_CONST). Replace by
-      # rebuilding the slice — split the new value on \n so the line array
+      # rebuilding the slice - split the new value on \n so the line array
       # stays consistent.
       head <- char_left(lines[tok$line1], tok$col1 - 1L)
       tail <- char_right(lines[tok$line2], tok$col2 + 1L)
@@ -317,7 +352,7 @@ asciify_file <- function(path,
   if (ext == "r") {
     new <- asciify_r_source(text, strategy = strategy, identifiers = identifiers)
   } else {
-    # In Rmd/Rnw/qmd we only rewrite the R chunks — the prose belongs to the
+    # In Rmd/Rnw/qmd we only rewrite the R chunks - the prose belongs to the
     # author and is not subject to CRAN's R-code rule. Simpler and safer than
     # tampering with the markdown.
     new <- asciify_rmd(text, strategy = strategy, identifiers = identifiers)
@@ -373,7 +408,7 @@ asciify_rmd <- function(text, strategy, identifiers) {
 
 #' Scan a directory tree for files containing non-ASCII characters
 #'
-#' Lightweight cousin of `dreamRs/prefixer::show_nonascii_file()` — returns a
+#' Lightweight cousin of `dreamRs/prefixer::show_nonascii_file()` - returns a
 #' tidy data.frame instead of pushing markers to the RStudio editor.
 #'
 #' @param path directory to scan, recursively.
@@ -449,14 +484,14 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
 #' `tests` / `vignettes` source, and reports a summary.
 #'
 #' Defaults to `dry_run = TRUE` because rewriting a whole package in place
-#' is invasive — call once with the default to inspect the diff, then re-run
+#' is invasive - call once with the default to inspect the diff, then re-run
 #' with `dry_run = FALSE` to commit. Use [find_nonascii_files()] for a
 #' read-only scan that does not even attempt to parse non-`.R` files.
 #'
 #' @inheritParams find_nonascii_files
 #' @inheritParams asciify_r_source
 #' @param scope subdirectories to rewrite. Defaults to `c("R", "tests",
-#'   "vignettes")` — the directories where CRAN raises
+#'   "vignettes")` - the directories where CRAN raises
 #'   `non-ASCII characters in code`. `man/` is intentionally excluded
 #'   because Rd files are usually generated by roxygen2 from the R sources;
 #'   rewriting the source files is enough.
@@ -506,7 +541,7 @@ asciify_pkg <- function(path = ".",
         dry_run = dry_run
       ),
       error = function(e) {
-        warning(sprintf("asciify_pkg: skipping %s — %s", f, conditionMessage(e)),
+        warning(sprintf("asciify_pkg: skipping %s \u2014 %s", f, conditionMessage(e)),
                 call. = FALSE)
         list(path = f, changed = FALSE, n_tokens = NA_integer_)
       }
