@@ -25,8 +25,10 @@ binary and skipped without reading.}
 safety net for accidentally bundled large blobs.}
 }
 \value{
-a data.frame with columns \code{file}, \code{line}, \code{text}, \code{n_tokens},
-sorted by file then line. Empty if nothing is found.
+a data.frame with columns \code{file}, \code{line}, \code{text}, \code{n_tokens}
+(count of non-ASCII characters on the offending line; well-defined
+for both R and non-R files), sorted by file then line. Empty if
+nothing is found.
 }
 \description{
 Lightweight cousin of \code{dreamRs/prefixer::show_nonascii_file()} - returns a

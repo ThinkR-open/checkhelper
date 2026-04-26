@@ -17,8 +17,9 @@ asciify_r_source(
 \itemize{
 \item \code{"auto"} (default): per-token policy - \verb{\\\\uXXXX} escape inside
 string literals (so they remain semantically equivalent and CRAN-safe);
-\code{Latin-ASCII} transliteration (\code{e} -> \code{e}) inside comments and roxygen
-blocks (where escapes would not be interpreted).
+\code{Latin-ASCII} transliteration (drops diacritics, e.g. an accented
+\code{e} becomes plain \code{e}) inside comments and roxygen blocks (where
+escapes would not be interpreted).
 \item \code{"escape"}: force \verb{\\\\uXXXX} escape on every non-identifier token.
 \item \code{"translit"}: force ASCII transliteration on every non-identifier token.
 \item \code{"report"}: rewrite nothing, just return the input unchanged. Useful

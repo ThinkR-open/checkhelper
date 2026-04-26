@@ -176,13 +176,23 @@ escape_str_const <- function(text) {
     }
   }
   # Raw strings: r"(...)", r"[...]", r"{...}", with optional dashes.
+  # We can't just inject \uXXXX inside a raw literal: raw strings do NOT
+  # interpret backslash escapes. Convert to a regular " "-quoted literal
+  # whose *value* is identical, then escape the non-ASCII content as
+  # usual. The (...) / [...] / {...} delimiter and dashes are dropped
+  # because they only matter to the raw form.
   rx <- "^([rR])(\"|')([-]*)([\\(\\[\\{])(.*)([\\)\\]\\}])([-]*)\\2$"
   if (grepl(rx, text, perl = TRUE)) {
     m <- regmatches(text, regexec(rx, text, perl = TRUE))[[1L]]
     if (length(m) == 8L) {
       inner <- m[6L]
-      return(paste0(m[2L], m[3L], m[4L], m[5L], escape_chars_only(inner),
-                    m[7L], m[8L], m[3L], m[2L]))
+      # Escape what regular-string syntax would otherwise reinterpret.
+      inner <- gsub("\\", "\\\\", inner, fixed = TRUE)
+      inner <- gsub("\"", "\\\"", inner, fixed = TRUE)
+      inner <- gsub("\n", "\\n", inner, fixed = TRUE)
+      inner <- gsub("\t", "\\t", inner, fixed = TRUE)
+      inner <- gsub("\r", "\\r", inner, fixed = TRUE)
+      return(paste0("\"", escape_chars_only(inner), "\""))
     }
   }
   # Fallback: only escape what is non-ASCII.
@@ -195,8 +205,9 @@ escape_str_const <- function(text) {
 #' @param strategy one of:
 #'   * `"auto"` (default): per-token policy - `\\uXXXX` escape inside
 #'     string literals (so they remain semantically equivalent and CRAN-safe);
-#'     `Latin-ASCII` transliteration (`e` -> `e`) inside comments and roxygen
-#'     blocks (where escapes would not be interpreted).
+#'     `Latin-ASCII` transliteration (drops diacritics, e.g. an accented
+#'     `e` becomes plain `e`) inside comments and roxygen blocks (where
+#'     escapes would not be interpreted).
 #'   * `"escape"`: force `\\uXXXX` escape on every non-identifier token.
 #'   * `"translit"`: force ASCII transliteration on every non-identifier token.
 #'   * `"report"`: rewrite nothing, just return the input unchanged. Useful
@@ -326,8 +337,9 @@ char_right <- function(line, from) {
 #'   write the file. Default `FALSE`.
 #'
 #' @return invisibly, a list with `path`, `changed` (logical), `n_tokens`
-#'   (integer count of non-ASCII tokens found), and `text` (the rewritten
-#'   content if `changed`, else the original).
+#'   (integer; for R/Rmd/Rnw/qmd, the count of non-ASCII parser tokens;
+#'   for any other file type, the count of non-ASCII characters), and
+#'   `text` (the rewritten content if `changed`, else the original).
 #' @export
 asciify_file <- function(path,
                          strategy = c("auto", "escape", "translit", "report"),
@@ -342,11 +354,18 @@ asciify_file <- function(path,
     return(invisible(list(path = path, changed = FALSE, n_tokens = 0L, text = "")))
   }
 
+  # readLines() drops the trailing-newline status; capture it from bytes so
+  # we can re-apply it on write and not pollute diffs.
+  trailing_nl <- has_trailing_newline(path)
+
   text <- paste(raw, collapse = "\n")
   ext <- tolower(tools::file_ext(path))
   if (!ext %in% c("r", "rmd", "rnw", "qmd")) {
-    n <- nrow(find_nonascii_tokens_safe(text))
-    return(invisible(list(path = path, changed = FALSE, n_tokens = n, text = text)))
+    return(invisible(list(
+      path = path, changed = FALSE,
+      n_tokens = count_nonascii_chars(text),
+      text = text
+    )))
   }
 
   if (ext == "r") {
@@ -360,7 +379,7 @@ asciify_file <- function(path,
 
   changed <- !identical(new, text)
   if (changed && !isTRUE(dry_run)) {
-    writeLines(new, con = path, useBytes = TRUE)
+    write_text_preserving_eol(new, path, trailing_nl = trailing_nl)
   }
   invisible(list(
     path = path,
@@ -368,6 +387,37 @@ asciify_file <- function(path,
     n_tokens = nrow(find_nonascii_tokens_safe(text)),
     text = new
   ))
+}
+
+#' @noRd
+has_trailing_newline <- function(path) {
+  size <- file.size(path)
+  if (is.na(size) || size == 0L) return(FALSE)
+  con <- file(path, "rb")
+  on.exit(close(con))
+  seek(con, where = size - 1L, origin = "start")
+  last <- readBin(con, what = "raw", n = 1L)
+  length(last) == 1L && last == as.raw(0x0a)
+}
+
+#' @noRd
+write_text_preserving_eol <- function(text, path, trailing_nl) {
+  bytes <- charToRaw(enc2utf8(text))
+  if (isTRUE(trailing_nl) &&
+      (!length(bytes) || bytes[length(bytes)] != as.raw(0x0a))) {
+    bytes <- c(bytes, as.raw(0x0a))
+  }
+  if (isFALSE(trailing_nl) &&
+      length(bytes) && bytes[length(bytes)] == as.raw(0x0a)) {
+    bytes <- bytes[-length(bytes)]
+  }
+  writeBin(bytes, con = path)
+}
+
+#' @noRd
+count_nonascii_chars <- function(text) {
+  if (!length(text) || !nzchar(text)) return(0L)
+  sum(!stringi::stri_enc_isascii(strsplit(text, "", fixed = TRUE)[[1L]]))
 }
 
 #' @noRd
@@ -420,8 +470,10 @@ asciify_rmd <- function(text, strategy, identifiers) {
 #' @param size_limit only files smaller than this many bytes are scanned;
 #'   safety net for accidentally bundled large blobs.
 #'
-#' @return a data.frame with columns `file`, `line`, `text`, `n_tokens`,
-#'   sorted by file then line. Empty if nothing is found.
+#' @return a data.frame with columns `file`, `line`, `text`, `n_tokens`
+#'   (count of non-ASCII characters on the offending line; well-defined
+#'   for both R and non-R files), sorted by file then line. Empty if
+#'   nothing is found.
 #' @export
 find_nonascii_files <- function(path = ".",
                                 scope = c("R", "tests", "vignettes", "man",
@@ -446,7 +498,7 @@ find_nonascii_files <- function(path = ".",
       file = f,
       line = bad,
       text = raw[bad],
-      n_tokens = NA_integer_,
+      n_tokens = vapply(raw[bad], count_nonascii_chars, integer(1L)),
       stringsAsFactors = FALSE
     )
   })

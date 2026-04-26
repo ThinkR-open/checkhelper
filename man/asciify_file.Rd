@@ -19,8 +19,9 @@ handled as R source. Other suffixes are scanned read-only.}
 \itemize{
 \item \code{"auto"} (default): per-token policy - \verb{\\\\uXXXX} escape inside
 string literals (so they remain semantically equivalent and CRAN-safe);
-\code{Latin-ASCII} transliteration (\code{e} -> \code{e}) inside comments and roxygen
-blocks (where escapes would not be interpreted).
+\code{Latin-ASCII} transliteration (drops diacritics, e.g. an accented
+\code{e} becomes plain \code{e}) inside comments and roxygen blocks (where
+escapes would not be interpreted).
 \item \code{"escape"}: force \verb{\\\\uXXXX} escape on every non-identifier token.
 \item \code{"translit"}: force ASCII transliteration on every non-identifier token.
 \item \code{"report"}: rewrite nothing, just return the input unchanged. Useful
@@ -41,8 +42,9 @@ write the file. Default \code{FALSE}.}
 }
 \value{
 invisibly, a list with \code{path}, \code{changed} (logical), \code{n_tokens}
-(integer count of non-ASCII tokens found), and \code{text} (the rewritten
-content if \code{changed}, else the original).
+(integer; for R/Rmd/Rnw/qmd, the count of non-ASCII parser tokens;
+for any other file type, the count of non-ASCII characters), and
+\code{text} (the rewritten content if \code{changed}, else the original).
 }
 \description{
 Writes the rewritten file in place (unless \code{dry_run = TRUE}). Files that

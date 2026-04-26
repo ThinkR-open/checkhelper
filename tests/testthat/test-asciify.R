@@ -199,7 +199,7 @@ test_that("asciify_file rewrites only the R chunks of an Rmd, leaving prose alon
   on.exit(unlink(tmp), add = TRUE)
   asciify_file(tmp)
   txt <- paste(readLines(tmp, warn = FALSE), collapse = "\n")
-  # prose untouched: still contains "ete" / "cafe"
+  # prose untouched: still contains the accented forms "\u00e9t\u00e9" / "caf\u00e9"
   expect_true(grepl("\u00e9t\u00e9", txt, fixed = TRUE))
   expect_true(grepl("caf\u00e9", txt, fixed = TRUE))
   # but the chunk is asciified
