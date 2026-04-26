@@ -26,3 +26,27 @@ test_that("check_as_cran() falls back to cloud.r-project.org when repos is unset
     info = "fallback CRAN mirror should be cloud.r-project.org"
   )
 })
+
+test_that("prepare_check_dirs (re)creates scratch even when it already existed", {
+  # Regression for the second-round review: when scratch existed, the
+  # original code unlinked it without recreating it, so downstream steps
+  # got an empty/missing TMPDIR.
+  withr::with_tempdir({
+    dir.create("co")
+    dir.create("sc")
+
+    # First call: scratch already exists -> must be recreated.
+    checkhelper:::prepare_check_dirs(
+      check_output = "co", scratch = "sc", clean_before = TRUE
+    )
+    expect_true(dir.exists("sc"))
+    expect_true(dir.exists("co"))
+
+    # Second call: scratch was deleted -> still must end up existing.
+    unlink("sc", recursive = TRUE)
+    checkhelper:::prepare_check_dirs(
+      check_output = "co", scratch = "sc", clean_before = TRUE
+    )
+    expect_true(dir.exists("sc"))
+  })
+})

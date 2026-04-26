@@ -117,7 +117,7 @@ find_missing_tags <- function(package.dir = ".",
   ## because the object class is not "function".
   res_topic_only <- map(
     .x = blocks,
-    .f = ~ if (!class(.x[["object"]])[1] %in% c("function", "package", "data")) .x
+    .f = ~ if (!(class(.x[["object"]])[1] %in% c("function", "package", "data"))) .x
   ) %>%
     compact()
 
@@ -364,7 +364,7 @@ topic_block_returns <- function(topic_blocks) {
       rdname <- roxygen2::block_get_tag_value(b, tag = "name")
     }
     if (is.null(rdname) || !nzchar(rdname)) next
-    out[[rdname]] <- val
+    out[rdname] <- val
   }
   out
 }
@@ -410,7 +410,7 @@ set_correct_return_to_alias <- function(res) {
         any(return_value != ""),
         first(return_value[return_value != ""]),
         ""
-      ),
+      )
     ) %>%
     ungroup()
 }

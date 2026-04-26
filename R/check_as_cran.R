@@ -53,18 +53,11 @@ check_as_cran <- function(pkg = ".",
                           repos = getOption("repos")) {
   pkg <- normalizePath(pkg)
 
-  if (isTRUE(clean_before) | !dir.exists(check_output)) {
-    if (dir.exists(check_output)) {
-      unlink(check_output, recursive = TRUE)
-    }
-    dir.create(check_output, recursive = TRUE)
-  }
-
-  if (dir.exists(scratch)) {
-    unlink(scratch, recursive = TRUE)
-  } else {
-    dir.create(scratch)
-  }
+  prepare_check_dirs(
+    check_output = check_output,
+    scratch = scratch,
+    clean_before = clean_before
+  )
 
   # Honour user-provided `repos` (#79). If the option is unset (e.g. running
   # in a fresh callr/Rscript session), fall back to a public CRAN mirror so
@@ -101,6 +94,27 @@ check_as_cran <- function(pkg = ".",
   return(results)
 }
 
+
+#' Prepare the check_output and scratch directories used by `check_as_cran()`.
+#'
+#' Pre-existing directories are wiped and re-created so each run starts from
+#' a clean state; missing ones are created. The scratch directory is always
+#' (re)created — pre-extraction code skipped the `dir.create` when scratch
+#' already existed, leaving downstream `TMPDIR` pointing at nothing.
+#' @noRd
+prepare_check_dirs <- function(check_output, scratch, clean_before) {
+  if (isTRUE(clean_before) | !dir.exists(check_output)) {
+    if (dir.exists(check_output)) {
+      unlink(check_output, recursive = TRUE)
+    }
+    dir.create(check_output, recursive = TRUE)
+  }
+
+  if (dir.exists(scratch)) {
+    unlink(scratch, recursive = TRUE)
+  }
+  dir.create(scratch, recursive = TRUE)
+}
 
 #' @noRd
 the_check <- function(pkg = ".", check_output, scratch, Ncpus = 1, as_command = FALSE, clean_before = TRUE) {
