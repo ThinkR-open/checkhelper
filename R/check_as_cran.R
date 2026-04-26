@@ -18,7 +18,7 @@
 #' @param repos Character vector of CRAN-like repositories to use when
 #'   resolving dependencies during the check, passed via the `repos`
 #'   option (#79). Defaults to the current `getOption("repos")`, falling
-#'   back to the RStudio CRAN mirror when that is unset.
+#'   back to `https://cloud.r-project.org` when that is unset.
 #'
 #' @return An object containing errors, warnings, and notes.
 #'

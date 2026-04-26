@@ -36,7 +36,7 @@ to keep the previous behaviour.}
 \item{repos}{Character vector of CRAN-like repositories to use when
 resolving dependencies during the check, passed via the \code{repos}
 option (#79). Defaults to the current \code{getOption("repos")}, falling
-back to the RStudio CRAN mirror when that is unset.}
+back to \verb{https://cloud.r-project.org} when that is unset.}
 }
 \value{
 An object containing errors, warnings, and notes.
