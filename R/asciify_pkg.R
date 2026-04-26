@@ -330,8 +330,8 @@ char_right <- function(line, from) {
 #' do not contain any non-ASCII characters are skipped without rewriting,
 #' so file mtimes stay clean.
 #'
-#' @param path path to a file. Suffixes `.R`, `.r`, `.Rmd`, `.qmd` are
-#'   handled as R source. Other suffixes are scanned read-only.
+#' @param path path to a file. Suffixes `.R`, `.r`, `.Rmd`, `.Rnw`, `.qmd`
+#'   are handled as R source. Other suffixes are scanned read-only.
 #' @inheritParams asciify_r_source
 #' @param dry_run logical. If `TRUE`, report what would change but do not
 #'   write the file. Default `FALSE`.
@@ -381,12 +381,33 @@ asciify_file <- function(path,
   if (changed && !isTRUE(dry_run)) {
     write_text_preserving_eol(new, path, trailing_nl = trailing_nl)
   }
+  # For .Rmd/.qmd/.Rnw, parsing the whole document as R fails (the prose
+  # is not R), so the safe wrapper would return 0 tokens. Sum tokens
+  # across the same chunks asciify_rmd() rewrites.
+  n_tokens <- if (ext == "r") {
+    nrow(find_nonascii_tokens_safe(text))
+  } else {
+    sum_chunk_nonascii_tokens(text)
+  }
   invisible(list(
     path = path,
     changed = changed,
-    n_tokens = nrow(find_nonascii_tokens_safe(text)),
+    n_tokens = n_tokens,
     text = new
   ))
+}
+
+#' @noRd
+sum_chunk_nonascii_tokens <- function(text) {
+  rx <- "(?ms)^([ \\t]*```\\{r[^\\n]*\\n)(.*?)(\\n[ \\t]*```\\s*$)"
+  m <- regmatches(text, gregexpr(rx, text, perl = TRUE))[[1L]]
+  if (!length(m)) return(0L)
+  bodies <- vapply(m, function(chunk) {
+    parts <- regmatches(chunk, regexec(rx, chunk, perl = TRUE))[[1L]]
+    if (length(parts) >= 4L) parts[3L] else ""
+  }, character(1L))
+  sum(vapply(bodies, function(b) nrow(find_nonascii_tokens_safe(b)),
+             integer(1L)))
 }
 
 #' @noRd
@@ -486,7 +507,10 @@ find_nonascii_files <- function(path = ".",
   files <- collect_pkg_files(path, scope = scope, ignore_ext = ignore_ext)
 
   out <- lapply(files, function(f) {
-    if (file.size(f) >= size_limit) return(NULL)
+    # file.size() returns NA for unreadable entries (e.g. broken symlinks);
+    # skip silently rather than letting the >= comparison error out the scan.
+    sz <- file.size(f)
+    if (is.na(sz) || sz >= size_limit) return(NULL)
     raw <- tryCatch(
       readLines(f, warn = FALSE, encoding = "UTF-8"),
       error = function(e) NULL
@@ -510,7 +534,8 @@ find_nonascii_files <- function(path = ".",
       stringsAsFactors = FALSE
     ))
   }
-  do.call(rbind, out)
+  out <- do.call(rbind, out)
+  out[order(out$file, out$line), , drop = FALSE]
 }
 
 #' @noRd
@@ -609,7 +634,7 @@ asciify_pkg <- function(path = ".",
     path = character(), changed = logical(),
     n_tokens = integer(), stringsAsFactors = FALSE
   )
-  out
+  invisible(out)
 }
 
 # tiny null-coalescer to avoid an extra dep just for it

@@ -12,8 +12,8 @@ asciify_file(
 )
 }
 \arguments{
-\item{path}{path to a file. Suffixes \code{.R}, \code{.r}, \code{.Rmd}, \code{.qmd} are
-handled as R source. Other suffixes are scanned read-only.}
+\item{path}{path to a file. Suffixes \code{.R}, \code{.r}, \code{.Rmd}, \code{.Rnw}, \code{.qmd}
+are handled as R source. Other suffixes are scanned read-only.}
 
 \item{strategy}{one of:
 \itemize{
