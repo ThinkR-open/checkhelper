@@ -186,6 +186,30 @@ test_that("asciify_file reports a non-zero n_tokens for an Rmd with non-ASCII in
   })
 })
 
+test_that("asciify_file on a .Rnw reports a real n_tokens (Sweave routed read-only)", {
+  # .Rnw is no longer claimed as a writable target: the chunk regex only
+  # matches knitr fences, so Sweave `<<...>>= ... @` chunks would never be
+  # rewritten and the previous code returned a misleading n_tokens = 0.
+  # We now route .Rnw through the same read-only path as any non-R file:
+  # changed stays FALSE but n_tokens is the honest non-ASCII character count.
+  withr::with_tempdir({
+    writeLines(c(
+      "\\documentclass{article}",
+      "\\begin{document}",
+      paste0("Le caf", e, " est chaud"),
+      "<<>>=",
+      paste0("x <- \"caf", e, "\""),
+      "@",
+      "\\end{document}"
+    ), "doc.Rnw", useBytes = FALSE)
+
+    res <- asciify_file("doc.Rnw", dry_run = TRUE)
+
+    expect_false(res$changed)
+    expect_gt(res$n_tokens, 0L)
+  })
+})
+
 # ---- return shape: asciify_pkg returns invisibly ---------------------------
 
 test_that("asciify_pkg() returns its summary invisibly", {

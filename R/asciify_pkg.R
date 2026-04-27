@@ -330,16 +330,19 @@ char_right <- function(line, from) {
 #' do not contain any non-ASCII characters are skipped without rewriting,
 #' so file mtimes stay clean.
 #'
-#' @param path path to a file. Suffixes `.R`, `.r`, `.Rmd`, `.Rnw`, `.qmd`
-#'   are handled as R source. Other suffixes are scanned read-only.
+#' @param path path to a file. Suffixes `.R`, `.r`, `.Rmd`, `.qmd` are
+#'   handled as R source. `.Rnw` (Sweave) and any other suffix are
+#'   scanned read-only — Sweave's `<<>>= ... @` chunk syntax is not
+#'   handled by the rewriter.
 #' @inheritParams asciify_r_source
 #' @param dry_run logical. If `TRUE`, report what would change but do not
 #'   write the file. Default `FALSE`.
 #'
 #' @return invisibly, a list with `path`, `changed` (logical), `n_tokens`
-#'   (integer; for R/Rmd/Rnw/qmd, the count of non-ASCII parser tokens;
-#'   for any other file type, the count of non-ASCII characters), and
-#'   `text` (the rewritten content if `changed`, else the original).
+#'   (integer; for R/Rmd/qmd, the count of non-ASCII parser tokens; for
+#'   any other file type — including `.Rnw` — the count of non-ASCII
+#'   characters), and `text` (the rewritten content if `changed`, else
+#'   the original).
 #' @export
 asciify_file <- function(path,
                          strategy = c("auto", "escape", "translit", "report"),
@@ -360,7 +363,7 @@ asciify_file <- function(path,
 
   text <- paste(raw, collapse = "\n")
   ext <- tolower(tools::file_ext(path))
-  if (!ext %in% c("r", "rmd", "rnw", "qmd")) {
+  if (!ext %in% c("r", "rmd", "qmd")) {
     return(invisible(list(
       path = path, changed = FALSE,
       n_tokens = count_nonascii_chars(text),
@@ -371,7 +374,7 @@ asciify_file <- function(path,
   if (ext == "r") {
     new <- asciify_r_source(text, strategy = strategy, identifiers = identifiers)
   } else {
-    # In Rmd/Rnw/qmd we only rewrite the R chunks - the prose belongs to the
+    # In Rmd/qmd we only rewrite the R chunks - the prose belongs to the
     # author and is not subject to CRAN's R-code rule. Simpler and safer than
     # tampering with the markdown.
     new <- asciify_rmd(text, strategy = strategy, identifiers = identifiers)
@@ -381,7 +384,7 @@ asciify_file <- function(path,
   if (changed && !isTRUE(dry_run)) {
     write_text_preserving_eol(new, path, trailing_nl = trailing_nl)
   }
-  # For .Rmd/.qmd/.Rnw, parsing the whole document as R fails (the prose
+  # For .Rmd/.qmd, parsing the whole document as R fails (the prose
   # is not R), so the safe wrapper would return 0 tokens. Sum tokens
   # across the same chunks asciify_rmd() rewrites.
   n_tokens <- if (ext == "r") {
@@ -446,7 +449,7 @@ find_nonascii_tokens_safe <- function(text) {
   tryCatch(find_nonascii_tokens(text), error = function(e) empty_token_pd())
 }
 
-#' Rewrite the R chunks of an Rmd/Rnw/qmd file, leaving prose alone.
+#' Rewrite the R chunks of an Rmd/qmd file, leaving prose alone.
 #' @noRd
 asciify_rmd <- function(text, strategy, identifiers) {
   # Match ```{r ...} ... ``` chunks (knitr's standard form).
@@ -607,7 +610,7 @@ asciify_pkg <- function(path = ".",
     ignore_ext = c("png", "jpg", "jpeg", "gif", "rds", "rda", "rdata",
                    "pdf", "ico", "svg")
   )
-  files <- files[tolower(tools::file_ext(files)) %in% c("r", "rmd", "rnw", "qmd")]
+  files <- files[tolower(tools::file_ext(files)) %in% c("r", "rmd", "qmd")]
 
   rows <- lapply(files, function(f) {
     res <- tryCatch(

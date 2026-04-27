@@ -12,8 +12,10 @@ asciify_file(
 )
 }
 \arguments{
-\item{path}{path to a file. Suffixes \code{.R}, \code{.r}, \code{.Rmd}, \code{.Rnw}, \code{.qmd}
-are handled as R source. Other suffixes are scanned read-only.}
+\item{path}{path to a file. Suffixes \code{.R}, \code{.r}, \code{.Rmd}, \code{.qmd} are
+handled as R source. \code{.Rnw} (Sweave) and any other suffix are
+scanned read-only — Sweave's \verb{<<>>= ... @} chunk syntax is not
+handled by the rewriter.}
 
 \item{strategy}{one of:
 \itemize{
@@ -42,9 +44,10 @@ write the file. Default \code{FALSE}.}
 }
 \value{
 invisibly, a list with \code{path}, \code{changed} (logical), \code{n_tokens}
-(integer; for R/Rmd/Rnw/qmd, the count of non-ASCII parser tokens;
-for any other file type, the count of non-ASCII characters), and
-\code{text} (the rewritten content if \code{changed}, else the original).
+(integer; for R/Rmd/qmd, the count of non-ASCII parser tokens; for
+any other file type — including \code{.Rnw} — the count of non-ASCII
+characters), and \code{text} (the rewritten content if \code{changed}, else
+the original).
 }
 \description{
 Writes the rewritten file in place (unless \code{dry_run = TRUE}). Files that

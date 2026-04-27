@@ -18,8 +18,8 @@ License: MIT + file LICENSE
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
-Depends: 
-    R (>= 2.10)
+Depends:
+    R (>= 4.0)
 Imports: 
     cli,
     desc,

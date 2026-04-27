@@ -12,7 +12,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 | Commentaires R / roxygen (`# été`, `#' été`) | NOTE | translittération `Latin-ASCII` (`é` → `e`) |
 | Identifiants (`maFonçtion`) | WARNING bloquant | **refus**, ne touche pas (renommer = breaking) |
 | `man/*.Rd` | utilise `\enc{}{}` | hors scope (regénéré par roxygen) |
-| `DESCRIPTION` / `NAMESPACE` | UTF-8 OK / ASCII | hors scope par défaut |
+| `DESCRIPTION` / `NAMESPACE` | UTF-8 OK / ASCII | inclus dans `find_nonascii_files()` (scan read-only), jamais réécrits par `asciify_*` |
 | `data/*.rda` | NOTE *marked UTF-8 strings* | hors scope (données utilisateur) |
 
 ## API publique
@@ -21,7 +21,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 |---|---|
 | `find_nonascii_tokens(text)` | Parse `text` (R source) et renvoie les tokens non-ASCII (data.frame issu de `getParseData()` + colonne `is_identifier`). |
 | `asciify_r_source(text, strategy, identifiers)` | Applique le rewrite token-par-token sur du R source. |
-| `asciify_file(path, strategy, identifiers, dry_run)` | Réécrit un fichier `.R` / `.Rmd` / `.qmd` / `.Rnw`. Pour les Rmd/qmd, ne touche **que** les chunks ```` ```{r} ````. |
+| `asciify_file(path, strategy, identifiers, dry_run)` | Réécrit un fichier `.R` / `.Rmd` / `.qmd`. Pour les Rmd/qmd, ne touche **que** les chunks ```` ```{r} ````. Les autres extensions (incluant `.Rnw`) sont scannées en lecture seule. |
 | `asciify_pkg(path, scope, strategy, identifiers, dry_run)` | Walk sur le package complet. **Default `dry_run = TRUE`** par sécurité. |
 | `find_nonascii_files(path, ...)` | Scan read-only, retourne un data.frame `(file, line, text)`. Cousin de `prefixer::show_nonascii_file()`. |
 
@@ -75,7 +75,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 |---|---|---|
 | Identifiant non-ASCII | refus (par défaut) | renommer un export = breaking |
 | Rd écrits à la main (sans roxygen) | hors scope | majorité des packages utilisent roxygen ; rajouter `\enc{}{}` proprement = scanner Rd-syntax-aware |
-| Vignettes Rnw | partiellement supporté (mêmes regex de chunks que Rmd) | `\Sexpr` non géré |
+| Vignettes Rnw (Sweave) | non supporté en réécriture — les chunks `<<>>= ... @` ne matchent pas le regex knitr utilisé. Routé en lecture seule (count de chars non-ASCII), pas de rewrite. |
 | Fichiers > `size_limit` (500 ko) dans `find_nonascii_files()` | ignorés | safety net, blob accidentel |
 | Encodage source ≠ UTF-8 | `readLines(encoding = "UTF-8")` | suppose UTF-8 d'entrée ; à élargir si besoin via paramètre |
 
