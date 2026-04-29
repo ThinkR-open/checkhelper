@@ -260,7 +260,22 @@ test_that("asciify_pkg() summary message reports correct counts", {
     writeLines("x <- 1", "R/f2.R", useBytes = FALSE)  # ASCII-clean
     expect_message(
       asciify_pkg(".", dry_run = TRUE),
-      regexp = "2 file\\(s\\) scanned, would change 1, 1 non-ASCII token"
+      regexp = "2 file\\(s\\) scanned, would change 1, 1 non-ASCII character"
+    )
+  })
+})
+
+test_that("asciify_pkg() summary counts every non-ASCII character, not parser tokens", {
+  withr::with_tempdir({
+    dir.create("R")
+    a <- "\u00e0"; e2 <- "\u00e9"; c2 <- "\u00e7"; e3 <- "\u00e8"
+    writeLines(
+      paste0("x <- \"hsl(50", a, e2, c2, e3, "%)\""),
+      "R/f.R", useBytes = FALSE
+    )
+    expect_message(
+      asciify_pkg(".", dry_run = TRUE),
+      regexp = "4 non-ASCII character"
     )
   })
 })
@@ -272,5 +287,48 @@ test_that("asciify_pkg() message is silenceable", {
     expect_no_message(
       suppressMessages(asciify_pkg(".", dry_run = TRUE))
     )
+  })
+})
+
+test_that("asciify_pkg() hints to re-run with dry_run = FALSE in dry-run with changes", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    expect_message(
+      asciify_pkg(".", dry_run = TRUE),
+      regexp = "Re-run with .*dry_run = FALSE.* to apply"
+    )
+  })
+})
+
+test_that("asciify_pkg() hints how to inspect the invisible result when there are changes", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    expect_message(
+      asciify_pkg(".", dry_run = TRUE),
+      regexp = "returned invisibly.*print\\(asciify_pkg"
+    )
+  })
+})
+
+test_that("asciify_pkg() does not show the apply hint when in apply mode", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    msgs <- testthat::capture_messages(asciify_pkg(".", dry_run = FALSE))
+    expect_false(any(grepl("dry_run = FALSE.* to apply", msgs)))
+  })
+})
+
+test_that("asciify_pkg() does not show hints when nothing would change", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines("x <- 1", "R/f.R", useBytes = FALSE)  # ASCII-clean
+    msgs <- testthat::capture_messages(asciify_pkg(".", dry_run = TRUE))
+    expect_false(any(grepl("Re-run with", msgs)))
+    expect_false(any(grepl("returned invisibly", msgs)))
+    # but the count summary still appears
+    expect_true(any(grepl("would change 0", msgs)))
   })
 })
