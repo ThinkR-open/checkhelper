@@ -11,21 +11,49 @@ output: github_document
 [![](https://cranlogs.r-pkg.org/badges/checkhelper)](https://cran.r-project.org/package=checkhelper)
 [![CRAN status](https://www.r-pkg.org/badges/version/checkhelper)](https://CRAN.R-project.org/package=checkhelper)
 <!-- badges: end -->
-  
+
 # checkhelper
 
-A toolkit for R package authors: surface globals to declare, audit roxygen tags, rewrite non-ASCII characters CRAN-cleanly, and run `R CMD check` with CRAN-equivalent settings — to reduce the risk of CRAN rejection.
+A toolkit for R package authors that turns each `R CMD check` warning or NOTE into a clear two-step workflow: **audit** what the issue is, then **fix** it. The goal is to reduce the risk of CRAN rejection.
 
-Complete documentation in the {pkgdown} site: https://thinkr-open.github.io/checkhelper/
+Complete documentation in the {pkgdown} site: <https://thinkr-open.github.io/checkhelper/>
 
-## What it does
+## API at a glance
 
-- **Surface globals to declare** (`get_no_visible()`, `print_globals()`) — collects `no visible binding for global variable` / `no visible global function` notes from `R CMD check`, then prints the `globalVariables(...)` block to drop in `R/globals.R` and the imports to add to `NAMESPACE`.
-- **Audit roxygen tags** (`find_missing_tags()`) — flags exported functions missing `@return`, and documented internal functions missing `@noRd`.
-- **Rewrite non-ASCII characters** (`asciify_pkg()`, `find_nonascii_files()`, `asciify_file()`) — escapes string literals to `\uXXXX` and transliterates comments/roxygen so the package passes CRAN's "non-ASCII characters" check. Dry-run by default.
-- **Run `R CMD check` with CRAN settings** (`check_as_cran()`) — uses the env vars and options from CRAN's incoming-pretest scripts.
-- **Spot files left behind by checks** (`check_clean_userspace()`) — pinpoints which examples / tests / vignettes leak files into user space.
-- **Document datasets** (`get_data_info()`, `use_data_doc()`) — generates a roxygen skeleton for a loaded dataset.
+Each category of CRAN issue gets one read-only `audit_*()` function and, when an automated fix is safe, one `fix_*()` function. Type `audit_<TAB>` or `fix_<TAB>` in RStudio to discover the surface.
+
+| CRAN issue | Audit (read-only) | Fix (action) |
+|---|---|---|
+| Globals to declare (`no visible binding`) | `audit_globals()` | `fix_globals()` |
+| Missing roxygen tags (`@return`, `@noRd`) | `audit_tags()` | — |
+| Non-ASCII characters | `audit_ascii()` | `fix_ascii()` |
+| Files left in user space by checks | `audit_userspace()` | — |
+| `R CMD check` with CRAN settings | `audit_check()` | — |
+| Undocumented datasets | `audit_dataset_doc()` | `fix_dataset_doc()` |
+
+Lower-level helpers (`asciify_file()`, `asciify_r_source()`, `find_nonascii_tokens()`, `create_example_pkg()`) are also exported for fine-grained scripting.
+
+The 10 historic functions (`get_no_visible()`, `find_missing_tags()`, `asciify_pkg()`, `check_as_cran()`, …) remain callable but emit a `lifecycle::deprecate_warn()` and delegate to the new façades — see `NEWS.md` for the full mapping.
+
+## Installation
+
+From CRAN:
+
+```r
+install.packages("checkhelper")
+```
+
+Latest from r-universe:
+
+```r
+install.packages("checkhelper", repos = "https://thinkr-open.r-universe.dev")
+```
+
+From GitHub:
+
+```r
+remotes::install_github("thinkr-open/checkhelper")
+```
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -36,170 +64,35 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Installation
+## Quick start
 
-Install from CRAN
-
-```r
-install.packages("checkhelper")
-```
-
-
-You can install the last version of checkhelper from r-universe with:
+`create_example_pkg()` ships a fake package that already trips most of the checks `checkhelper` covers. Use it to feel the workflow:
 
 ```r
-install.packages('checkhelper', repos = 'https://thinkr-open.r-universe.dev')
-```
-
-
-Or from GitHub:
-``` r
-remotes::install_github("thinkr-open/checkhelper")
-```
-
-## Examples
-
-### Directly in your package in development
-
-- Use `checkhelper::find_missing_tags()` on your package in development to flag two CRAN-blocking situations:
-  - exported functions with no `@return` (CRAN policy: every exported function must document its return value),
-  - documented internal functions missing `@noRd` (these trigger the `Please add \value to .Rd files` CRAN message).
-- Use `checkhelper::print_globals()` instead of `devtools::check()` to run the checks (via `rcmdcheck::rcmdcheck()`) and get a ready-to-paste `globalVariables(...)` block for `R/globals.R`.
-
-```{r, eval=FALSE}
-checkhelper::find_missing_tags()
-
-checkhelper::print_globals(quiet = TRUE)
-```
-
-### Reproducible example with a fake package in tempdir
-
-- Create a fake package with 
-  - a function having global variables
-  - a function with `@export` but no `@return`
-  - a function with title but without `@export` and thus missing `@noRd`
-  
-```{r, eval=TRUE, results='hide'}
 library(checkhelper)
 
-# Create fake package ----
-pkg_path <- tempfile(pattern = "pkg.")
-dir.create(pkg_path)
+pkg <- create_example_pkg()
 
-# Create fake package
-usethis::create_package(pkg_path, open = FALSE)
+# Find exported functions missing @return / documented internals missing @noRd
+audit_tags(pkg)
 
-# Create function no visible global variables and missing documented functions
-cat("
-#' Function
-#' @importFrom dplyr filter
-#' @export
-my_fun <- function() {
-data %>%
-filter(col == 3) %>%
-mutate(new_col = 1) %>%
-ggplot() +
-  aes(x, y, colour = new_col) +
-  geom_point()
-}
+# Surface globals to declare (slow: runs R CMD check under the hood)
+audit_globals(pkg)
 
-#' Function not exported but with doc
-my_not_exported_doc <- function() {
-  message('Not exported but with title, should have @noRd')
-}
-", file = file.path(pkg_path, "R", "function.R"))
+# Then either print the globalVariables() block or write it to R/globals.R
+fix_globals(pkg)
+fix_globals(pkg, write = TRUE)
 
-attachment::att_amend_desc(path = pkg_path)
+# Find non-ASCII characters across R/, tests/, vignettes/, man/, DESCRIPTION
+audit_ascii(pkg)
 
-# Files of the package
-fs::dir_tree(pkg_path, recurse = TRUE)
+# Rewrite them CRAN-cleanly (escape literals, transliterate comments).
+# Dry-run by default — pass dry_run = FALSE to apply.
+fix_ascii(pkg, dry_run = FALSE)
 ```
 
-- Find missing `@return` and find missing `@noRd` for not exported function with documentation
-
-```{r}
-find_missing_tags(pkg_path)
-```
-
-
-- Get global variables
-```{r}
-globals <- get_no_visible(pkg_path, quiet = TRUE)
-globals
-```
-
-- Print globals to copy-paste
-```{r, eval=TRUE}
-print_globals(globals)
-```
-
-- Store the output of `print_globals()` in package using `usethis::use_r("globals")`. 
-Note that you can also transform all these variables with `.data[[variable]]`
-
-### Experimental: Check that the user space is clean after checks
-
-Have you faced a note on CRAN about non-standard things in the check directory ?
-
-```
-Check: for non-standard things in the check directory
-Result: NOTE
-    Found the following files/directories:
-     ‘extrapackage’ 
-```
-
-Maybe you do not understand where these files came from.  
-Then, you can run `check_clean_userspace()` in your package directory to detect every files that you created during the check.  
-They could be issued from examples, tests or vignettes: `check_clean_userspace()` will tell you.
-
-```{r examples-check_clean_userspace, eval=FALSE}
-check_clean_userspace()
-```
-```{r, echo=FALSE, message=FALSE}
-pkgload::load_all()
-path <- suppressWarnings(create_example_pkg())
-dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
-# Add a test that let file in the testthat dir
-cat(
-  "cat(\"#in tests\", file = \"in_test.R\")",
-  file = file.path(path, "tests", "testthat", "test-in_test.R")
-)
-
-# Add an example that let file in tempdir
-cat(
-  "#' Function",
-  "#' @return 1",
-  "#' @export",
-  "#' @examples",
-  "#' text <- \"in_example\"",
-  "#' file <- tempfile(\"in_example\")",
-  "#' cat(text, file = file)",
-  "in_example <- function() {",
-  "1",
-  "}",
-  sep = "\n",
-  file = file.path(path, "R", "in_example.R")
-)
-
-suppressWarnings(attachment::att_amend_desc(path = path))
-
-check_output <- tempfile("check_output")
-
-suppressMessages(
-  all_files <- check_clean_userspace(pkg = path, check_output = check_output),
-)
-all_files
-```
-
-
-### Experimental: Check as CRAN with CRAN global variables
-
-Use the exploration of CRAN scripts by the RConsortium to check a package as CRAN does it with their env. variables. See https://github.com/RConsortium/r-repositories-wg/issues/17 for more details.  
-
-```{r eval=FALSE}
-# Check the current directory
-check_as_cran()
-```
+For the full walkthrough per issue category, see the vignettes on the pkgdown site.
 
 ## Code of Conduct
-  
-  Please note that the checkhelper project is released with a [Contributor Code of Conduct](https://thinkr-open.github.io/checkhelper/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+
+Please note that the checkhelper project is released with a [Contributor Code of Conduct](https://thinkr-open.github.io/checkhelper/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

@@ -5,3 +5,52 @@ url: https://thinkr-open.github.io/checkhelper/
 
 development:
   mode: auto
+
+reference:
+- title: Audit
+  desc: >
+    Read-only inspection of CRAN-blocking issues. Each function targets one
+    category and returns a structured result.
+  contents:
+  - audit_globals
+  - audit_tags
+  - audit_ascii
+  - audit_userspace
+  - audit_check
+  - audit_dataset_doc
+
+- title: Fix
+  desc: >
+    Apply an automated fix for the issues that can be safely rewritten.
+    Dry-run by default where applicable.
+  contents:
+  - fix_globals
+  - fix_ascii
+  - fix_dataset_doc
+
+- title: Low-level tools
+  desc: >
+    Building blocks for fine-grained scripting and tests. Most users
+    only need the audit_* / fix_* facades above.
+  contents:
+  - asciify_file
+  - asciify_r_source
+  - find_nonascii_tokens
+  - create_example_pkg
+
+- title: Deprecated
+  desc: >
+    Historic API kept callable for backwards compatibility. Each one emits
+    a lifecycle warning and delegates to the new facade. Prefer the
+    audit_* / fix_* names listed above.
+  contents:
+  - find_nonascii_files
+  - asciify_pkg
+  - get_notes
+  - get_no_visible
+  - print_globals
+  - find_missing_tags
+  - check_as_cran
+  - check_clean_userspace
+  - get_data_info
+  - use_data_doc
