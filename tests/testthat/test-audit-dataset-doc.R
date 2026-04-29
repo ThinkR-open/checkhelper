@@ -1,0 +1,40 @@
+test_that("audit_dataset_doc() exists with the expected signature", {
+  expect_true(is.function(audit_dataset_doc))
+  expect_named(formals(audit_dataset_doc), c("pkg"))
+})
+
+test_that("audit_dataset_doc() returns an empty tibble when data/ does not exist", {
+  path <- tempfile("pkg-empty-")
+  dir.create(path)
+  dir.create(file.path(path, "R"))
+  writeLines("Package: foo", file.path(path, "DESCRIPTION"))
+  on.exit(unlink(path, recursive = TRUE))
+  out <- suppressMessages(audit_dataset_doc(path))
+  expect_s3_class(out, "data.frame")
+  expect_equal(nrow(out), 0L)
+  expect_true(all(c("name", "has_doc") %in% colnames(out)))
+})
+
+test_that("audit_dataset_doc() reports datasets present in data/", {
+  path <- tempfile("pkg-data-")
+  dir.create(path)
+  dir.create(file.path(path, "R"))
+  dir.create(file.path(path, "data"))
+  writeLines("Package: foo", file.path(path, "DESCRIPTION"))
+  iris_path <- file.path(path, "data", "iris.rda")
+  save(iris, file = iris_path)
+  on.exit(unlink(path, recursive = TRUE))
+  out <- suppressMessages(audit_dataset_doc(path))
+  expect_equal(nrow(out), 1L)
+  expect_equal(out$name, "iris")
+  expect_false(out$has_doc)
+})
+
+test_that("audit_dataset_doc() emits a cli message", {
+  path <- tempfile("pkg-empty-")
+  dir.create(path)
+  dir.create(file.path(path, "R"))
+  writeLines("Package: foo", file.path(path, "DESCRIPTION"))
+  on.exit(unlink(path, recursive = TRUE))
+  expect_message(audit_dataset_doc(path), regexp = "dataset")
+})

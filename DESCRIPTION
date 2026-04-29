@@ -35,6 +35,7 @@ Imports:
     roxygen2,
     stringi,
     stringr,
+    tibble,
     tools,
     utils,
     whisker (>= 0.4),
