@@ -144,6 +144,10 @@ surface and is not safe to automate.</p></li>
     <p>invisibly, a data.frame with one row per inspected file:
 <code>path</code>, <code>changed</code> (logical), <code>n_tokens</code>. The full rewritten content is
 not returned to keep the result printable.</p>
+<p>A one-line summary is also emitted via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::message()</a></code> so an
+interactive caller gets feedback even though the data.frame itself is
+returned invisibly. Wrap the call in <code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::suppressMessages()</a></code> to
+silence it in scripts.</p>
     </div>
     <div id="details">
     <h2>Details</h2>

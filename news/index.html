@@ -82,6 +82,14 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
+<div class="section level3">
+<h3 id="minor-changes-development-version">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> now emits a one-line summary message (<code>"N file(s) scanned, would change/rewrote X, Y non-ASCII token(s)."</code>) so an interactive caller gets feedback even though the data.frame result is still returned invisibly. Wrap the call in <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code> to silence it.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="1.0.0" id="checkhelper-100">checkhelper 1.0.0<a class="anchor" aria-label="anchor" href="#checkhelper-100"></a></h2>
 <div class="section level3">
 <h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
