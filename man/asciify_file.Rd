@@ -43,11 +43,16 @@ surface and is not safe to automate.
 write the file. Default \code{FALSE}.}
 }
 \value{
-invisibly, a list with \code{path}, \code{changed} (logical), \code{n_tokens}
-(integer; for R/Rmd/qmd, the count of non-ASCII parser tokens; for
-any other file type — including \code{.Rnw} — the count of non-ASCII
-characters), and \code{text} (the rewritten content if \code{changed}, else
-the original).
+invisibly, a list with:
+\itemize{
+\item \code{path}: path of the file
+\item \code{changed}: \code{TRUE} if the file was rewritten (or would be in dry-run)
+\item \code{n_chars}: number of non-ASCII characters in the file
+\item \code{n_tokens}: number of distinct source locations to rewrite
+(an accented string literal counts once regardless of how many
+non-ASCII characters it contains)
+\item \code{text}: rewritten content if \code{changed}, else the original
+}
 }
 \description{
 Writes the rewritten file in place (unless \code{dry_run = TRUE}). Files that

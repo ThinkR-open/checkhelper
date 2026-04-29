@@ -2,11 +2,13 @@
 
 ## Minor changes
 
-- `asciify_pkg()` now emits a one-line summary message
-  (`"N file(s) scanned, would change/rewrote X, Y non-ASCII token(s)."`)
-  so an interactive caller gets feedback even though the data.frame
-  result is still returned invisibly. Wrap the call in
-  `suppressMessages()` to silence it.
+- `asciify_pkg()` now prints a one-line summary of how many files were
+  scanned, changed, and how many non-ASCII characters were found. In
+  dry-run mode it also prints how to apply the rewrite and how to
+  inspect the per-file detail. Use `suppressMessages()` to silence.
+- `asciify_pkg()` and `asciify_file()` gain an `n_chars` column /
+  list element: the count of non-ASCII characters in the original
+  file. `n_tokens` (number of source locations to rewrite) is kept.
 
 # checkhelper 1.0.0
 
