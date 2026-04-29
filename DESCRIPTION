@@ -29,6 +29,7 @@ Imports:
     lifecycle,
     magrittr,
     pkgbuild,
+    pkgload,
     purrr,
     rcmdcheck,
     roxygen2,

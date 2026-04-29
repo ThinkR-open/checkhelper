@@ -29,6 +29,16 @@ find_missing_tags <- function(package.dir = ".",
     warning("roxygen2 requires Encoding: UTF-8", call. = FALSE)
   }
 
+  # Track which namespaces and search-path attachments are present before
+  # we start, so we can roll back any new ones added by load_all/roxygenise
+  # at the end. Without this, the target package leaks into the caller's
+  # session: its namespace stays loaded and `package:<pkg>` lingers on the
+  # search path (#77).
+  pkg_name <- desc::desc_get("Package", file = base_path)[[1]]
+  ns_before <- loadedNamespaces()
+  search_before <- search()
+  on.exit(unload_target_pkg(pkg_name, ns_before, search_before), add = TRUE)
+
   getFromNamespace("roxy_meta_load", "roxygen2")(base_path)
 
   packages <- roxygen2::roxy_meta_get("packages")
@@ -102,6 +112,15 @@ find_missing_tags <- function(package.dir = ".",
   ) %>%
     compact()
 
+  ## Topic-only blocks: documenting NULL with @name / @rdname (#82). They
+  ## carry the @return for a family but the previous logic ignored them
+  ## because the object class is not "function".
+  res_topic_only <- map(
+    .x = blocks,
+    .f = ~ if (!(class(.x[["object"]])[1] %in% c("function", "package", "data"))) .x
+  ) %>%
+    compact()
+
 
   ## Check for missing tags
 
@@ -130,7 +149,11 @@ find_missing_tags <- function(package.dir = ".",
   res_find_filename <- lapply(res_functions, function(x) basename(x[["file"]]))
 
   res_find_export <- lapply(res_functions, roxygen2::block_has_tags, tags = list("export"))
-  res_find_return <- lapply(res_functions, roxygen2::block_has_tags, tags = list("return"))
+  # @return and @returns are aliases (#81). Also count an explicit
+  # @inherit X return as providing a return tag (#84).
+  res_find_return <- lapply(res_functions, function(b) {
+    block_has_return_tag(b)
+  })
   res_find_nord <- lapply(res_functions, roxygen2::block_has_tags, tags = list("noRd"))
 
   res_find_rdname_value <- lapply(res_functions, function(x) {
@@ -142,12 +165,7 @@ find_missing_tags <- function(package.dir = ".",
     }
   })
   res_find_return_value <- lapply(res_functions, function(x) {
-    return <- roxygen2::block_get_tag_value(x, tag = "return")
-    if (is.null(return)) {
-      ""
-    } else {
-      return
-    }
+    block_get_return_value(x)
   })
 
   res_package_doc <- tibble(
@@ -163,19 +181,28 @@ find_missing_tags <- function(package.dir = ".",
   )
 
 
+  # Pre-coerce so empty packages produce a 0-row tibble with the right
+  # columns (#18). Without this, unlist(list()) returns NULL and tibble()
+  # silently drops the column, making downstream mutate() fail.
   res <- tibble(
-    filename = unlist(res_find_filename),
-    topic = unlist(res_topic),
-    has_export = unlist(res_find_export),
-    has_return = unlist(res_find_return),
-    return_value = unlist(res_find_return_value),
-    has_nord = unlist(res_find_nord),
-    rdname_value = unlist(res_find_rdname_value)
+    filename = as.character(unlist(res_find_filename)),
+    topic = as.character(unlist(res_topic)),
+    has_export = as.logical(unlist(res_find_export)),
+    has_return = as.logical(unlist(res_find_return)),
+    return_value = as.character(unlist(res_find_return_value)),
+    has_nord = as.logical(unlist(res_find_nord)),
+    rdname_value = as.character(unlist(res_find_rdname_value))
   ) %>%
     mutate(
       rdname_value = if_else(rdname_value == "", topic, rdname_value),
-      id = 1:n()
+      id = if (n() == 0L) integer() else seq_len(n())
     )
+
+  # Pull `@return` values from topic-only blocks (`#' @name foo \n NULL`) so
+  # aliases that resolve to them via `@rdname` are not flagged as missing
+  # (#82). Topic blocks themselves are not surfaced in the final output —
+  # they only feed the alias propagation below.
+  topic_returns <- topic_block_returns(res_topic_only)
   # Join with itself to find common rdname
   res_join <- res %>%
     select(filename, id, topic, rdname_value) %>%
@@ -196,6 +223,7 @@ find_missing_tags <- function(package.dir = ".",
       not_empty_return_value = (return_value != "")
     ) %>%
     set_correct_return_to_alias() %>%
+    apply_topic_block_returns(topic_returns) %>%
     mutate(
       test_has_export_and_return = ifelse((has_export & has_return & not_empty_return_value) | !has_export,
         "ok", "not_ok"
@@ -228,6 +256,143 @@ find_missing_tags <- function(package.dir = ".",
   return(final_res)
 }
 
+#' Does the block carry a return tag?
+#'
+#' Treats `@return`, `@returns` (alias added in roxygen2 7.2+, see issue #81)
+#' and `@inherit X return` (see issue #84) as equivalent.
+#'
+#' @param block A roxygen2 block.
+#' @return TRUE if any of those forms is present.
+#' @noRd
+block_has_return_tag <- function(block) {
+  hits <- roxygen2::block_has_tags(block, tags = list("return", "returns"))
+  if (any(hits)) {
+    return(TRUE)
+  }
+  inherit <- roxygen2::block_get_tag_value(block, tag = "inherit")
+  if (is.null(inherit)) {
+    return(FALSE)
+  }
+  fields <- inherit$fields
+  if (is.null(fields)) {
+    # roxygen2 default: when @inherit X is given without explicit fields,
+    # everything is inherited (description, details, return, ...)
+    return(TRUE)
+  }
+  any(c("return", "returns") %in% fields)
+}
+
+#' Pull the literal return / returns text from a block, "" if none.
+#'
+#' For inherited returns we substitute the @inherit source so the value is
+#' non-empty (the actual rendered text would come from the source).
+#'
+#' @param block A roxygen2 block.
+#' @return character(1).
+#' @noRd
+block_get_return_value <- function(block) {
+  for (tag in c("return", "returns")) {
+    val <- roxygen2::block_get_tag_value(block, tag = tag)
+    if (!is.null(val) && nzchar(as.character(val))) {
+      return(as.character(val))
+    }
+  }
+  inherit <- roxygen2::block_get_tag_value(block, tag = "inherit")
+  if (!is.null(inherit)) {
+    fields <- inherit$fields
+    if (is.null(fields) ||
+        any(c("return", "returns") %in% fields)) {
+      return(paste0("@inherit ", inherit$source))
+    }
+  }
+  ""
+}
+
+#' Detach + unload the target package if find_missing_tags() introduced it
+#' on the search path / namespace registry (#77). Best-effort; failures are
+#' swallowed because this only runs in on.exit.
+#'
+#' @param pkg_name name of the target package.
+#' @param ns_before character vector of namespaces loaded on entry.
+#' @param search_before character vector of search() entries on entry.
+#' @noRd
+unload_target_pkg <- function(pkg_name, ns_before, search_before) {
+  if (is.null(pkg_name) || !nzchar(pkg_name)) {
+    return(invisible())
+  }
+  newly_attached <- !paste0("package:", pkg_name) %in% search_before &&
+    paste0("package:", pkg_name) %in% search()
+  newly_loaded <- !pkg_name %in% ns_before && pkg_name %in% loadedNamespaces()
+
+  if (newly_attached || newly_loaded) {
+    # pkgload::unload() handles both the search-path attachment and the
+    # namespace, including the dev versions left around by load_all().
+    try(pkgload::unload(pkg_name), silent = TRUE)
+  }
+  # Belt-and-braces: if pkgload::unload didn't tear everything down (older
+  # versions, or attachment via library()), drop what's left manually.
+  attached <- paste0("package:", pkg_name)
+  if (attached %in% search() && !attached %in% search_before) {
+    try(detach(attached, character.only = TRUE, unload = TRUE), silent = TRUE)
+  }
+  if (pkg_name %in% loadedNamespaces() && !pkg_name %in% ns_before) {
+    try(unloadNamespace(pkg_name), silent = TRUE)
+  }
+  invisible()
+}
+
+#' Build a (rdname -> return_value) lookup from topic-only blocks (#82).
+#'
+#' A topic block is a roxygen2 block that documents `NULL` (i.e. it has a
+#' name/rdname tag but no associated function/data/package object). Its
+#' `@return` is meant to apply to every function aliased onto it via
+#' `@rdname`.
+#'
+#' @param topic_blocks list of roxygen2 blocks with non-function objects.
+#' @return named character vector: names are rdnames, values are return text.
+#' @noRd
+topic_block_returns <- function(topic_blocks) {
+  out <- character()
+  for (b in topic_blocks) {
+    val <- block_get_return_value(b)
+    if (!nzchar(val)) next
+    rdname <- roxygen2::block_get_tag_value(b, tag = "rdname")
+    if (is.null(rdname) || !nzchar(rdname)) {
+      rdname <- b[["object"]][["topic"]]
+    }
+    if (is.null(rdname) || !nzchar(rdname)) {
+      rdname <- roxygen2::block_get_tag_value(b, tag = "name")
+    }
+    if (is.null(rdname) || !nzchar(rdname)) next
+    out[rdname] <- val
+  }
+  out
+}
+
+#' Patch the joined results with returns inherited from topic-only blocks (#82).
+#'
+#' Aliases with `@rdname X` whose canonical doc is `NULL` (a topic block)
+#' should not be reported as missing a return tag.
+#'
+#' @param res joined tibble produced by [set_correct_return_to_alias()].
+#' @param topic_returns named character vector from [topic_block_returns()].
+#' @return updated tibble.
+#' @noRd
+apply_topic_block_returns <- function(res, topic_returns) {
+  if (length(topic_returns) == 0L) {
+    return(res)
+  }
+  hit <- res$rdname_value %in% names(topic_returns)
+  if (!any(hit)) {
+    return(res)
+  }
+  res$has_return[hit] <- TRUE
+  empty <- hit & !nzchar(res$return_value)
+  res$return_value[empty] <- unname(topic_returns[res$rdname_value[empty]])
+  res$not_empty_return_value[hit] <- TRUE
+  res
+}
+
 #' This is an internal function
 #' When an alias is used with `@rdname`,
 #' the alias should have the same return value as the original function.
@@ -245,7 +410,7 @@ set_correct_return_to_alias <- function(res) {
         any(return_value != ""),
         first(return_value[return_value != ""]),
         ""
-      ),
+      )
     ) %>%
     ungroup()
 }
