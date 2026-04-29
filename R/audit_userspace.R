@@ -20,8 +20,13 @@
 audit_userspace <- function(pkg = ".",
                             check_output = tempfile("dircheck")) {
   out <- .check_clean_userspace(pkg = pkg, check_output = check_output)
+  out <- tibble::as_tibble(out)
 
   n_leaks <- nrow(out)
+
+  attr(out, "summary") <- sprintf(
+    "%d file(s) leaked into user space", n_leaks
+  )
 
   cli::cli_inform(c(
     "i" = "audit_userspace(): {n_leaks} file{?s} leaked into user space during checks."

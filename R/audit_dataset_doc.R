@@ -51,6 +51,10 @@ audit_dataset_doc <- function(pkg = ".") {
   out <- tibble::tibble(name = names, has_doc = unname(has_doc))
 
   n_missing <- sum(!out$has_doc)
+  attr(out, "summary") <- sprintf(
+    "%d dataset(s), %d undocumented", nrow(out), n_missing
+  )
+
   cli::cli_inform(c(
     "i" = "audit_dataset_doc(): {nrow(out)} dataset{?s}, {n_missing} undocumented."
   ))

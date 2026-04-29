@@ -31,8 +31,14 @@ audit_ascii <- function(pkg = ".",
     size_limit = size_limit
   )
 
+  out <- tibble::as_tibble(out)
+
   n_files <- length(unique(out$file))
   n_lines <- nrow(out)
+
+  attr(out, "summary") <- sprintf(
+    "%d non-ASCII line(s) across %d file(s)", n_lines, n_files
+  )
 
   cli::cli_inform(c(
     "i" = "audit_ascii(): {n_lines} non-ASCII line{?s} across {n_files} file{?s}."
