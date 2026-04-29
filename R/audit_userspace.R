@@ -19,7 +19,7 @@
 #' }
 audit_userspace <- function(pkg = ".",
                             check_output = tempfile("dircheck")) {
-  out <- check_clean_userspace(pkg = pkg, check_output = check_output)
+  out <- .check_clean_userspace(pkg = pkg, check_output = check_output)
 
   n_leaks <- nrow(out)
 

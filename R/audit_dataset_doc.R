@@ -85,7 +85,7 @@ fix_dataset_doc <- function(name,
                             source = "Source",
                             overwrite = FALSE) {
   out <- withr::with_dir(pkg, {
-    use_data_doc(
+    .use_data_doc(
       name = name,
       prefix = prefix,
       description = description,

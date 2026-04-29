@@ -17,7 +17,7 @@
 #' audit_globals(pkg)
 #' }
 audit_globals <- function(pkg = ".") {
-  out <- get_no_visible(path = pkg)
+  out <- .get_no_visible(path = pkg)
 
   if (is.null(out)) {
     cli::cli_inform(c("v" = "audit_globals(): no global notes detected."))
@@ -53,14 +53,14 @@ audit_globals <- function(pkg = ".") {
 #' fix_globals(pkg, write = TRUE)
 #' }
 fix_globals <- function(pkg = ".", write = FALSE) {
-  globals <- get_no_visible(path = pkg)
+  globals <- .get_no_visible(path = pkg)
 
   if (is.null(globals)) {
     cli::cli_inform(c("v" = "fix_globals(): no globals to declare."))
     return(invisible(NULL))
   }
 
-  printed <- print_globals(globals = globals, message = FALSE)
+  printed <- .print_globals(globals = globals, message = FALSE)
 
   if (!isTRUE(write)) {
     message(printed[["liste_funs"]])

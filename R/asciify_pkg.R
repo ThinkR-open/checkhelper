@@ -510,8 +510,8 @@ asciify_rmd <- function(text, strategy, identifiers) {
 #'   (count of non-ASCII characters on the offending line; well-defined
 #'   for both R and non-R files), sorted by file then line. Empty if
 #'   nothing is found.
-#' @export
-find_nonascii_files <- function(path = ".",
+#' @noRd
+.find_nonascii_files <- function(path = ".",
                                 scope = c("R", "tests", "vignettes", "man",
                                           "DESCRIPTION", "NAMESPACE"),
                                 ignore_ext = c("png", "jpg", "jpeg", "gif",
@@ -601,22 +601,8 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
 #'   dry-run mode it includes how to apply the rewrite and how to
 #'   inspect the per-file detail. Wrap the call in
 #'   [base::suppressMessages()] to silence.
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Read-only scan
-#' nonascii <- find_nonascii_files(".")
-#' nonascii
-#'
-#' # Dry run: preview the rewrite
-#' summary <- asciify_pkg(".")
-#' summary
-#'
-#' # Apply for real
-#' asciify_pkg(".", dry_run = FALSE)
-#' }
-asciify_pkg <- function(path = ".",
+#' @noRd
+.asciify_pkg <- function(path = ".",
                         scope = c("R", "tests", "vignettes"),
                         strategy = c("auto", "escape", "translit", "report"),
                         identifiers = c("error", "warn", "skip"),

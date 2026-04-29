@@ -24,7 +24,7 @@ audit_ascii <- function(pkg = ".",
                                        "rds", "rda", "rdata",
                                        "pdf", "ico", "svg"),
                         size_limit = 5e5) {
-  out <- find_nonascii_files(
+  out <- .find_nonascii_files(
     path = pkg,
     scope = scope,
     ignore_ext = ignore_ext,
@@ -70,7 +70,7 @@ fix_ascii <- function(pkg = ".",
   strategy <- match.arg(strategy)
   identifiers <- match.arg(identifiers)
 
-  out <- asciify_pkg(
+  out <- .asciify_pkg(
     path = pkg,
     scope = scope,
     strategy = strategy,

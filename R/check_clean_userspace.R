@@ -8,15 +8,8 @@
 #' @param check_output Path to directory where to store check results
 #'
 #' @return data.frame of files that are left after checks
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # This runs a check of the current package
-#' all_files <- check_clean_userspace()
-#' all_files
-#' }
-check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")) {
+#' @noRd
+.check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")) {
   scratch_dir <- tempdir() # character(0)
 
   tmp_orig <- Sys.getenv("TMPDIR")

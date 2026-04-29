@@ -7,17 +7,8 @@
 #' @importFrom dplyr mutate filter left_join if_else tibble
 #' @importFrom dplyr group_by summarise first select n
 #' @importFrom purrr walk map keep compact
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # What you will do from inside your package
-#' find_missing_tags()
-#' }
-#' # A reproducible example on a test package
-#' pkg_path <- create_example_pkg()
-#' find_missing_tags(pkg_path)
-find_missing_tags <- function(package.dir = ".",
+#' @noRd
+.find_missing_tags <- function(package.dir = ".",
                               roclets = NULL,
                               load_code = NULL,
                               clean = FALSE) {

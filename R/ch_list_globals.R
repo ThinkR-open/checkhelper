@@ -10,34 +10,8 @@
 #'
 #' @return A tibble with notes and information about the global variables
 #'
-#' @export
-#' @examples
-#' \dontrun{
-#' # This runs a check of the example package
-#' tempdir <- tempdir()
-#' # Create fake package
-#' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
-#'
-#' # Create function no visible global variables and missing documented functions
-#' cat("
-#' #' Function
-#' #' @importFrom dplyr filter
-#' #' @export
-#' my_fun <- function() {
-#' data %>%
-#' filter(col == 3) %>%
-#' mutate(new_col = 1) %>%
-#' ggplot() +
-#'   aes(x, y, colour = new_col) +
-#'   geom_point()
-#' }
-#' ", file = file.path(tempdir, "checkpackage", "R", "function.R"))
-#'
-#' path <- file.path(tempdir, "checkpackage")
-#' attachment::att_to_description(path = path)
-#' get_notes(path)
-#' }
-get_notes <- function(path = ".", checks, ...) {
+#' @noRd
+.get_notes <- function(path = ".", checks, ...) {
   if (missing(checks)) {
     checks <- rcmdcheck(path = path, ...)
   }
@@ -96,38 +70,12 @@ get_notes <- function(path = ".", checks, ...) {
 #'
 #' @return A list with no visible globals
 #'
-#' @export
-#' @examples
-#' \dontrun{
-#' # This runs a check of the example package
-#' tempdir <- tempdir()
-#' # Create fake package
-#' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
-#'
-#' # Create function no visible global variables and missing documented functions
-#' cat("
-#' #' Function
-#' #' @importFrom dplyr filter
-#' #' @export
-#' my_fun <- function() {
-#' data %>%
-#' filter(col == 3) %>%
-#' mutate(new_col = 1) %>%
-#' ggplot() +
-#'   aes(x, y, colour = new_col) +
-#'   geom_point()
-#' }
-#' ", file = file.path(tempdir, "checkpackage", "R", "function.R"))
-#'
-#' path <- file.path(tempdir, "checkpackage")
-#' attachment::att_to_description(path = path)
-#' get_no_visible(path)
-#' }
-get_no_visible <- function(path = ".", checks, ...) {
+#' @noRd
+.get_no_visible <- function(path = ".", checks, ...) {
   if (missing(checks)) {
-    notes <- get_notes(path, ...)
+    notes <- .get_notes(path, ...)
   } else {
-    notes <- get_notes(path, checks, ...)
+    notes <- .get_notes(path, checks, ...)
   }
   if (is.null(notes)) {
     return(NULL)
@@ -165,35 +113,10 @@ get_no_visible <- function(path = ".", checks, ...) {
 #'
 #' @return A message with no visible globals or a list with no visible globals
 #'
-#' @export
-#' @examples
-#' \dontrun{
-#' # This runs a check of the example package
-#' tempdir <- tempdir()
-#' # Create fake package
-#' usethis::create_package(file.path(tempdir, "checkpackage"), open = FALSE)
-#'
-#' # Create function no visible global variables and missing documented functions
-#' cat("
-#' #' Function
-#' #' @importFrom dplyr filter
-#' #' @export
-#' my_fun <- function() {
-#' data %>%
-#' ggplot2::ggplot() +
-#'   aes(x, y, colour = new_col) +
-#'   geom_point()
-#' }
-#' ", file = file.path(tempdir, "checkpackage", "R", "function.R"))
-#'
-#' path <- file.path(tempdir, "checkpackage")
-#' attachment::att_to_description(path = path)
-#' globals <- get_no_visible(path)
-#' print_globals(globals = globals)
-#' }
-print_globals <- function(globals, path = ".", ..., message = TRUE) {
+#' @noRd
+.print_globals <- function(globals, path = ".", ..., message = TRUE) {
   if (missing(globals)) {
-    globals <- get_no_visible(path, ...)
+    globals <- .get_no_visible(path, ...)
   }
   if (is.null(globals)) {
     if (isTRUE(message)) {

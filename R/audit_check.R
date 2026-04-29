@@ -31,7 +31,7 @@ audit_check <- function(pkg = ".",
                         clean_before = TRUE,
                         open = FALSE,
                         repos = getOption("repos")) {
-  out <- check_as_cran(
+  out <- .check_as_cran(
     pkg = pkg,
     check_output = check_output,
     scratch = scratch,

@@ -31,19 +31,8 @@
 #' In the `check_output`, you will get the same outputs, in the same format as used by CRAN, for the pre-test of incoming packages.
 #'
 #' @references https://github.com/r-devel/r-dev-web/tree/master/CRAN/
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # This runs a check of the current package
-#' # Directory to store the check outputs
-#' check_output <- tempfile("example")
-#' # Check the current package
-#' check_as_cran(check_output = check_output)
-#' # Open directory with all outputs
-#' utils::browseURL(check_output)
-#' }
-check_as_cran <- function(pkg = ".",
+#' @noRd
+.check_as_cran <- function(pkg = ".",
                           check_output = file.path(dirname(normalizePath(pkg, mustWork = FALSE)), "check"),
                           scratch = tempfile("scratch_dir"),
                           Ncpus = 1, as_command = FALSE,

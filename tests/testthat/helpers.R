@@ -4,3 +4,7 @@ test_that("Package version required", {
   expect_true(packageVersion("roxygen2") > "7.1.2")
 
 })
+
+# Silence lifecycle deprecation warnings globally; tests that explicitly
+# exercise the deprecation layer override this with `withr::local_options()`.
+options(lifecycle_verbosity = "quiet")

@@ -15,7 +15,7 @@
 #' audit_tags(pkg)
 #' }
 audit_tags <- function(pkg = ".") {
-  out <- find_missing_tags(package.dir = pkg)
+  out <- .find_missing_tags(package.dir = pkg)
 
   n_missing_return <- sum(out$functions$test_has_export_and_return == "not_ok")
   n_missing_nord <- sum(out$functions$test_has_export_or_has_nord == "not_ok")

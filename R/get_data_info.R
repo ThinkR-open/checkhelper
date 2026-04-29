@@ -5,30 +5,8 @@
 #' @param source source of data
 #'
 #' @return list of information from a data.frame
-#' @export
-#'
-#' @seealso [use_data_doc()] to add the information directly as roxygen documentation in your package.
-#'
-#' @examples
-#' # Store a dataset as rda file
-#' path_project <- tempfile(pattern = "data-")
-#' path_data <- file.path(path_project, "data")
-#' dir.create(path_data, recursive = TRUE)
-#' path_rda <- file.path(path_data, "iris.rda")
-#' save(iris, file = path_rda)
-#'
-#' # Get its information
-#' withr::with_dir(
-#'   path_project,
-#'   {
-#'     get_data_info("iris", "Iris data frame", source = "ThinkR")
-#'   }
-#' )
-#'
-#' # Clean userspace
-#' unlink(path_project, recursive = TRUE)
-#'
-get_data_info <- function(name, description, source) {
+#' @noRd
+.get_data_info <- function(name, description, source) {
   if (!dir.exists("data")) {
     stop("'data/' folder does not exist, hence there is no data file to look for.")
   }
