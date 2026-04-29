@@ -102,3 +102,75 @@ fix_dataset_doc <- function(name,
 
   invisible(abs_path)
 }
+
+
+# Internal implementations ---------------------------------------------------
+
+#' Get information of an .rda file stored under data/.
+#'
+#' @noRd
+.get_data_info <- function(name, description, source) {
+  if (!dir.exists("data")) {
+    stop("'data/' folder does not exist, hence there is no data file to look for.")
+  }
+  file <- list.files("data",
+    pattern = glue::glue("^{name}\\.(r|R).+$"),
+    full.names = TRUE
+  )
+  if (purrr::is_empty(file)) {
+    stop("Data object was not found. It must be the name of one .rda in your 'data/' directory, without extension")
+  } else if (length(file) > 1) {
+    stop("There are multiple files with the same name")
+  }
+  dataset <- get(load(file))
+  if (!is.data.frame(dataset)) {
+    "The object stored in the Rda file must be a data.frame."
+  }
+  info <- lapply(names(dataset), function(x) {
+    list(name = x, class = class(dataset[[x]]))
+  })
+  list(
+    name = name,
+    description = description,
+    rows = nrow(dataset),
+    cols = ncol(dataset),
+    items = info,
+    source = source
+  )
+}
+
+#' Create documentation of a rda / RData dataset in a package.
+#'
+#' @importFrom glue glue
+#' @noRd
+.use_data_doc <- function(name,
+                          prefix = "doc_",
+                          description = "Description",
+                          source = "Source",
+                          overwrite = FALSE) {
+  if (!dir.exists("R")) {
+    dir.create("R")
+  }
+  if (!file.exists("DESCRIPTION")) {
+    stop("There is no DESCRIPTION file. Are you sure to develop a R package ?")
+  }
+
+  path <- as.character(glue("R/{prefix}{name}.R"))
+
+  if (file.exists(path) && !isTRUE(overwrite)) {
+    stop(
+      "Documentation file already exists: ", path, ".\n",
+      "Pass `overwrite = TRUE` to regenerate it.",
+      call. = FALSE
+    )
+  }
+
+  render_template(
+    path_template = system.file("template", "data-doc.R", package = "checkhelper"),
+    path_to_save = path,
+    data = .get_data_info(name, description, source)
+  )
+
+  message(glue("Adding the data documentation in {path}"))
+  invisible(path)
+}
