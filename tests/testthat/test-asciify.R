@@ -28,6 +28,36 @@ test_that("find_nonascii_tokens errors on unparseable input", {
   expect_error(find_nonascii_tokens("x <- "), regexp = "could not parse")
 })
 
+test_that("find_nonascii_tokens extracts each token faithfully when many tokens share one source", {
+  # Regression guard for the shared-`lines` extraction path: one call must
+  # produce per-token texts that match the original source byte-for-byte,
+  # including a multi-line STR_CONST that exercises head/middle/tail
+  # reconstruction alongside single-line neighbours.
+  e <- "\u00e9"
+  src <- paste0(
+    "# header ", e, "\n",
+    "x <- \"caf", e, "\"\n",
+    "y <- \"ligne", e, " 1\nmilieu\nligne", e, " 3\"\n",
+    "# footer ", e, "\n"
+  )
+  pd <- find_nonascii_tokens(src)
+
+  expect_equal(sum(pd$token == "COMMENT"), 2L)
+  expect_equal(sum(pd$token == "STR_CONST"), 2L)
+  # Every extracted text contains the original non-ASCII char (no truncation
+  # placeholder slipped through).
+  expect_true(all(grepl(e, pd$text, fixed = TRUE)))
+  expect_false(any(grepl("chars quoted with", pd$text, fixed = TRUE)))
+  # The multi-line literal was reassembled with its embedded newlines intact.
+  ml <- pd$text[grepl("\n", pd$text, fixed = TRUE)]
+  expect_length(ml, 1L)
+  expect_match(
+    ml,
+    paste0("ligne", e, " 1\nmilieu\nligne", e, " 3"),
+    fixed = TRUE
+  )
+})
+
 # ---- asciify_r_source: string literals --------------------------------------
 
 test_that("asciify_r_source escapes non-ASCII inside string literals (auto)", {

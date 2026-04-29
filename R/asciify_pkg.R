@@ -48,9 +48,12 @@ find_nonascii_tokens <- function(text) {
   # `keep.source.maxchars` does not actually control. Re-extract the
   # literal source for each terminal token from `text` so the ASCII check
   # sees the real bytes.
+  # Split once: extract_token_source() runs per row and would otherwise
+  # re-split on every call - O(n_lines * n_tokens) on big files.
+  lines <- strsplit(text, "\n", fixed = TRUE)[[1L]]
   pd$text <- vapply(
     seq_len(nrow(pd)),
-    function(i) extract_token_source(text, pd[i, ]),
+    function(i) extract_token_source(lines, pd[i, ]),
     character(1L)
   )
 
@@ -77,9 +80,10 @@ isTRUE_each <- function(x) {
 #' to a "[NNN chars quoted with 'x']" placeholder for long literals,
 #' regardless of `keep.source.maxchars`.
 #'
+#' @param lines source already split on `\n` (passed in once by
+#'   [find_nonascii_tokens()] to avoid an O(n_tokens) re-split).
 #' @noRd
-extract_token_source <- function(text, row) {
-  lines <- strsplit(text, "\n", fixed = TRUE)[[1L]]
+extract_token_source <- function(lines, row) {
   if (row$line1 < 1L || row$line2 > length(lines)) return(row$text)
   if (row$line1 == row$line2) {
     return(stringi::stri_sub(lines[row$line1], row$col1, row$col2))
