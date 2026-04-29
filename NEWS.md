@@ -1,3 +1,13 @@
+# checkhelper (development version)
+
+## Minor changes
+
+- `asciify_pkg()` now emits a one-line summary message
+  (`"N file(s) scanned, would change/rewrote X, Y non-ASCII token(s)."`)
+  so an interactive caller gets feedback even though the data.frame
+  result is still returned invisibly. Wrap the call in
+  `suppressMessages()` to silence it.
+
 # checkhelper 1.0.0
 
 ## New features
