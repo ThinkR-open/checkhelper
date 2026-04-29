@@ -19,8 +19,9 @@ test_that("check_as_cran() exposes a `repos` argument and a sensible default che
 
 test_that("check_as_cran() falls back to cloud.r-project.org when repos is unset", {
   # Pin the fallback URL so the doc and the code can't drift apart again.
-  # Read the function source rather than running the full check (heavy).
-  src <- paste(deparse(check_as_cran), collapse = "\n")
+  # The public name is now a deprecation wrapper; the actual implementation
+  # lives at checkhelper:::.check_as_cran, that is what we inspect.
+  src <- paste(deparse(checkhelper:::.check_as_cran), collapse = "\n")
   expect_true(
     grepl("cloud.r-project.org", src, fixed = TRUE),
     info = "fallback CRAN mirror should be cloud.r-project.org"
