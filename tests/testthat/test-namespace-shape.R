@@ -5,9 +5,6 @@
 ## otherwise.
 
 expected_exports <- c(
-  ## Pipe re-export (planned to be dropped in Phase F)
-  "%>%",
-
   ## Public façades — audit_*
   "audit_ascii",
   "audit_check",
