@@ -13,9 +13,19 @@ output: github_document
 <!-- badges: end -->
   
 # checkhelper
-A package to help you deal with `devtools::check()` outputs and helps avoids problems with CRAN submissions
+
+A toolkit for R package authors: surface globals to declare, audit roxygen tags, rewrite non-ASCII characters CRAN-cleanly, and run `R CMD check` with CRAN-equivalent settings — to reduce the risk of CRAN rejection.
 
 Complete documentation in the {pkgdown} site: https://thinkr-open.github.io/checkhelper/
+
+## What it does
+
+- **Surface globals to declare** (`get_no_visible()`, `print_globals()`) — collects `no visible binding for global variable` / `no visible global function` notes from `R CMD check`, then prints the `globalVariables(...)` block to drop in `R/globals.R` and the imports to add to `NAMESPACE`.
+- **Audit roxygen tags** (`find_missing_tags()`) — flags exported functions missing `@return`, and documented internal functions missing `@noRd`.
+- **Rewrite non-ASCII characters** (`asciify_pkg()`, `find_nonascii_files()`, `asciify_file()`) — escapes string literals to `\uXXXX` and transliterates comments/roxygen so the package passes CRAN's "non-ASCII characters" check. Dry-run by default.
+- **Run `R CMD check` with CRAN settings** (`check_as_cran()`) — uses the env vars and options from CRAN's incoming-pretest scripts.
+- **Spot files left behind by checks** (`check_clean_userspace()`) — pinpoints which examples / tests / vignettes leak files into user space.
+- **Document datasets** (`get_data_info()`, `use_data_doc()`) — generates a roxygen skeleton for a loaded dataset.
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -49,15 +59,12 @@ remotes::install_github("thinkr-open/checkhelper")
 
 ## Examples
 
-- Check your current package under development and get all the globals missing: `no visible global variable` and `no visible global function`
-- Detect exported functions with missing or empty `@return` / `@noRd` tags
-
 ### Directly in your package in development
 
-- Use `checkhelper::find_missing_tags()` on your package in development to find which functions are exported but missing `@export` roxygen2 tag. 
-  - CRAN policy asks for every exported function to have a value (named `@export` when using {roxygen2}). 
-  - This also checks that not exported functions don't have roxygen title, or have `@noRd` in case you faced `Please add \value to .Rd files` CRAN message for documented but not exported functions.
-- You can directly use `checkhelper::print_globals()` on your package instead of `devtools::check()`. This is a wrapper around `rcmdcheck::rcmdcheck()`. This will run the checks and directly list the potential "globalVariables" to add in a `globals.R` file.
+- Use `checkhelper::find_missing_tags()` on your package in development to flag two CRAN-blocking situations:
+  - exported functions with no `@return` (CRAN policy: every exported function must document its return value),
+  - documented internal functions missing `@noRd` (these trigger the `Please add \value to .Rd files` CRAN message).
+- Use `checkhelper::print_globals()` instead of `devtools::check()` to run the checks (via `rcmdcheck::rcmdcheck()`) and get a ready-to-paste `globalVariables(...)` block for `R/globals.R`.
 
 ```{r, eval=FALSE}
 checkhelper::find_missing_tags()
