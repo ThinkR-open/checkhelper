@@ -228,3 +228,49 @@ test_that("asciify_pkg() returns its summary invisibly", {
   )$visible
   expect_false(visible)
 })
+
+# ---- interactive feedback: summary message ---------------------------------
+
+test_that("asciify_pkg() emits a 'would change' message in dry_run", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    expect_message(
+      asciify_pkg(".", dry_run = TRUE),
+      regexp = "would change"
+    )
+  })
+})
+
+test_that("asciify_pkg() emits a 'rewrote' message in apply mode", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    expect_message(
+      asciify_pkg(".", dry_run = FALSE),
+      regexp = "rewrote"
+    )
+  })
+})
+
+test_that("asciify_pkg() summary message reports correct counts", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f1.R", useBytes = FALSE)
+    writeLines("x <- 1", "R/f2.R", useBytes = FALSE)  # ASCII-clean
+    expect_message(
+      asciify_pkg(".", dry_run = TRUE),
+      regexp = "2 file\\(s\\) scanned, would change 1, 1 non-ASCII token"
+    )
+  })
+})
+
+test_that("asciify_pkg() message is silenceable", {
+  withr::with_tempdir({
+    dir.create("R")
+    writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
+    expect_no_message(
+      suppressMessages(asciify_pkg(".", dry_run = TRUE))
+    )
+  })
+})

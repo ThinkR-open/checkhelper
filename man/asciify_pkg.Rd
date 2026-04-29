@@ -48,6 +48,11 @@ surface and is not safe to automate.
 invisibly, a data.frame with one row per inspected file:
 \code{path}, \code{changed} (logical), \code{n_tokens}. The full rewritten content is
 not returned to keep the result printable.
+
+A one-line summary is also emitted via \code{\link[base:message]{base::message()}} so an
+interactive caller gets feedback even though the data.frame itself is
+returned invisibly. Wrap the call in \code{\link[base:message]{base::suppressMessages()}} to
+silence it in scripts.
 }
 \description{
 Walks the package tree, applies \code{\link[=asciify_file]{asciify_file()}} to each \code{R} /

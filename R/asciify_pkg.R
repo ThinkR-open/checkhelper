@@ -584,6 +584,11 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
 #' @return invisibly, a data.frame with one row per inspected file:
 #'   `path`, `changed` (logical), `n_tokens`. The full rewritten content is
 #'   not returned to keep the result printable.
+#'
+#'   A one-line summary is also emitted via [base::message()] so an
+#'   interactive caller gets feedback even though the data.frame itself is
+#'   returned invisibly. Wrap the call in [base::suppressMessages()] to
+#'   silence it in scripts.
 #' @export
 #'
 #' @examples
@@ -641,6 +646,18 @@ asciify_pkg <- function(path = ".",
     path = character(), changed = logical(),
     n_tokens = integer(), stringsAsFactors = FALSE
   )
+
+  # Interactive feedback: the data.frame is returned invisibly (intentional,
+  # so it doesn't spam the console on big packages), but a console caller
+  # still gets a one-line summary. Silenceable via suppressMessages().
+  n_changed <- sum(out$changed, na.rm = TRUE)
+  n_tokens <- sum(out$n_tokens, na.rm = TRUE)
+  verb <- if (isTRUE(dry_run)) "would change" else "rewrote"
+  message(sprintf(
+    "asciify_pkg: %d file(s) scanned, %s %d, %d non-ASCII token(s).",
+    nrow(out), verb, n_changed, n_tokens
+  ))
+
   invisible(out)
 }
 
