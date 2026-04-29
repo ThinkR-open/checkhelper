@@ -1,6 +1,6 @@
 Package: checkhelper
 Title: Deal with Check Outputs
-Version: 0.1.1.9000
+Version: 1.0.0
 Authors@R: c(
     person("Sebastien", "Rochette", , "sebastien@thinkr.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-1565-9313")),
@@ -18,8 +18,8 @@ License: MIT + file LICENSE
 URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
-Depends: 
-    R (>= 2.10)
+Depends:
+    R (>= 4.0)
 Imports: 
     cli,
     desc,
@@ -32,6 +32,7 @@ Imports:
     purrr,
     rcmdcheck,
     roxygen2,
+    stringi,
     stringr,
     tools,
     utils,
@@ -52,4 +53,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.3
