@@ -86,7 +86,9 @@
 <div class="section level3">
 <h3 id="minor-changes-development-version">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-development-version"></a></h3>
 <ul><li>
-<code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> now emits a one-line summary message (<code>"N file(s) scanned, would change/rewrote X, Y non-ASCII token(s)."</code>) so an interactive caller gets feedback even though the data.frame result is still returned invisibly. Wrap the call in <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code> to silence it.</li>
+<code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> now prints a one-line summary of how many files were scanned, changed, and how many non-ASCII characters were found. In dry-run mode it also prints how to apply the rewrite and how to inspect the per-file detail. Use <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code> to silence.</li>
+<li>
+<code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> and <code><a href="../reference/asciify_file.html">asciify_file()</a></code> gain an <code>n_chars</code> column / list element: the count of non-ASCII characters in the original file. <code>n_tokens</code> (number of source locations to rewrite) is kept.</li>
 </ul></div>
 </div>
     <div class="section level2">

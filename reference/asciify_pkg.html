@@ -141,13 +141,16 @@ surface and is not safe to automate.</p></li>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>invisibly, a data.frame with one row per inspected file:
-<code>path</code>, <code>changed</code> (logical), <code>n_tokens</code>. The full rewritten content is
-not returned to keep the result printable.</p>
-<p>A one-line summary is also emitted via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::message()</a></code> so an
-interactive caller gets feedback even though the data.frame itself is
-returned invisibly. Wrap the call in <code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::suppressMessages()</a></code> to
-silence it in scripts.</p>
+    <p>invisibly, a data.frame with one row per inspected file:</p><ul><li><p><code>path</code>: path of the file</p></li>
+<li><p><code>changed</code>: <code>TRUE</code> if the file was rewritten (or would be in dry-run)</p></li>
+<li><p><code>n_chars</code>: number of non-ASCII characters in the file</p></li>
+<li><p><code>n_tokens</code>: number of distinct source locations to rewrite
+(an accented string literal counts once regardless of how many
+non-ASCII characters it contains)</p></li>
+</ul><p>A one-line summary is also printed via <code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::message()</a></code>; in
+dry-run mode it includes how to apply the rewrite and how to
+inspect the per-file detail. Wrap the call in
+<code><a href="https://rdrr.io/r/base/message.html" class="external-link">base::suppressMessages()</a></code> to silence.</p>
     </div>
     <div id="details">
     <h2>Details</h2>

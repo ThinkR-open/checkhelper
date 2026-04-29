@@ -139,12 +139,14 @@ write the file. Default <code>FALSE</code>.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>invisibly, a list with <code>path</code>, <code>changed</code> (logical), <code>n_tokens</code>
-(integer; for R/Rmd/qmd, the count of non-ASCII parser tokens; for
-any other file type — including <code>.Rnw</code> — the count of non-ASCII
-characters), and <code>text</code> (the rewritten content if <code>changed</code>, else
-the original).</p>
-    </div>
+    <p>invisibly, a list with:</p><ul><li><p><code>path</code>: path of the file</p></li>
+<li><p><code>changed</code>: <code>TRUE</code> if the file was rewritten (or would be in dry-run)</p></li>
+<li><p><code>n_chars</code>: number of non-ASCII characters in the file</p></li>
+<li><p><code>n_tokens</code>: number of distinct source locations to rewrite
+(an accented string literal counts once regardless of how many
+non-ASCII characters it contains)</p></li>
+<li><p><code>text</code>: rewritten content if <code>changed</code>, else the original</p></li>
+</ul></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
