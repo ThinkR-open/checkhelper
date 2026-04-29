@@ -65,11 +65,7 @@ test_that("check_clean_userspace works", {
       "Unit tests", "Unit tests", "Run examples", "Run examples",
       "Full check", "Full check"
     ))
-    # symbols.rds (last row) can be either "added" (first time check creates it)
-    # or "changed" (re-write of a file already touched by devtools::test()
-    # earlier in this loop) depending on R/rcmdcheck versions.
-    expect_equal(all_files$problem[1:5], c("added", "added", "added", "added", "added"))
-    expect_true(all_files$problem[6] %in% c("added", "changed"))
+    expect_equal(all_files$problem, c("added", "added", "added", "added", "added", "added"))
     expect_equal(
       normalizePath(all_files$where, winslash = "/"),
       normalizePath(c(path, rep(tempdir(), 5)), winslash = "/")

@@ -6,8 +6,9 @@ test_that("fix_globals() exists with the expected signature", {
 
 test_that("fix_globals(write = FALSE) emits a message and does not modify R/globals.R", {
   skip_on_cran()
+  local_tempdir_clean()
   path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   globals_file <- file.path(path, "R", "globals.R")
   before_exists <- file.exists(globals_file)
   expect_message(suppressWarnings(fix_globals(path, write = FALSE)))
