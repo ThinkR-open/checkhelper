@@ -46,13 +46,19 @@ surface and is not safe to automate.
 }
 \value{
 invisibly, a data.frame with one row per inspected file:
-\code{path}, \code{changed} (logical), \code{n_tokens}. The full rewritten content is
-not returned to keep the result printable.
+\itemize{
+\item \code{path}: path of the file
+\item \code{changed}: \code{TRUE} if the file was rewritten (or would be in dry-run)
+\item \code{n_chars}: number of non-ASCII characters in the file
+\item \code{n_tokens}: number of distinct source locations to rewrite
+(an accented string literal counts once regardless of how many
+non-ASCII characters it contains)
+}
 
-A one-line summary is also emitted via \code{\link[base:message]{base::message()}} so an
-interactive caller gets feedback even though the data.frame itself is
-returned invisibly. Wrap the call in \code{\link[base:message]{base::suppressMessages()}} to
-silence it in scripts.
+A one-line summary is also printed via \code{\link[base:message]{base::message()}}; in
+dry-run mode it includes how to apply the rewrite and how to
+inspect the per-file detail. Wrap the call in
+\code{\link[base:message]{base::suppressMessages()}} to silence.
 }
 \description{
 Walks the package tree, applies \code{\link[=asciify_file]{asciify_file()}} to each \code{R} /

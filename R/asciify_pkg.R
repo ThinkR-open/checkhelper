@@ -342,11 +342,14 @@ char_right <- function(line, from) {
 #' @param dry_run logical. If `TRUE`, report what would change but do not
 #'   write the file. Default `FALSE`.
 #'
-#' @return invisibly, a list with `path`, `changed` (logical), `n_tokens`
-#'   (integer; for R/Rmd/qmd, the count of non-ASCII parser tokens; for
-#'   any other file type — including `.Rnw` — the count of non-ASCII
-#'   characters), and `text` (the rewritten content if `changed`, else
-#'   the original).
+#' @return invisibly, a list with:
+#'   - `path`: path of the file
+#'   - `changed`: `TRUE` if the file was rewritten (or would be in dry-run)
+#'   - `n_chars`: number of non-ASCII characters in the file
+#'   - `n_tokens`: number of distinct source locations to rewrite
+#'     (an accented string literal counts once regardless of how many
+#'     non-ASCII characters it contains)
+#'   - `text`: rewritten content if `changed`, else the original
 #' @export
 asciify_file <- function(path,
                          strategy = c("auto", "escape", "translit", "report"),
@@ -358,7 +361,10 @@ asciify_file <- function(path,
 
   raw <- readLines(path, warn = FALSE, encoding = "UTF-8")
   if (!length(raw)) {
-    return(invisible(list(path = path, changed = FALSE, n_tokens = 0L, text = "")))
+    return(invisible(list(
+      path = path, changed = FALSE,
+      n_tokens = 0L, n_chars = 0L, text = ""
+    )))
   }
 
   # readLines() drops the trailing-newline status; capture it from bytes so
@@ -366,11 +372,12 @@ asciify_file <- function(path,
   trailing_nl <- has_trailing_newline(path)
 
   text <- paste(raw, collapse = "\n")
+  n_chars <- count_nonascii_chars(text)
   ext <- tolower(tools::file_ext(path))
   if (!ext %in% c("r", "rmd", "qmd")) {
     return(invisible(list(
       path = path, changed = FALSE,
-      n_tokens = count_nonascii_chars(text),
+      n_tokens = n_chars, n_chars = n_chars,
       text = text
     )))
   }
@@ -400,6 +407,7 @@ asciify_file <- function(path,
     path = path,
     changed = changed,
     n_tokens = n_tokens,
+    n_chars = n_chars,
     text = new
   ))
 }
@@ -582,13 +590,17 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
 #' @param dry_run logical, default `TRUE` for safety. Pass `FALSE` to write.
 #'
 #' @return invisibly, a data.frame with one row per inspected file:
-#'   `path`, `changed` (logical), `n_tokens`. The full rewritten content is
-#'   not returned to keep the result printable.
+#'   - `path`: path of the file
+#'   - `changed`: `TRUE` if the file was rewritten (or would be in dry-run)
+#'   - `n_chars`: number of non-ASCII characters in the file
+#'   - `n_tokens`: number of distinct source locations to rewrite
+#'     (an accented string literal counts once regardless of how many
+#'     non-ASCII characters it contains)
 #'
-#'   A one-line summary is also emitted via [base::message()] so an
-#'   interactive caller gets feedback even though the data.frame itself is
-#'   returned invisibly. Wrap the call in [base::suppressMessages()] to
-#'   silence it in scripts.
+#'   A one-line summary is also printed via [base::message()]; in
+#'   dry-run mode it includes how to apply the rewrite and how to
+#'   inspect the per-file detail. Wrap the call in
+#'   [base::suppressMessages()] to silence.
 #' @export
 #'
 #' @examples
@@ -632,31 +644,44 @@ asciify_pkg <- function(path = ".",
       error = function(e) {
         warning(sprintf("asciify_pkg: skipping %s \u2014 %s", f, conditionMessage(e)),
                 call. = FALSE)
-        list(path = f, changed = FALSE, n_tokens = NA_integer_)
+        list(path = f, changed = FALSE,
+             n_tokens = NA_integer_, n_chars = NA_integer_)
       }
     )
     data.frame(
       path = res$path,
       changed = res$changed,
       n_tokens = res$n_tokens %||% 0L,
+      n_chars = res$n_chars %||% 0L,
       stringsAsFactors = FALSE
     )
   })
   out <- if (length(rows)) do.call(rbind, rows) else data.frame(
     path = character(), changed = logical(),
-    n_tokens = integer(), stringsAsFactors = FALSE
+    n_tokens = integer(), n_chars = integer(),
+    stringsAsFactors = FALSE
   )
 
-  # Interactive feedback: the data.frame is returned invisibly (intentional,
-  # so it doesn't spam the console on big packages), but a console caller
-  # still gets a one-line summary. Silenceable via suppressMessages().
   n_changed <- sum(out$changed, na.rm = TRUE)
-  n_tokens <- sum(out$n_tokens, na.rm = TRUE)
+  n_chars <- sum(out$n_chars, na.rm = TRUE)
   verb <- if (isTRUE(dry_run)) "would change" else "rewrote"
-  message(sprintf(
-    "asciify_pkg: %d file(s) scanned, %s %d, %d non-ASCII token(s).",
-    nrow(out), verb, n_changed, n_tokens
-  ))
+  lines <- sprintf(
+    "asciify_pkg: %d file(s) scanned, %s %d, %d non-ASCII character(s).",
+    nrow(out), verb, n_changed, n_chars
+  )
+  if (n_changed > 0L) {
+    if (isTRUE(dry_run)) {
+      lines <- c(lines, "* Re-run with `dry_run = FALSE` to apply.")
+    }
+    lines <- c(
+      lines,
+      paste(
+        "* Result returned invisibly; capture it (`out <- asciify_pkg(...)`)",
+        "or `print(asciify_pkg(...))` for per-file detail."
+      )
+    )
+  }
+  message(paste(lines, collapse = "\n"))
 
   invisible(out)
 }
