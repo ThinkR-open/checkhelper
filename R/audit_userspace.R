@@ -45,12 +45,15 @@ audit_userspace <- function(pkg = ".",
 .check_clean_userspace <- function(pkg = ".", check_output = tempfile("dircheck")) {
   scratch_dir <- tempdir()
 
-  tmp_orig <- Sys.getenv("TMPDIR")
-  Sys.setenv("TMPDIR" = scratch_dir)
-  Sys.setenv("TMP" = scratch_dir)
-  Sys.setenv("TEMP" = scratch_dir)
-
-  on.exit(Sys.setenv("TMPDIR" = tmp_orig))
+  # Set all three vars (Linux uses TMPDIR, macOS / Windows look at TMP /
+  # TEMP). withr::local_envvar restores every var on exit even if the
+  # function errors, which Sys.setenv + on.exit didn't (only TMPDIR was
+  # being restored).
+  withr::local_envvar(c(
+    TMPDIR = scratch_dir,
+    TMP    = scratch_dir,
+    TEMP   = scratch_dir
+  ))
 
   if (!dir.exists(scratch_dir)) {
     dir.create(scratch_dir)

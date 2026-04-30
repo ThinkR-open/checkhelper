@@ -9,7 +9,9 @@ fix_globals(pkg = ".", write = FALSE)
 \arguments{
 \item{pkg}{Path to the package.}
 
-\item{write}{If \code{TRUE}, write/append to \verb{<pkg>/R/globals.R}. Default \code{FALSE}.}
+\item{write}{If \code{TRUE}, \strong{overwrite} \verb{<pkg>/R/globals.R} with a
+single \code{globalVariables(...)} call. Default \code{FALSE} (print the
+block to the console for manual paste).}
 }
 \value{
 Invisibly, the path written (when \code{write = TRUE}) or \code{NULL}.

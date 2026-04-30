@@ -13,6 +13,12 @@ options(lifecycle_verbosity = "quiet")
 # Use this in tests that call rcmdcheck (audit_globals/fix_globals path)
 # so they don't leak artefacts that downstream tests
 # (test-check_clean_userspace) detect as pre-existing files.
+#
+# `envir` defaults to the caller's frame, which is the right thing inside
+# a `test_that()` block. When called at FILE scope (e.g. before any
+# `test_that` runs), pass `envir = testthat::teardown_env()` so the
+# deferred cleanup ties to the file's documented teardown environment
+# rather than to the source frame's lifetime.
 local_tempdir_clean <- function(envir = parent.frame()) {
   before <- list.files(tempdir(), all.files = TRUE, no.. = TRUE)
   withr::defer(

@@ -41,7 +41,9 @@ audit_globals <- function(pkg = ".") {
 #' `R/globals.R`. Wraps [print_globals()].
 #'
 #' @param pkg Path to the package.
-#' @param write If `TRUE`, write/append to `<pkg>/R/globals.R`. Default `FALSE`.
+#' @param write If `TRUE`, **overwrite** `<pkg>/R/globals.R` with a
+#'   single `globalVariables(...)` call. Default `FALSE` (print the
+#'   block to the console for manual paste).
 #'
 #' @return Invisibly, the path written (when `write = TRUE`) or `NULL`.
 #' @export

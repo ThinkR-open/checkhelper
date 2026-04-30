@@ -1,6 +1,7 @@
 # find_missing_tags drives roxygen / pkgload writes; cordon those off
-# from downstream tempdir-snapshot tests.
-local_tempdir_clean()
+# from downstream tempdir-snapshot tests. File-scope call needs the
+# explicit teardown env (see helpers.R).
+local_tempdir_clean(envir = testthat::teardown_env())
 
 path <- suppressWarnings(create_example_pkg())
 

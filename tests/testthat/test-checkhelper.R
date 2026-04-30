@@ -1,8 +1,9 @@
 # File-level rcmdcheck calls below leak artefacts into tempdir() that
 # break downstream tests asserting tempdir snapshots (notably
-# test-check_clean_userspace.R). Snapshot here, defer cleanup at end of
-# this file's tests.
-local_tempdir_clean()
+# test-check_clean_userspace.R). Snapshot here, defer cleanup to the
+# file's teardown env (file-scope call needs the explicit envir; see
+# helpers.R).
+local_tempdir_clean(envir = testthat::teardown_env())
 
 # Warnings are ok with new version o
 path <- suppressWarnings(create_example_pkg())

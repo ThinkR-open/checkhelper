@@ -41,7 +41,11 @@ audit_dataset_doc <- function(pkg = ".") {
 
   has_doc <- vapply(names, function(n) {
     if (!length(r_files)) return(FALSE)
-    pattern <- paste0("(^|[^[:alnum:]_])\"", n, "\"|@name\\s+", n, "\\b")
+    # Escape regex metacharacters: dataset names can contain `.` and other
+    # symbols that would otherwise mis-match (e.g. `iris.setosa` would match
+    # `irisXsetosa`).
+    n_re <- escape_regex(n)
+    pattern <- paste0("(^|[^[:alnum:]_])\"", n_re, "\"|@name\\s+", n_re, "\\b")
     any(vapply(r_files, function(f) {
       content <- paste(readLines(f, warn = FALSE), collapse = "\n")
       grepl(pattern, content, perl = TRUE)
@@ -113,12 +117,21 @@ fix_dataset_doc <- function(name,
 #' Get information of an .rda file stored under data/.
 #'
 #' @noRd
+#' Escape characters that have special meaning in a regex.
+#' @noRd
+escape_regex <- function(x) {
+  gsub("([][{}()+*^$|\\\\?.\\-])", "\\\\\\1", x, perl = TRUE)
+}
+
 .get_data_info <- function(name, description, source) {
   if (!dir.exists("data")) {
     stop("'data/' folder does not exist, hence there is no data file to look for.")
   }
+  # Escape `name` before embedding into the regex so a dataset name with
+  # regex metacharacters (e.g. `iris.versicolor`) doesn't mis-match.
+  name_re <- escape_regex(name)
   file <- list.files("data",
-    pattern = glue::glue("^{name}\\.(r|R).+$"),
+    pattern = glue::glue("^{name_re}\\.(r|R).+$"),
     full.names = TRUE
   )
   if (purrr::is_empty(file)) {
