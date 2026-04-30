@@ -81,65 +81,113 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
+          <h2 id="audit">Audit <a href="#audit" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Read-only inspection of CRAN-blocking issues. Each function targets one category and returns a structured result.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="audit_globals.html">audit_globals()</a></code> </p>
+        </td>
+        <td><p>Audit globals to declare in R/globals.R</p></td>
+      </tr><tr><td>
+          <p><code><a href="audit_tags.html">audit_tags()</a></code> </p>
+        </td>
+        <td><p>Audit roxygen tags expected by CRAN</p></td>
+      </tr><tr><td>
+          <p><code><a href="audit_ascii.html">audit_ascii()</a></code> </p>
+        </td>
+        <td><p>Audit non-ASCII characters in a package</p></td>
+      </tr><tr><td>
+          <p><code><a href="audit_userspace.html">audit_userspace()</a></code> </p>
+        </td>
+        <td><p>Audit files left in user space by checks</p></td>
+      </tr><tr><td>
+          <p><code><a href="audit_check.html">audit_check()</a></code> </p>
+        </td>
+        <td><p>Run R CMD check with CRAN environment</p></td>
+      </tr><tr><td>
+          <p><code><a href="audit_dataset_doc.html">audit_dataset_doc()</a></code> </p>
+        </td>
+        <td><p>Audit dataset documentation</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="fix">Fix <a href="#fix" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Apply an automated fix for the issues that can be safely rewritten. Dry-run by default where applicable.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="fix_globals.html">fix_globals()</a></code> </p>
+        </td>
+        <td><p>Print or write the globalVariables block to declare</p></td>
+      </tr><tr><td>
+          <p><code><a href="fix_ascii.html">fix_ascii()</a></code> </p>
+        </td>
+        <td><p>Rewrite non-ASCII characters in a package</p></td>
+      </tr><tr><td>
+          <p><code><a href="fix_dataset_doc.html">fix_dataset_doc()</a></code> </p>
+        </td>
+        <td><p>Generate a roxygen skeleton for a dataset</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="low-level-tools">Low-level tools <a href="#low-level-tools" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Building blocks for fine-grained scripting and tests. Most users only need the audit_* / fix_* facades above.</p>
         </th>
       </tr></tbody><tbody><tr><td>
           <p><code><a href="asciify_file.html">asciify_file()</a></code> </p>
         </td>
         <td><p>Apply the asciify rewrite to a single R / R-related file</p></td>
       </tr><tr><td>
-          <p><code><a href="asciify_pkg.html">asciify_pkg()</a></code> </p>
-        </td>
-        <td><p>Asciify every CRAN-relevant file of an R package</p></td>
-      </tr><tr><td>
           <p><code><a href="asciify_r_source.html">asciify_r_source()</a></code> </p>
         </td>
         <td><p>Rewrite non-ASCII characters inside a string of R source code</p></td>
-      </tr><tr><td>
-          <p><code><a href="check_as_cran.html">check_as_cran()</a></code> </p>
-        </td>
-        <td><p>Check your package with real CRAN default environment variables and check strategy</p></td>
-      </tr><tr><td>
-          <p><code><a href="check_clean_userspace.html">check_clean_userspace()</a></code> </p>
-        </td>
-        <td><p>check_clean_userspace</p></td>
-      </tr><tr><td>
-          <p><code><a href="create_example_pkg.html">create_example_pkg()</a></code> </p>
-        </td>
-        <td><p>Create a package example producing notes and errors</p></td>
-      </tr><tr><td>
-          <p><code><a href="find_missing_tags.html">find_missing_tags()</a></code> </p>
-        </td>
-        <td><p>Find missing 'return' tag when function exported</p></td>
-      </tr><tr><td>
-          <p><code><a href="find_nonascii_files.html">find_nonascii_files()</a></code> </p>
-        </td>
-        <td><p>Scan a directory tree for files containing non-ASCII characters</p></td>
       </tr><tr><td>
           <p><code><a href="find_nonascii_tokens.html">find_nonascii_tokens()</a></code> </p>
         </td>
         <td><p>Find non-ASCII tokens inside a piece of R source code</p></td>
       </tr><tr><td>
-          <p><code><a href="get_data_info.html">get_data_info()</a></code> </p>
+          <p><code><a href="create_example_pkg.html">create_example_pkg()</a></code> </p>
         </td>
-        <td><p>Get information of a .Rda file stored inside the 'data/' folder</p></td>
+        <td><p>Create a package example producing notes and errors</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="deprecated">Deprecated <a href="#deprecated" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p><p>Historic API kept callable for backwards compatibility. Each one emits a lifecycle warning and delegates to the new facade. Prefer the audit_* / fix_* names listed above.</p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="find_nonascii_files.html">find_nonascii_files()</a></code> </p>
+        </td>
+        <td><p>Deprecated: use <code><a href="../reference/audit_ascii.html">audit_ascii()</a></code> instead</p></td>
       </tr><tr><td>
-          <p><code><a href="get_no_visible.html">get_no_visible()</a></code> </p>
+          <p><code><a href="asciify_pkg.html">asciify_pkg()</a></code> </p>
         </td>
-        <td><p>List no visible globals from check and separate by category</p></td>
+        <td><p>Deprecated: use <code><a href="../reference/fix_ascii.html">fix_ascii()</a></code> instead</p></td>
       </tr><tr><td>
           <p><code><a href="get_notes.html">get_notes()</a></code> </p>
         </td>
-        <td><p>List notes from check and identify global variables</p></td>
+        <td><p>Deprecated: internal helper used by <code><a href="../reference/audit_globals.html">audit_globals()</a></code></p></td>
+      </tr><tr><td>
+          <p><code><a href="get_no_visible.html">get_no_visible()</a></code> </p>
+        </td>
+        <td><p>Deprecated: use <code><a href="../reference/audit_globals.html">audit_globals()</a></code> instead</p></td>
       </tr><tr><td>
           <p><code><a href="print_globals.html">print_globals()</a></code> </p>
         </td>
-        <td><p>Print no visible globals from check and separate by category</p></td>
+        <td><p>Deprecated: use <code><a href="../reference/fix_globals.html">fix_globals()</a></code> instead</p></td>
+      </tr><tr><td>
+          <p><code><a href="find_missing_tags.html">find_missing_tags()</a></code> </p>
+        </td>
+        <td><p>Deprecated: use <code><a href="../reference/audit_tags.html">audit_tags()</a></code> instead</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_as_cran.html">check_as_cran()</a></code> </p>
+        </td>
+        <td><p>Deprecated: use <code><a href="../reference/audit_check.html">audit_check()</a></code> instead</p></td>
+      </tr><tr><td>
+          <p><code><a href="check_clean_userspace.html">check_clean_userspace()</a></code> </p>
+        </td>
+        <td><p>Deprecated: use <code><a href="../reference/audit_userspace.html">audit_userspace()</a></code> instead</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_data_info.html">get_data_info()</a></code> </p>
+        </td>
+        <td><p>Deprecated: internal helper used by <code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code></p></td>
       </tr><tr><td>
           <p><code><a href="use_data_doc.html">use_data_doc()</a></code> </p>
         </td>
-        <td><p>Create documentation of a rda / RData dataset in a package</p></td>
+        <td><p>Deprecated: use <code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code> instead</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

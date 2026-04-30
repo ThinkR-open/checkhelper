@@ -84,8 +84,60 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
 <div class="section level3">
-<h3 id="minor-changes-development-version">Minor changes<a class="anchor" aria-label="anchor" href="#minor-changes-development-version"></a></h3>
-<ul><li>
+<h3 id="api-refresh--audit_--fix_-façades-development-version">API refresh — <code>audit_*</code> / <code>fix_*</code> façades<a class="anchor" aria-label="anchor" href="#api-refresh--audit_--fix_-fa%C3%A7ades-development-version"></a></h3>
+<p>The package now exposes a uniform CRAN-oriented API: each category of <code>R CMD check</code> issue gets one <code>audit_*</code> (read-only) function and, when an automated fix is safe, one <code>fix_*</code> (action) function. Type <code>audit_&lt;TAB&gt;</code> or <code>fix_&lt;TAB&gt;</code> in RStudio to discover the surface.</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>CRAN issue</th>
+<th>Audit</th>
+<th>Fix</th>
+</tr></thead><tbody><tr><td>Globals to declare (<code>no visible binding</code>)</td>
+<td><code><a href="../reference/audit_globals.html">audit_globals()</a></code></td>
+<td><code><a href="../reference/fix_globals.html">fix_globals()</a></code></td>
+</tr><tr><td>Missing roxygen tags</td>
+<td><code><a href="../reference/audit_tags.html">audit_tags()</a></code></td>
+<td>—</td>
+</tr><tr><td>Non-ASCII characters</td>
+<td><code><a href="../reference/audit_ascii.html">audit_ascii()</a></code></td>
+<td><code><a href="../reference/fix_ascii.html">fix_ascii()</a></code></td>
+</tr><tr><td>Files left in user space</td>
+<td><code><a href="../reference/audit_userspace.html">audit_userspace()</a></code></td>
+<td>—</td>
+</tr><tr><td>
+<code>R CMD check</code> with CRAN settings</td>
+<td><code><a href="../reference/audit_check.html">audit_check()</a></code></td>
+<td>—</td>
+</tr><tr><td>Undocumented datasets</td>
+<td><code><a href="../reference/audit_dataset_doc.html">audit_dataset_doc()</a></code></td>
+<td><code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code></td>
+</tr></tbody></table><p>The 10 historic functions remain callable but emit <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html" class="external-link">lifecycle::deprecate_warn()</a></code> and delegate to the new façades:</p>
+<table class="table"><thead><tr><th>Old</th>
+<th>→ New</th>
+</tr></thead><tbody><tr><td><code><a href="../reference/find_nonascii_files.html">find_nonascii_files()</a></code></td>
+<td><code><a href="../reference/audit_ascii.html">audit_ascii()</a></code></td>
+</tr><tr><td><code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code></td>
+<td><code><a href="../reference/fix_ascii.html">fix_ascii()</a></code></td>
+</tr><tr><td><code><a href="../reference/get_no_visible.html">get_no_visible()</a></code></td>
+<td><code><a href="../reference/audit_globals.html">audit_globals()</a></code></td>
+</tr><tr><td><code><a href="../reference/print_globals.html">print_globals()</a></code></td>
+<td><code><a href="../reference/fix_globals.html">fix_globals()</a></code></td>
+</tr><tr><td><code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code></td>
+<td><code><a href="../reference/audit_tags.html">audit_tags()</a></code></td>
+</tr><tr><td><code><a href="../reference/check_as_cran.html">check_as_cran()</a></code></td>
+<td><code><a href="../reference/audit_check.html">audit_check()</a></code></td>
+</tr><tr><td><code><a href="../reference/check_clean_userspace.html">check_clean_userspace()</a></code></td>
+<td><code><a href="../reference/audit_userspace.html">audit_userspace()</a></code></td>
+</tr><tr><td><code><a href="../reference/use_data_doc.html">use_data_doc()</a></code></td>
+<td><code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code></td>
+</tr><tr><td><code><a href="../reference/get_notes.html">get_notes()</a></code></td>
+<td>(internal) <code><a href="../reference/audit_globals.html">audit_globals()</a></code>
+</td>
+</tr><tr><td><code><a href="../reference/get_data_info.html">get_data_info()</a></code></td>
+<td>(internal) <code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code>
+</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<ul><li>The <code>%&gt;%</code> re-export from <code>magrittr</code> is dropped. The pipe is no longer in the package’s exported surface; the native pipe <code>|&gt;</code> is available since R 4.1.</li>
+<li>
 <code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> now prints a one-line summary of how many files were scanned, changed, and how many non-ASCII characters were found. In dry-run mode it also prints how to apply the rewrite and how to inspect the per-file detail. Use <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code> to silence.</li>
 <li>
 <code><a href="../reference/asciify_pkg.html">asciify_pkg()</a></code> and <code><a href="../reference/asciify_file.html">asciify_file()</a></code> gain an <code>n_chars</code> column / list element: the count of non-ASCII characters in the original file. <code>n_tokens</code> (number of source locations to rewrite) is kept.</li>

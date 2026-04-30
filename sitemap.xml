@@ -14,6 +14,12 @@
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/asciify_file.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/asciify_pkg.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/asciify_r_source.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_ascii.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_check.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_dataset_doc.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_globals.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_tags.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/audit_userspace.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/check_as_cran.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/check_clean_userspace.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/checkhelper-package.html</loc></url>
@@ -21,11 +27,13 @@
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/find_missing_tags.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/find_nonascii_files.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/find_nonascii_tokens.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/fix_ascii.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/fix_dataset_doc.html</loc></url>
+<url><loc>https://thinkr-open.github.io/checkhelper/reference/fix_globals.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/get_data_info.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/get_no_visible.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/get_notes.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/index.html</loc></url>
-<url><loc>https://thinkr-open.github.io/checkhelper/reference/pipe.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/print_globals.html</loc></url>
 <url><loc>https://thinkr-open.github.io/checkhelper/reference/use_data_doc.html</loc></url>
 </urlset>
