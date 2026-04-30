@@ -30,7 +30,7 @@ test_that("audit_globals() emits a cli message", {
 })
 
 test_that("audit_globals(checks = ...) reuses a precomputed rcmdcheck and does not re-run R CMD check", {
-  # Faux objet rcmdcheck minimal: une seule note avec deux globals connues.
+  # Minimal fake rcmdcheck object: one note with two known globals.
   fake_checks <- list(
     notes = c(
       paste(
@@ -42,8 +42,8 @@ test_that("audit_globals(checks = ...) reuses a precomputed rcmdcheck and does n
     )
   )
 
-  # Sentinelle: rcmdcheck::rcmdcheck est stubbé pour exploser si appelé.
-  # Si la branche `checks =` est correctement câblée, on ne le déclenche jamais.
+  # Sentinel: stub rcmdcheck::rcmdcheck so it explodes if called.
+  # If the `checks =` branch is correctly wired, we never trigger it.
   testthat::with_mocked_bindings(
     rcmdcheck = function(...) stop("rcmdcheck must NOT be called when checks= is supplied"),
     .package = "checkhelper",

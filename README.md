@@ -96,8 +96,8 @@ fix_ascii(pkg, dry_run = FALSE)
 
 ## Auditing an unknown package — share one check across audits
 
-`audit_globals()` and `fix_globals()` both need the output of `R CMD
-check`. To avoid running it twice, pass a pre-computed
+`audit_globals()` and `fix_globals()` both need the output of
+`R CMD check`. To avoid running it twice, pass a pre-computed
 `rcmdcheck::rcmdcheck()` result via `checks =`:
 
 ``` r
