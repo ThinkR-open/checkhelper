@@ -2,7 +2,7 @@
 ##
 ## Each wrapper emits `lifecycle::deprecate_warn()` once per session and
 ## delegates to the renamed internal implementation (prefixed with a dot)
-## so the new audit_* / fix_* façades can keep calling the same logic
+## so the new audit_* / fix_* facades can keep calling the same logic
 ## without re-triggering the deprecation warning.
 
 #' Deprecated: use [audit_ascii()] instead
