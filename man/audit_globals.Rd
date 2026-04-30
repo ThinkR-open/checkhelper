@@ -4,10 +4,15 @@
 \alias{audit_globals}
 \title{Audit globals to declare in R/globals.R}
 \usage{
-audit_globals(pkg = ".")
+audit_globals(pkg = ".", checks = NULL)
 }
 \arguments{
 \item{pkg}{Path to the package to audit.}
+
+\item{checks}{Optional. A pre-computed \code{\link[rcmdcheck:rcmdcheck]{rcmdcheck::rcmdcheck()}} result
+(a list with at least a \code{notes} element). When supplied, \code{audit_globals()}
+reuses it instead of re-running \verb{R CMD check} on \code{pkg}. Useful to share
+a single check between \code{\link[=audit_globals]{audit_globals()}} and \code{\link[=fix_globals]{fix_globals()}}.}
 }
 \value{
 A list with two tibbles, \code{globalVariables} and \code{functions},
@@ -22,7 +27,14 @@ note. Use \code{\link[=fix_globals]{fix_globals()}} to print or write the corres
 \examples{
 \dontrun{
 pkg <- create_example_pkg()
+
+# One-shot:
 audit_globals(pkg)
+
+# Shared check (avoid running R CMD check twice):
+chk <- rcmdcheck::rcmdcheck(pkg)
+audit_globals(pkg, checks = chk)
+fix_globals(pkg, checks = chk)
 }
 }
 \seealso{

@@ -1,0 +1,111 @@
+---
+title: "Auditing an R package you have just received"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Auditing an R package you have just received}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(checkhelper)
+```
+
+This vignette walks through the practical sequence of commands when a
+colleague hands you an R package and asks "is this CRAN-ready ?". The
+goal is to surface every CRAN-blocking issue with the **smallest
+possible number of `R CMD check` runs**.
+
+## TL;DR — the audit script
+
+```{r}
+pkg <- "/path/to/the/package"
+
+# 1. Run R CMD check ONCE and reuse it everywhere it's needed.
+chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
+
+# 2. Static audits (no extra check needed).
+audit_tags(pkg)            # exported funs without @return / internals without @noRd
+audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man/
+audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
+
+# 3. Audits that need the check output — pass `chk` to skip a 2nd run.
+audit_globals(pkg, checks = chk)
+
+# 4. Userspace audit (separate workflow: it runs tests + examples + check
+#    with file-system snapshots between steps, can't reuse `chk`).
+audit_userspace(pkg)
+
+# 5. Apply the safe fixes.
+fix_globals(pkg, checks = chk, write = TRUE)
+fix_ascii(pkg, dry_run = TRUE)        # review first
+fix_ascii(pkg, dry_run = FALSE)       # then apply
+fix_dataset_doc(pkg)
+```
+
+## Why share the check object ?
+
+`audit_globals()` and `fix_globals()` parse the `notes` field of an
+`rcmdcheck::rcmdcheck()` result to extract the
+`no visible binding for global variable` and
+`no visible global function definition` notes. By default each call
+runs its own check, which is slow on a real package.
+
+Both functions accept a `checks =` argument. When supplied, they skip
+the `rcmdcheck()` call and parse the existing object. This lets you
+run the check **once** and reuse the result for the whole audit.
+
+```{r}
+chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
+
+audit_globals(pkg, checks = chk)
+fix_globals(pkg,   checks = chk, write = TRUE)
+```
+
+The other audits do not need a check at all:
+
+| Audit                | Needs `R CMD check` ? | Notes                                  |
+|----------------------|-----------------------|----------------------------------------|
+| `audit_tags()`       | no                    | static via roxygen2                    |
+| `audit_ascii()`      | no                    | AST via `getParseData()`               |
+| `audit_dataset_doc()`| no                    | inspects `data/` and `R/`              |
+| `audit_globals()`    | **yes** (reusable)    | accepts `checks =`                     |
+| `audit_userspace()`  | yes (own pipeline)    | takes file-system snapshots, separate  |
+| `audit_check()`      | yes                   | this **is** the check, with CRAN env   |
+
+## Choosing between `rcmdcheck()` and `audit_check()`
+
+- `rcmdcheck::rcmdcheck(pkg, args = "--as-cran")` — fast, returns the
+  list shape that `audit_globals(checks = ...)` expects. Use it for the
+  shared-check workflow above.
+- `audit_check(pkg)` — runs the check with the full **CRAN incoming**
+  environment (env vars, options, lib path mirrored from CRAN). Heavier
+  and uses `tools::check_packages_in_dir()` under the hood; use it as a
+  final gate before submission, not as the audit driver.
+
+## Minimal end-to-end on a fake package
+
+```{r}
+pkg <- create_example_pkg()
+
+chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
+
+audit_tags(pkg)
+audit_ascii(pkg)
+audit_dataset_doc(pkg)
+audit_globals(pkg, checks = chk)
+
+fix_globals(pkg, checks = chk, write = TRUE)
+fix_ascii(pkg, dry_run = FALSE)
+```
+
+After applying the fixes, re-run the check (the package state has
+changed, so a new `rcmdcheck()` is needed) and confirm 0 / 0 / 0.

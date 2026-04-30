@@ -6,6 +6,10 @@
 #' `globalVariables()` block. Wraps [get_no_visible()].
 #'
 #' @param pkg Path to the package to audit.
+#' @param checks Optional. A pre-computed [rcmdcheck::rcmdcheck()] result
+#'   (a list with at least a `notes` element). When supplied, `audit_globals()`
+#'   reuses it instead of re-running `R CMD check` on `pkg`. Useful to share
+#'   a single check between [audit_globals()] and [fix_globals()].
 #'
 #' @return A list with two tibbles, `globalVariables` and `functions`,
 #'   or `NULL` if the package has no global notes.
@@ -14,10 +18,21 @@
 #' @examples
 #' \dontrun{
 #' pkg <- create_example_pkg()
+#'
+#' # One-shot:
 #' audit_globals(pkg)
+#'
+#' # Shared check (avoid running R CMD check twice):
+#' chk <- rcmdcheck::rcmdcheck(pkg)
+#' audit_globals(pkg, checks = chk)
+#' fix_globals(pkg, checks = chk)
 #' }
-audit_globals <- function(pkg = ".") {
-  out <- .get_no_visible(path = pkg)
+audit_globals <- function(pkg = ".", checks = NULL) {
+  out <- if (is.null(checks)) {
+    .get_no_visible(path = pkg)
+  } else {
+    .get_no_visible(path = pkg, checks = checks)
+  }
 
   if (is.null(out)) {
     cli::cli_inform(c("v" = "audit_globals(): no global notes detected."))
@@ -44,6 +59,10 @@ audit_globals <- function(pkg = ".") {
 #' @param write If `TRUE`, **overwrite** `<pkg>/R/globals.R` with a
 #'   single `globalVariables(...)` call. Default `FALSE` (print the
 #'   block to the console for manual paste).
+#' @param checks Optional. A pre-computed [rcmdcheck::rcmdcheck()] result
+#'   (a list with at least a `notes` element). When supplied, `fix_globals()`
+#'   reuses it instead of re-running `R CMD check` on `pkg`. Useful to share
+#'   a single check between [audit_globals()] and [fix_globals()].
 #'
 #' @return Invisibly, the path written (when `write = TRUE`) or `NULL`.
 #' @export
@@ -53,9 +72,18 @@ audit_globals <- function(pkg = ".") {
 #' pkg <- create_example_pkg()
 #' fix_globals(pkg)
 #' fix_globals(pkg, write = TRUE)
+#'
+#' # Reuse a single R CMD check across both audit and fix:
+#' chk <- rcmdcheck::rcmdcheck(pkg)
+#' audit_globals(pkg, checks = chk)
+#' fix_globals(pkg, checks = chk, write = TRUE)
 #' }
-fix_globals <- function(pkg = ".", write = FALSE) {
-  globals <- .get_no_visible(path = pkg)
+fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
+  globals <- if (is.null(checks)) {
+    .get_no_visible(path = pkg)
+  } else {
+    .get_no_visible(path = pkg, checks = checks)
+  }
 
   if (is.null(globals)) {
     cli::cli_inform(c("v" = "fix_globals(): no globals to declare."))
