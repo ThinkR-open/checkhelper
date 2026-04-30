@@ -1,3 +1,31 @@
+#' Audit roxygen tags expected by CRAN
+#'
+#' Reports exported functions that lack `@return`, and documented internal
+#' functions that lack `@noRd` (these trigger CRAN's
+#' `Please add \value to .Rd files` message). Wraps [find_missing_tags()].
+#'
+#' @param pkg Path to the package to audit.
+#'
+#' @return A list with three tibbles: `package_doc`, `data`, `functions`.
+#' @export
+#' @seealso [find_missing_tags()]
+#' @examples
+#' \dontrun{
+#' pkg <- create_example_pkg()
+#' audit_tags(pkg)
+#' }
+audit_tags <- function(pkg = ".") {
+  out <- .find_missing_tags(package.dir = pkg)
+
+  n_missing_return <- sum(out$functions$test_has_export_and_return == "not_ok")
+  n_missing_nord <- sum(out$functions$test_has_export_or_has_nord == "not_ok")
+
+  cli::cli_inform(c(
+    "i" = "audit_tags(): {n_missing_return} missing @return tag{?s}, {n_missing_nord} missing @noRd tag{?s}."
+  ))
+
+  out
+}
 #' Find missing 'return' tag when function exported
 #'
 #' @inheritParams roxygen2::roxygenise
@@ -7,17 +35,8 @@
 #' @importFrom dplyr mutate filter left_join if_else tibble
 #' @importFrom dplyr group_by summarise first select n
 #' @importFrom purrr walk map keep compact
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' # What you will do from inside your package
-#' find_missing_tags()
-#' }
-#' # A reproducible example on a test package
-#' pkg_path <- create_example_pkg()
-#' find_missing_tags(pkg_path)
-find_missing_tags <- function(package.dir = ".",
+#' @noRd
+.find_missing_tags <- function(package.dir = ".",
                               roclets = NULL,
                               load_code = NULL,
                               clean = FALSE) {
@@ -374,8 +393,8 @@ topic_block_returns <- function(topic_blocks) {
 #' Aliases with `@rdname X` whose canonical doc is `NULL` (a topic block)
 #' should not be reported as missing a return tag.
 #'
-#' @param res joined tibble produced by [set_correct_return_to_alias()].
-#' @param topic_returns named character vector from [topic_block_returns()].
+#' @param res joined tibble produced by `set_correct_return_to_alias()`.
+#' @param topic_returns named character vector from `topic_block_returns()`.
 #' @return updated tibble.
 #' @noRd
 apply_topic_block_returns <- function(res, topic_returns) {

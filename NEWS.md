@@ -1,7 +1,42 @@
 # checkhelper (development version)
 
-## Minor changes
+## API refresh — `audit_*` / `fix_*` façades
 
+The package now exposes a uniform CRAN-oriented API: each category of
+`R CMD check` issue gets one `audit_*` (read-only) function and, when
+an automated fix is safe, one `fix_*` (action) function. Type
+`audit_<TAB>` or `fix_<TAB>` in RStudio to discover the surface.
+
+| CRAN issue | Audit | Fix |
+|---|---|---|
+| Globals to declare (`no visible binding`) | `audit_globals()` | `fix_globals()` |
+| Missing roxygen tags | `audit_tags()` | — |
+| Non-ASCII characters | `audit_ascii()` | `fix_ascii()` |
+| Files left in user space | `audit_userspace()` | — |
+| `R CMD check` with CRAN settings | `audit_check()` | — |
+| Undocumented datasets | `audit_dataset_doc()` | `fix_dataset_doc()` |
+
+The 10 historic functions remain callable but emit
+`lifecycle::deprecate_warn()` and delegate to the new façades:
+
+| Old | → New |
+|---|---|
+| `find_nonascii_files()` | `audit_ascii()` |
+| `asciify_pkg()` | `fix_ascii()` |
+| `get_no_visible()` | `audit_globals()` |
+| `print_globals()` | `fix_globals()` |
+| `find_missing_tags()` | `audit_tags()` |
+| `check_as_cran()` | `audit_check()` |
+| `check_clean_userspace()` | `audit_userspace()` |
+| `use_data_doc()` | `fix_dataset_doc()` |
+| `get_notes()` | (internal) `audit_globals()` |
+| `get_data_info()` | (internal) `fix_dataset_doc()` |
+
+## Other changes
+
+- The `%>%` re-export from `magrittr` is dropped. The pipe is no
+  longer in the package's exported surface; the native pipe `|>` is
+  available since R 4.1.
 - `asciify_pkg()` now prints a one-line summary of how many files were
   scanned, changed, and how many non-ASCII characters were found. In
   dry-run mode it also prints how to apply the rewrite and how to

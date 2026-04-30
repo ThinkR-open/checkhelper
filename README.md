@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
 
 [![checkhelper status
@@ -14,261 +15,87 @@ status](https://www.r-pkg.org/badges/version/checkhelper)](https://CRAN.R-projec
 
 # checkhelper
 
-A package to help you deal with `devtools::check()` outputs and helps
-avoids problems with CRAN submissions
+A toolkit for R package authors that turns each `R CMD check` warning
+or NOTE into a clear two-step workflow: **audit** what the issue is,
+then **fix** it. The goal is to reduce the risk of CRAN rejection.
 
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
 
+## API at a glance
+
+Each category of CRAN issue gets one read-only `audit_*()` function
+and, when an automated fix is safe, one `fix_*()` function. Type
+`audit_<TAB>` or `fix_<TAB>` in RStudio to discover the surface.
+
+| CRAN issue | Audit (read-only) | Fix (action) |
+|---|---|---|
+| Globals to declare (`no visible binding`) | `audit_globals()` | `fix_globals()` |
+| Missing roxygen tags (`@return`, `@noRd`) | `audit_tags()` | — |
+| Non-ASCII characters | `audit_ascii()` | `fix_ascii()` |
+| Files left in user space by checks | `audit_userspace()` | — |
+| `R CMD check` with CRAN settings | `audit_check()` | — |
+| Undocumented datasets | `audit_dataset_doc()` | `fix_dataset_doc()` |
+
+Lower-level helpers (`asciify_file()`, `asciify_r_source()`,
+`find_nonascii_tokens()`, `create_example_pkg()`) are also exported
+for fine-grained scripting.
+
+The 10 historic functions (`get_no_visible()`, `find_missing_tags()`,
+`asciify_pkg()`, `check_as_cran()`, …) remain callable but emit a
+`lifecycle::deprecate_warn()` and delegate to the new façades — see
+`NEWS.md` for the full mapping.
+
 ## Installation
 
-Install from CRAN
+From CRAN:
 
 ``` r
 install.packages("checkhelper")
 ```
 
-You can install the last version of checkhelper from r-universe with:
+Latest from r-universe:
 
 ``` r
-install.packages('checkhelper', repos = 'https://thinkr-open.r-universe.dev')
+install.packages("checkhelper", repos = "https://thinkr-open.r-universe.dev")
 ```
 
-Or from GitHub:
+From GitHub:
 
 ``` r
 remotes::install_github("thinkr-open/checkhelper")
 ```
 
-## Examples
+## Quick start
 
-- Check your current package under development and get all the globals
-  missing: `no visible global variable` and `no visible global function`
-- Detect exported functions with missing or empty `@return` / `@noRd`
-  tags
-
-### Directly in your package in development
-
-- Use `checkhelper::find_missing_tags()` on your package in development
-  to find which functions are exported but missing `@export` roxygen2
-  tag.
-  - CRAN policy asks for every exported function to have a value (named
-    `@export` when using {roxygen2}).
-  - This also checks that not exported functions don’t have roxygen
-    title, or have `@noRd` in case you faced
-    `Please add \value to .Rd files` CRAN message for documented but not
-    exported functions.
-- You can directly use `checkhelper::print_globals()` on your package
-  instead of `devtools::check()`. This is a wrapper around
-  `rcmdcheck::rcmdcheck()`. This will run the checks and directly list
-  the potential “globalVariables” to add in a `globals.R` file.
-
-``` r
-checkhelper::find_missing_tags()
-
-checkhelper::print_globals(quiet = TRUE)
-```
-
-### Reproducible example with a fake package in tempdir
-
-- Create a fake package with
-  - a function having global variables
-  - a function with `@export` but no `@return`
-  - a function with title but without `@export` and thus missing `@noRd`
+`create_example_pkg()` ships a fake package that already trips most of
+the checks `checkhelper` covers. Use it to feel the workflow:
 
 ``` r
 library(checkhelper)
 
-# Create fake package ----
-pkg_path <- tempfile(pattern = "pkg.")
-dir.create(pkg_path)
+pkg <- create_example_pkg()
 
-# Create fake package
-usethis::create_package(pkg_path, open = FALSE)
-#> ✔ Setting active project to '/tmp/RtmprzMcDg/pkg.2b822dec9ea8'
-#> ✔ Creating 'R/'
-#> ✔ Writing 'DESCRIPTION'
-#> ✔ Writing 'NAMESPACE'
-#> ✔ Setting active project to '<no active project>'
+# Find exported functions missing @return / documented internals missing @noRd
+audit_tags(pkg)
 
-# Create function no visible global variables and missing documented functions
-cat("
-#' Function
-#' @importFrom dplyr filter
-#' @export
-my_fun <- function() {
-data %>%
-filter(col == 3) %>%
-mutate(new_col = 1) %>%
-ggplot() +
-  aes(x, y, colour = new_col) +
-  geom_point()
-}
+# Surface globals to declare (slow: runs R CMD check under the hood)
+audit_globals(pkg)
 
-#' Function not exported but with doc
-my_not_exported_doc <- function() {
-  message('Not exported but with title, should have @noRd')
-}
-", file = file.path(pkg_path, "R", "function.R"))
+# Then either print the globalVariables() block or write it to R/globals.R
+fix_globals(pkg)
+fix_globals(pkg, write = TRUE)
 
-attachment::att_amend_desc(path = pkg_path)
-#> Saving attachment parameters to yaml config file
-#> Updating pkg.2b822dec9ea8 documentation
-#> ℹ Loading pkg.2b822dec9ea8Writing ']8;;file:///tmp/RtmprzMcDg/pkg.2b822dec9ea8/NAMESPACENAMESPACE]8;;'Writing ']8;;file:///tmp/RtmprzMcDg/pkg.2b822dec9ea8/NAMESPACENAMESPACE]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_fun')my_fun.Rd]8;;'Writing ']8;;ide:run:pkgload::dev_help('my_not_exported_doc')my_not_exported_doc.Rd]8;;'ℹ Loading pkg.2b822dec9ea8[+] 1 package(s) added: dplyr.
+# Find non-ASCII characters across R/, tests/, vignettes/, man/, DESCRIPTION
+audit_ascii(pkg)
 
-# Files of the package
-fs::dir_tree(pkg_path, recurse = TRUE)
+# Rewrite them CRAN-cleanly (escape literals, transliterate comments).
+# Dry-run by default — pass dry_run = FALSE to apply.
+fix_ascii(pkg, dry_run = FALSE)
 ```
 
-- Find missing `@return` and find missing `@noRd` for not exported
-  function with documentation
-
-``` r
-find_missing_tags(pkg_path)
-#> ℹ Loading pkg.2b822dec9ea8
-#> Problem: Missing or empty return value for exported functions: my_fun
-#> 
-#> 
-#> 
-#> Problem: Doc available but need to choose between `@export` or `@noRd`: my_not_exported_doc
-#> 
-#> 
-#> 
-#> ℹ Loading pkg.2b822dec9ea8
-#> $package_doc
-#> # A tibble: 0 × 0
-#> 
-#> $data
-#> # A tibble: 0 × 0
-#> 
-#> $functions
-#> # A tibble: 2 × 11
-#>      id filename   topic has_e…¹ has_r…² retur…³ has_n…⁴ rdnam…⁵ not_e…⁶ test_…⁷
-#>   <int> <chr>      <chr> <lgl>   <lgl>   <chr>   <lgl>   <chr>   <lgl>   <chr>  
-#> 1     1 function.R my_f… TRUE    FALSE   ""      FALSE   my_fun  FALSE   not_ok 
-#> 2     2 function.R my_n… FALSE   FALSE   ""      FALSE   my_not… FALSE   ok     
-#> # … with 1 more variable: test_has_export_or_has_nord <chr>, and abbreviated
-#> #   variable names ¹​has_export, ²​has_return, ³​return_value, ⁴​has_nord,
-#> #   ⁵​rdname_value, ⁶​not_empty_return_value, ⁷​test_has_export_and_return
-```
-
-- Get global variables
-
-``` r
-globals <- get_no_visible(pkg_path, quiet = TRUE)
-globals
-#> $globalVariables
-#> # A tibble: 4 × 7
-#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
-#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible binding for … -       my_f… FALSE   TRUE    data    " impo…
-#> 2 my_fun: no visible binding for … -       my_f… FALSE   TRUE    x        <NA>  
-#> 3 my_fun: no visible binding for … -       my_f… FALSE   TRUE    y        <NA>  
-#> 4 my_fun: no visible binding for … -       my_f… FALSE   TRUE    new_col  <NA>  
-#> # … with abbreviated variable names ¹​filepath, ²​is_function,
-#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
-#> 
-#> $functions
-#> # A tibble: 5 × 7
-#>   notes                            filep…¹ fun   is_fu…² is_gl…³ varia…⁴ propo…⁵
-#>   <chr>                            <chr>   <chr> <lgl>   <lgl>   <chr>   <chr>  
-#> 1 my_fun: no visible global funct… -       my_f… TRUE    FALSE   %>%     <NA>   
-#> 2 my_fun: no visible global funct… -       my_f… TRUE    FALSE   mutate  <NA>   
-#> 3 my_fun: no visible global funct… -       my_f… TRUE    FALSE   ggplot  <NA>   
-#> 4 my_fun: no visible global funct… -       my_f… TRUE    FALSE   aes     <NA>   
-#> 5 my_fun: no visible global funct… -       my_f… TRUE    FALSE   geom_p… <NA>   
-#> # … with abbreviated variable names ¹​filepath, ²​is_function,
-#> #   ³​is_global_variable, ⁴​variable, ⁵​proposed
-```
-
-- Print globals to copy-paste
-
-``` r
-print_globals(globals)
-#> --- Functions to add in NAMESPACE (with @importFrom ?) ---
-#> 
-#> my_fun: %>%, aes, geom_point, ggplot, mutate
-#> 
-#> --- Potential GlobalVariables ---
-#> -- code to copy to your R/globals.R file --
-#> 
-#> globalVariables(unique(c(
-#> # my_fun: 
-#> "data", "new_col", "x", "y"
-#> )))
-```
-
-- Store the output of `print_globals()` in package using
-  `usethis::use_r("globals")`. Note that you can also transform all
-  these variables with `.data[[variable]]`
-
-### Experimental: Check that the user space is clean after checks
-
-Have you faced a note on CRAN about non-standard things in the check
-directory ?
-
-    Check: for non-standard things in the check directory
-    Result: NOTE
-        Found the following files/directories:
-         ‘extrapackage’ 
-
-Maybe you do not understand where these files came from.  
-Then, you can run `check_clean_userspace()` in your package directory to
-detect every files that you created during the check.  
-They could be issued from examples, tests or vignettes:
-`check_clean_userspace()` will tell you.
-
-``` r
-check_clean_userspace()
-```
-
-    #> Package: checkpackage
-    #> Title: What the Package Does (One Line, Title Case)
-    #> Version: 0.0.0.9000
-    #> Authors@R (parsed):
-    #>     * First Last <first.last@example.com> [aut, cre] (YOUR-ORCID-ID)
-    #> Description: What the package does (one paragraph).
-    #> License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    #>     license
-    #> Encoding: UTF-8
-    #> Roxygen: list(markdown = TRUE)
-    #> RoxygenNote: 7.2.2
-    #> ✔ | F W S  OK | Context
-    #> ⠏ |         0 | in_test                                                         
-    #> ══ Results ═════════════════════════════════════════════════════════════════════
-    #> [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ]
-    #> 
-    #> 🌈 Your tests are over the rainbow 🌈
-    #> ── Running 4 example files ───────────────────────────────────── checkpackage ──
-    #> 
-    #> > text <- "in_example"
-    #> 
-    #> > file <- tempfile("in_example")
-    #> 
-    #> > cat(text, file = file)
-    #> Warning in check_clean_userspace(pkg = path, check_output = check_output): One
-    #> of the 'Run examples' .R file was created to run examples. You should not bother
-    #> about it
-    #> # A tibble: 5 × 4
-    #>   source       problem where                                        file        
-    #>   <chr>        <chr>   <chr>                                        <chr>       
-    #> 1 Unit tests   added   /tmp/RtmprzMcDg/pkg-2b82ce31126/checkpackage /tmp/Rtmprz…
-    #> 2 Unit tests   added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
-    #> 3 Run examples added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
-    #> 4 Run examples added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
-    #> 5 Full check   added   /tmp/RtmprzMcDg                              /tmp/Rtmprz…
-
-### Experimental: Check as CRAN with CRAN global variables
-
-Use the exploration of CRAN scripts by the RConsortium to check a
-package as CRAN does it with their env. variables. See
-<https://github.com/RConsortium/r-repositories-wg/issues/17> for more
-details.
-
-``` r
-# Check the current directory
-check_as_cran()
-```
+For the full walkthrough per issue category, see the vignettes on the
+pkgdown site.
 
 ## Code of Conduct
 
