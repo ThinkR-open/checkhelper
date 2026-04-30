@@ -7,7 +7,10 @@
 
 #' Deprecated: use [audit_ascii()] instead
 #' @keywords internal
-#' @inheritParams audit_ascii
+#' @param path Path to the package to scan.
+#' @param scope Subdirectories / files to scan, relative to `path`.
+#' @param ignore_ext Extensions to skip (binary assets, snapshots).
+#' @param size_limit Skip files larger than this many bytes.
 #' @return See [audit_ascii()].
 #' @export
 find_nonascii_files <- function(path = ".",
@@ -32,7 +35,11 @@ find_nonascii_files <- function(path = ".",
 
 #' Deprecated: use [fix_ascii()] instead
 #' @keywords internal
-#' @inheritParams fix_ascii
+#' @param path Path to the package to rewrite.
+#' @param scope Subdirectories to rewrite.
+#' @param strategy Rewrite strategy (see [asciify_r_source()]).
+#' @param identifiers What to do when a non-ASCII identifier is found.
+#' @param dry_run If `TRUE` (default), only report what would change.
 #' @return See [fix_ascii()].
 #' @export
 asciify_pkg <- function(path = ".",

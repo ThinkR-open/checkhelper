@@ -13,6 +13,8 @@ asciify_pkg(
 )
 }
 \arguments{
+\item{path}{Path to the package to rewrite.}
+
 \item{scope}{Subdirectories to rewrite.}
 
 \item{strategy}{Rewrite strategy (see \code{\link[=asciify_r_source]{asciify_r_source()}}).}

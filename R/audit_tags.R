@@ -393,8 +393,8 @@ topic_block_returns <- function(topic_blocks) {
 #' Aliases with `@rdname X` whose canonical doc is `NULL` (a topic block)
 #' should not be reported as missing a return tag.
 #'
-#' @param res joined tibble produced by [set_correct_return_to_alias()].
-#' @param topic_returns named character vector from [topic_block_returns()].
+#' @param res joined tibble produced by `set_correct_return_to_alias()`.
+#' @param topic_returns named character vector from `topic_block_returns()`.
 #' @return updated tibble.
 #' @noRd
 apply_topic_block_returns <- function(res, topic_returns) {

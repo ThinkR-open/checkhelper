@@ -1,3 +1,9 @@
+# File-level rcmdcheck calls below leak artefacts into tempdir() that
+# break downstream tests asserting tempdir snapshots (notably
+# test-check_clean_userspace.R). Snapshot here, defer cleanup at end of
+# this file's tests.
+local_tempdir_clean()
+
 # Warnings are ok with new version o
 path <- suppressWarnings(create_example_pkg())
 

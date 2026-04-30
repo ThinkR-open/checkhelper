@@ -12,7 +12,9 @@ find_nonascii_files(
 )
 }
 \arguments{
-\item{scope}{Character vector of subdirectories / files to scan.}
+\item{path}{Path to the package to scan.}
+
+\item{scope}{Subdirectories / files to scan, relative to \code{path}.}
 
 \item{ignore_ext}{Extensions to skip (binary assets, snapshots).}
 

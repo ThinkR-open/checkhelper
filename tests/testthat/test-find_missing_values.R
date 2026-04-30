@@ -1,3 +1,7 @@
+# find_missing_tags drives roxygen / pkgload writes; cordon those off
+# from downstream tempdir-snapshot tests.
+local_tempdir_clean()
+
 path <- suppressWarnings(create_example_pkg())
 
 test_that("find_missing_tags works", {

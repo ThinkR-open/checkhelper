@@ -76,9 +76,9 @@ isTRUE_each <- function(x) {
 
 #' Re-extract the literal source of a token from the original text.
 #'
-#' Workaround for getParseData()'s STR_CONST-text truncation: it falls back
-#' to a "[NNN chars quoted with 'x']" placeholder for long literals,
-#' regardless of `keep.source.maxchars`.
+#' Workaround for getParseData()'s STR_CONST-text truncation: it falls
+#' back to a `"\[NNN chars quoted with 'x'\]"` placeholder for long
+#' literals, regardless of `keep.source.maxchars`.
 #'
 #' @param lines source already split on `\n` (passed in once by
 #'   [find_nonascii_tokens()] to avoid an O(n_tokens) re-split).

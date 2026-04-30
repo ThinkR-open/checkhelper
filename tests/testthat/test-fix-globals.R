@@ -15,3 +15,25 @@ test_that("fix_globals(write = FALSE) emits a message and does not modify R/glob
   after_exists <- file.exists(globals_file)
   expect_equal(before_exists, after_exists)
 })
+
+test_that("fix_globals(write = TRUE) writes a parseable R/globals.R", {
+  # Pre-fix: the function wrote `printed[["liste_globals"]]` which starts
+  # with a banner header `--- Potential GlobalVariables ---`, breaking
+  # the resulting file. Pin the contract: the file must parse as R, and
+  # it must contain the expected globalVariables(...) call.
+  skip_on_cran()
+  local_tempdir_clean()
+  path <- suppressWarnings(create_example_pkg())
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
+
+  out <- suppressWarnings(suppressMessages(fix_globals(path, write = TRUE)))
+
+  expect_identical(out, file.path(path, "R", "globals.R"))
+  expect_true(file.exists(out))
+  expect_silent(parse(file = out))
+
+  written <- readLines(out)
+  expect_true(any(grepl("globalVariables\\s*\\(", written)))
+  expect_false(any(grepl("^---", written)),
+               info = "no banner header should land in the source file")
+})

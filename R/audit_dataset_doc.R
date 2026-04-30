@@ -128,7 +128,8 @@ fix_dataset_doc <- function(name,
   }
   dataset <- get(load(file))
   if (!is.data.frame(dataset)) {
-    "The object stored in the Rda file must be a data.frame."
+    stop("The object stored in the Rda file must be a data.frame.",
+         call. = FALSE)
   }
   info <- lapply(names(dataset), function(x) {
     list(name = x, class = class(dataset[[x]]))

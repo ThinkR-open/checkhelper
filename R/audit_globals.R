@@ -76,7 +76,7 @@ fix_globals <- function(pkg = ".", write = FALSE) {
     dir.create(dirname(globals_path), recursive = TRUE)
   }
 
-  writeLines(printed[["liste_globals"]], globals_path)
+  writeLines(printed[["liste_globals_code"]], globals_path)
   cli::cli_inform(c(
     "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}}."
   ))
@@ -210,7 +210,7 @@ fix_globals <- function(pkg = ".", write = FALSE) {
     paste(., collapse = "") %>%
     paste0("--- Functions to add in NAMESPACE (with @importFrom ?) ---\n\n", .)
 
-  liste_globals <- globals[["globalVariables"]] %>%
+  globals_body <- globals[["globalVariables"]] %>%
     group_by(fun) %>%
     summarise(
       text = paste(
@@ -225,19 +225,29 @@ fix_globals <- function(pkg = ".", write = FALSE) {
       text = paste0("# ", fun, ": \n", text)
     ) %>%
     pull(text) %>%
-    paste(., collapse = ", \n") %>%
-    paste0(
-      "--- Potential GlobalVariables ---\n",
-      "-- code to copy to your R/globals.R file --\n\n",
-      "globalVariables(unique(c(\n", ., "\n)))"
-    )
+    paste(., collapse = ", \n")
+
+  # File-clean payload: a single `globalVariables(...)` call. Safe to
+  # write verbatim into R/globals.R.
+  liste_globals_code <- paste0(
+    "globalVariables(unique(c(\n", globals_body, "\n)))"
+  )
+
+  # Display payload: same code wrapped in human-readable banners. Used
+  # when `fix_globals(write = FALSE)` prints to the console.
+  liste_globals <- paste0(
+    "--- Potential GlobalVariables ---\n",
+    "-- code to copy to your R/globals.R file --\n\n",
+    liste_globals_code
+  )
 
   if (isTRUE(message)) {
     message(glue(liste_funs, "\n", liste_globals))
   } else {
     list(
       liste_funs = liste_funs,
-      liste_globals = liste_globals
+      liste_globals = liste_globals,
+      liste_globals_code = liste_globals_code
     )
   }
 }
