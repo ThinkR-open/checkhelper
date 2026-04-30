@@ -80,12 +80,12 @@ fs::dir_tree(pkg_path, recurse = TRUE)
 ## Avoid missing return value for exported functions
 
 CRAN does not like when exported functions do not have returned value.
-Using `find_missing_tags()`, you can detect exported functions with missing or empty `@return` tag
+Using `audit_tags()`, you can detect exported functions with missing or empty `@return` tag
 
 
 
 ```r
-find_missing_tags(pkg_path)
+audit_tags(pkg_path)
 ```
 
 ```
@@ -118,15 +118,15 @@ find_missing_tags(pkg_path)
 
 ## Deal with check outputs
 
-- `get_no_visible()` runs the checks and extract no visible global variables and missing documented functions
-- `print_globals()` proposes a template to add missing global variables in a `globals.R` file. 
+- `audit_globals()` runs the checks and extracts no visible global variables and missing documented functions
+- `fix_globals()` proposes a template to add missing global variables in a `globals.R` file (or writes it directly with `write = TRUE`).
 Note that you can also transform all these variables with `.data[[variable]]`
 
 
 
 ```r
 # Get globals
-globals <- get_no_visible(pkg_path, quiet = TRUE)
+globals <- audit_globals(pkg_path)
 globals
 ```
 
@@ -157,24 +157,25 @@ globals
 
 ```r
 # Print globals to copy-paste
-print_globals(globals)
+fix_globals(pkg_path)
 ```
 
 ```
 #> --- Functions to add in NAMESPACE (with @importFrom ?) ---
-#> 
+#>
 #> my_fun: %>%, aes, geom_point, ggplot, mutate
-#> 
+#>
 #> --- Potential GlobalVariables ---
 #> -- code to copy to your R/globals.R file --
-#> 
-#> globalVariables(unique(c(
-#> # my_fun: 
+#>
+#> utils::globalVariables(unique(c(
+#> # my_fun:
 #> "data", "new_col", "x", "y"
 #> )))
 ```
 
 ```r
-# Store in package using usethis::use_r("globals")
+# Or write the block directly to <pkg>/R/globals.R
+fix_globals(pkg_path, write = TRUE)
 ```
 

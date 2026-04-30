@@ -32,16 +32,16 @@ Result: NOTE
      ‘extrapackage’ 
 ```
 
-Maybe you do not understand where these files came from.  
-Then, you can run `check_clean_userspace()` in your package directory to detect every files that you created during the check.  
-They could be issued from examples, tests or vignettes: `check_clean_userspace()` will tell you.
+Maybe you do not understand where these files came from.
+Then, you can run `audit_userspace()` in your package directory to detect every files that you created during the check.
+They could be issued from examples, tests or vignettes: `audit_userspace()` will tell you.
 
 
 
-```{r examples-check_clean_userspace, eval = FALSE}
+```{r examples-audit_userspace, eval = FALSE}
 #' \dontrun{
 # This runs a check of the current package
-all_files <- check_clean_userspace()
+all_files <- audit_userspace()
 all_files
 #' }
 ```
