@@ -229,10 +229,10 @@ fix_globals <- function(pkg = ".", write = FALSE) {
     pull(text) %>%
     paste(., collapse = ", \n")
 
-  # File-clean payload: a single `globalVariables(...)` call. Safe to
-  # write verbatim into R/globals.R.
+  # File-clean payload: a single `utils::globalVariables(...)` call.
+  # Safe to write verbatim into R/globals.R.
   liste_globals_code <- paste0(
-    "globalVariables(unique(c(\n", globals_body, "\n)))"
+    "utils::globalVariables(unique(c(\n", globals_body, "\n)))"
   )
 
   # Display payload: same code wrapped in human-readable banners. Used
