@@ -114,15 +114,14 @@ fix_dataset_doc <- function(name,
 
 # Internal implementations ---------------------------------------------------
 
-#' Get information of an .rda file stored under data/.
-#'
-#' @noRd
 #' Escape characters that have special meaning in a regex.
 #' @noRd
 escape_regex <- function(x) {
   gsub("([][{}()+*^$|\\\\?.\\-])", "\\\\\\1", x, perl = TRUE)
 }
 
+#' Get information of an .rda file stored under data/.
+#' @noRd
 .get_data_info <- function(name, description, source) {
   if (!dir.exists("data")) {
     stop("'data/' folder does not exist, hence there is no data file to look for.")
@@ -131,8 +130,9 @@ escape_regex <- function(x) {
   # regex metacharacters (e.g. `iris.versicolor`) doesn't mis-match.
   name_re <- escape_regex(name)
   file <- list.files("data",
-    pattern = glue::glue("^{name_re}\\.(r|R).+$"),
-    full.names = TRUE
+    pattern = glue::glue("^{name_re}\\.(rda|RData|rdata)$"),
+    full.names = TRUE,
+    ignore.case = TRUE
   )
   if (purrr::is_empty(file)) {
     stop("Data object was not found. It must be the name of one .rda in your 'data/' directory, without extension")

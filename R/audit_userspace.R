@@ -117,7 +117,7 @@ audit_userspace <- function(pkg = ".",
         )
       )
 
-    message("Some files were still in tests/testtthat dir after rcmdcheck: ", paste(still_files, collapse = ", "))
+    message("Some files were still in tests/testthat dir after rcmdcheck: ", paste(still_files, collapse = ", "))
   }
 
   local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)

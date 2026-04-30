@@ -24,7 +24,10 @@ check_as_cran(
 
 \item{Ncpus}{Number of CPUs.}
 
-\item{as_command}{Run as Linux command line instead of in R.}
+\item{as_command}{Run as Linux command line instead of in R.
+\strong{Currently a no-op}: the \code{as_command = TRUE} branch only sets a
+local variable and returns invisibly without invoking the check.
+Keep \code{FALSE} (default) until that branch is implemented.}
 
 \item{clean_before}{Wipe \code{check_output} before running.}
 

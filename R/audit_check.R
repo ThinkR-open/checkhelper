@@ -9,6 +9,9 @@
 #' @param scratch Where to store temporary files.
 #' @param Ncpus Number of CPUs.
 #' @param as_command Run as Linux command line instead of in R.
+#'   **Currently a no-op**: the `as_command = TRUE` branch only sets a
+#'   local variable and returns invisibly without invoking the check.
+#'   Keep `FALSE` (default) until that branch is implemented.
 #' @param clean_before Wipe `check_output` before running.
 #' @param open Open the check directory at the end.
 #' @param repos Repositories used for dependency resolution.
