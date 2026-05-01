@@ -21,8 +21,8 @@ library(checkhelper)
 
 Once the dev-time audits described in
 `vignette("auditing-an-r-package", package = "checkhelper")` are clean,
-two heavier audits remain. They both have their **own pipeline** —
-they cannot reuse the shared `chk` object — and you typically run
+two heavier audits remain. They both have their **own pipeline** -
+they cannot reuse the shared `chk` object - and you typically run
 them last, just before `devtools::release()`.
 
 | Audit                | What it does                                           | When to run            |
@@ -30,7 +30,7 @@ them last, just before `devtools::release()`.
 | `audit_check()`      | `R CMD check` with the full CRAN incoming environment  | final gate             |
 | `audit_userspace()`  | Detects files left behind by tests / examples / vignettes | before tagging a release |
 
-## `audit_check()` — check with CRAN settings
+## `audit_check()` - check with CRAN settings
 
 `R CMD check` on your machine and `R CMD check` on CRAN's machines do
 **not** see the same environment: CRAN sets a long list of env vars
@@ -39,7 +39,7 @@ mirrors those settings (sourced from
 <https://github.com/r-devel/r-dev-web/tree/master/CRAN/>) so a check
 that is green locally has the highest chance of being green on CRAN.
 
-It is heavier than a plain `rcmdcheck::rcmdcheck()` — use it as the
+It is heavier than a plain `rcmdcheck::rcmdcheck()` - use it as the
 **final gate**, not as the audit driver during development.
 
 ```{r}
@@ -59,7 +59,7 @@ The settings are originally tuned for the Linux pretest, so
 `audit_check()` will run on any OS but the env it reproduces is the
 Linux one.
 
-## `audit_userspace()` — no files left after check
+## `audit_userspace()` - no files left after check
 
 CRAN flags packages whose tests, examples or vignettes leak files
 into the user space:
@@ -75,7 +75,7 @@ Result: NOTE
 full check, takes file-system snapshots of the **package directory**
 and **`tempdir()`** between each step, and lists every file that
 appeared in those two locations outside the check directory. (Files
-created elsewhere — `~/.cache`, `~/.config`, etc. — are out of
+created elsewhere - `~/.cache`, `~/.config`, etc. - are out of
 scope; CRAN's "non-standard things in the check directory" NOTE only
 catches package-local leaks, which is exactly what this audit
 targets.)

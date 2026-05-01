@@ -4,6 +4,12 @@
 #' @param path Path where to store the example package
 #' @param with_functions Logical. Whether there will be functions or not (with notes)
 #' @param with_extra_notes Logical. Whether there are extra notes or not
+#' @param with_nonascii Logical. If `TRUE`, copy a fixture file containing
+#'   non-ASCII characters (French comments, string literals, message text)
+#'   so `audit_ascii()` / `fix_ascii()` have something to surface.
+#' @param with_undocumented_data Logical. If `TRUE`, save a small
+#'   `data.frame` to `data/` *without* writing a roxygen block for it,
+#'   so `audit_dataset_doc()` flags it as undocumented.
 #' @rdname create_example_pkg
 #' @export
 #' @return Path where the example package is stored.
@@ -11,7 +17,9 @@
 #' create_example_pkg()
 create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
                                with_functions = TRUE,
-                               with_extra_notes = FALSE) {
+                               with_extra_notes = FALSE,
+                               with_nonascii = FALSE,
+                               with_undocumented_data = FALSE) {
   if (!requireNamespace("usethis", quietly = TRUE) |
     !requireNamespace("attachment", quietly = TRUE)) {
     stop("Packages 'usethis' and 'attachment' are required to use this function in our examples and tests.")
@@ -48,6 +56,23 @@ create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
       system.file("bad-function-examples.R", package = "checkhelper"),
       file.path(path, "checkpackage", "R", "function.R")
     )
+  }
+
+  if (isTRUE(with_nonascii)) {
+    file.copy(
+      system.file("nonascii-examples.R", package = "checkhelper"),
+      file.path(path, "checkpackage", "R", "nonascii.R")
+    )
+  }
+
+  if (isTRUE(with_undocumented_data)) {
+    data_dir <- file.path(path, "checkpackage", "data")
+    dir.create(data_dir, showWarnings = FALSE)
+    demo_dataset <- data.frame(
+      id = seq_len(3),
+      value = c(1.1, 2.2, 3.3)
+    )
+    save(demo_dataset, file = file.path(data_dir, "demo_dataset.rda"))
   }
 
   path <- file.path(path, "checkpackage")
