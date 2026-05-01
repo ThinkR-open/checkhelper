@@ -1,5 +1,19 @@
 # checkhelper (development version)
 
+## `create_example_pkg()` covers every audit
+
+- `create_example_pkg()` gains two opt-in flags so the same one-line
+  fixture can demonstrate every audit:
+  - `with_nonascii = TRUE` copies a French-flavoured `R/nonascii.R`
+    (accents in comments + string literals + a `message()` body) so
+    `audit_ascii()` and `fix_ascii()` have something to surface.
+  - `with_undocumented_data = TRUE` writes a tiny
+    `data/demo_dataset.rda` without a roxygen block so
+    `audit_dataset_doc()` flags it as undocumented.
+- Both default to `FALSE` to keep the historic behaviour for tests.
+  The `README` Quick start and the *"Auditing an R package"* vignette
+  now activate them so a copy-paste demo trips every audit.
+
 ## Share one R CMD check across audits
 
 - `audit_globals()` and `fix_globals()` gain a `checks =` argument
@@ -22,7 +36,7 @@
 - `README` Quick start now uses the shared-`chk` workflow as the
   default example.
 
-## API refresh — `audit_*` / `fix_*` façades
+## API refresh - `audit_*` / `fix_*` façades
 
 The package now exposes a uniform CRAN-oriented API: each category of
 `R CMD check` issue gets one `audit_*` (read-only) function and, when
@@ -32,10 +46,10 @@ an automated fix is safe, one `fix_*` (action) function. Type
 | CRAN issue | Audit | Fix |
 |---|---|---|
 | Globals to declare (`no visible binding`) | `audit_globals()` | `fix_globals()` |
-| Missing roxygen tags | `audit_tags()` | — |
+| Missing roxygen tags | `audit_tags()` | - |
 | Non-ASCII characters | `audit_ascii()` | `fix_ascii()` |
-| Files left in user space | `audit_userspace()` | — |
-| `R CMD check` with CRAN settings | `audit_check()` | — |
+| Files left in user space | `audit_userspace()` | - |
+| `R CMD check` with CRAN settings | `audit_check()` | - |
 | Undocumented datasets | `audit_dataset_doc()` | `fix_dataset_doc()` |
 
 The 10 historic functions remain callable but emit
