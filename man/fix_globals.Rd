@@ -4,7 +4,7 @@
 \alias{fix_globals}
 \title{Print or write the globalVariables block to declare}
 \usage{
-fix_globals(pkg = ".", write = FALSE)
+fix_globals(pkg = ".", write = FALSE, checks = NULL)
 }
 \arguments{
 \item{pkg}{Path to the package.}
@@ -12,6 +12,11 @@ fix_globals(pkg = ".", write = FALSE)
 \item{write}{If \code{TRUE}, \strong{overwrite} \verb{<pkg>/R/globals.R} with a
 single \code{globalVariables(...)} call. Default \code{FALSE} (print the
 block to the console for manual paste).}
+
+\item{checks}{Optional. A pre-computed \code{\link[rcmdcheck:rcmdcheck]{rcmdcheck::rcmdcheck()}} result
+(a list with at least a \code{notes} element). When supplied, \code{fix_globals()}
+reuses it instead of re-running \verb{R CMD check} on \code{pkg}. Useful to share
+a single check between \code{\link[=audit_globals]{audit_globals()}} and \code{\link[=fix_globals]{fix_globals()}}.}
 }
 \value{
 Invisibly, the path written (when \code{write = TRUE}) or \code{NULL}.
@@ -26,6 +31,11 @@ Convenience wrapper that runs the audit, then either prints the
 pkg <- create_example_pkg()
 fix_globals(pkg)
 fix_globals(pkg, write = TRUE)
+
+# Reuse a single R CMD check across both audit and fix:
+chk <- rcmdcheck::rcmdcheck(pkg)
+audit_globals(pkg, checks = chk)
+fix_globals(pkg, checks = chk, write = TRUE)
 }
 }
 \seealso{

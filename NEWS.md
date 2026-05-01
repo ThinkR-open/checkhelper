@@ -1,5 +1,14 @@
 # checkhelper (development version)
 
+## Share one R CMD check across audits
+
+- `audit_globals()` and `fix_globals()` gain a `checks =` argument
+  that accepts a pre-computed `rcmdcheck::rcmdcheck()` result. When
+  supplied, they skip running `R CMD check` and reuse the existing
+  output. Lets you run the check **once** and feed both functions
+  during a full package audit. See the new vignette
+  *"Auditing an R package you have just received"*.
+
 ## API refresh — `audit_*` / `fix_*` façades
 
 The package now exposes a uniform CRAN-oriented API: each category of
