@@ -8,7 +8,7 @@ if (!dir.exists(check_dir)) {
 lib_dir <- "../lib/"
 
 user <- Sys.info()["user"]
-if(user == "unknown") user <- Sys.getenv("LOGNAME")
+if(user == "unknown") { user <- Sys.getenv("LOGNAME") }
 Sys.setenv("R_USER_DATA_DIR" =
                sprintf("/tmp/check-CRAN-incoming-%s/data", user),
            "R_USER_CACHE_DIR" =
@@ -37,8 +37,9 @@ Sys.setenv("OPENBLAS_NUM_THREADS" = 1)
 Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = "false",
            "_R_CHECK_PACKAGE_DEPENDS_IGNORE_MISSING_ENHANCES_" = "true")
 
-if(dir.exists(path <- file.path(normalizePath("~"), "tmp", "scratch")))
-    Sys.setenv("TMPDIR" = path)
+if (dir.exists(path <- file.path(normalizePath("~"), "tmp", "scratch"))) {
+  Sys.setenv("TMPDIR" = path)
+}
 
 check_args <- character()               # No longer "--as-cran" ...
 update_check_dir <- TRUE
@@ -231,10 +232,11 @@ check_env <-
            "_R_CHECK_CRAN_INCOMING_USE_ASPELL_=true",
            "_R_CHECK_CRAN_INCOMING_CHECK_FILE_URIS_=true",
            "_R_CHECK_DATALIST_=true",
-           if(run_CRAN_incoming_feasibility_checks)
-               c("_R_CHECK_LENGTH_1_CONDITION_=package:_R_CHECK_PACKAGE_NAME_,abort,verbose",
-                 ## "_R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,abort,verbose",
-                 character()),
+           if (run_CRAN_incoming_feasibility_checks) {
+             c("_R_CHECK_LENGTH_1_CONDITION_=package:_R_CHECK_PACKAGE_NAME_,abort,verbose",
+               ## "_R_CHECK_LENGTH_1_LOGIC2_=package:_R_CHECK_PACKAGE_NAME_,abort,verbose",
+               character())
+           },
            ## "_R_CHECK_ORPHANED_=true",
            "_R_CHECK_PACKAGE_DEPENDS_IGNORE_MISSING_ENHANCES_=true",
            "_R_CHECK_PACKAGES_USED_CRAN_INCOMING_NOTES_=true",
@@ -259,8 +261,9 @@ check_env <-
            character())
          )
 
-if(!is.null(reverse))
-    reverse$repos <- getOption("repos")["CRAN"]
+if (!is.null(reverse)) {
+  reverse$repos <- getOption("repos")["CRAN"]
+}
 
 pfiles <-
     tools::check_packages_in_dir(check_dir,
