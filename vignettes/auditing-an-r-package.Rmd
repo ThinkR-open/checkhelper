@@ -117,10 +117,12 @@ audit_tags(pkg)
 ### Non-ASCII characters
 
 `audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/` and
-DESCRIPTION via the parser AST and reports every non-ASCII token
-(string literal, comment, identifier). `fix_ascii()` rewrites them in
-place — string literals become `\uXXXX` escapes, comments and roxygen
-get `Latin-ASCII` transliteration. **It dry-runs by default**:
+DESCRIPTION line-by-line and reports every line containing
+non-ASCII characters (columns: `file`, `line`, `text`, `n_tokens`).
+`fix_ascii()` then rewrites them — using the parser AST so each
+token is rewritten per its context: string literals become `\uXXXX`
+escapes, comments and roxygen get `Latin-ASCII` transliteration.
+**It dry-runs by default**:
 
 ```{r}
 audit_ascii(pkg)

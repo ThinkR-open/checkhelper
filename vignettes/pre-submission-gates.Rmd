@@ -72,8 +72,13 @@ Result: NOTE
 ```
 
 `audit_userspace()` runs the package's tests, examples, vignettes and
-full check, snapshots the file system between each step, and lists
-every file that was created outside the check directory:
+full check, takes file-system snapshots of the **package directory**
+and **`tempdir()`** between each step, and lists every file that
+appeared in those two locations outside the check directory. (Files
+created elsewhere — `~/.cache`, `~/.config`, etc. — are out of
+scope; CRAN's "non-standard things in the check directory" NOTE only
+catches package-local leaks, which is exactly what this audit
+targets.)
 
 ```{r}
 leaks <- audit_userspace(pkg = ".")
