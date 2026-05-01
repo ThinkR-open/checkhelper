@@ -46,8 +46,13 @@ audit_globals(pkg, checks = chk)
 
 # 4. Apply the safe fixes.
 fix_globals(pkg, checks = chk, write = TRUE)
-fix_ascii(pkg, dry_run = TRUE)         # review first
+
+# Preview before applying: fix_ascii() returns invisibly, so capture
+# it to see which files would change.
+preview <- fix_ascii(pkg, dry_run = TRUE)
+preview[preview$changed, ]
 fix_ascii(pkg, dry_run = FALSE)        # then apply
+
 fix_dataset_doc("my_data", pkg = pkg,
                 description = "Description of my_data",
                 source = "Internal")        # one call per undocumented dataset
@@ -120,8 +125,11 @@ get `Latin-ASCII` transliteration. **It dry-runs by default**:
 ```{r}
 audit_ascii(pkg)
 
-# Always preview the diff first.
-fix_ascii(pkg, dry_run = TRUE)
+# Always preview which files would change. fix_ascii() returns
+# invisibly — capture the result to inspect per-file detail
+# (path, changed, n_tokens, n_chars).
+preview <- fix_ascii(pkg, dry_run = TRUE)
+preview[preview$changed, ]
 
 # Apply when you've reviewed the proposed rewrite.
 fix_ascii(pkg, dry_run = FALSE)
