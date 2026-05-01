@@ -68,6 +68,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/auditing-an-r-package.html">Auditing an R package you have just received</a>
+    </li>
+    <li>
       <a href="articles/check-with-real-cran-settings.html">Check with real CRAN settings</a>
     </li>
     <li>
@@ -206,7 +209,29 @@
 <span><span class="co"># Rewrite them CRAN-cleanly (escape literals, transliterate comments).</span></span>
 <span><span class="co"># Dry-run by default — pass dry_run = FALSE to apply.</span></span>
 <span><span class="fu"><a href="reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>For the full walkthrough per issue category, see the vignettes on the pkgdown site.</p>
+</div>
+<div class="section level2">
+<h2 id="auditing-an-unknown-package--share-one-check-across-audits">Auditing an unknown package — share one check across audits<a class="anchor" aria-label="anchor" href="#auditing-an-unknown-package--share-one-check-across-audits"></a>
+</h2>
+<p><code><a href="reference/audit_globals.html">audit_globals()</a></code> and <code><a href="reference/fix_globals.html">fix_globals()</a></code> both need the output of <code>R CMD check</code>. To avoid running it twice, pass a pre-computed <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code> result via <code>checks =</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="st">"/path/to/the/package"</span></span>
+<span></span>
+<span><span class="co"># Run R CMD check ONCE.</span></span>
+<span><span class="va">chk</span> <span class="op">&lt;-</span> <span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span><span class="va">pkg</span>, args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Static audits — no check needed.</span></span>
+<span><span class="fu"><a href="reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Audits that consume the check — reuse `chk`.</span></span>
+<span><span class="fu"><a href="reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>,   checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Userspace audit has its own pipeline (tests + examples + vignettes + check).</span></span>
+<span><span class="fu"><a href="reference/audit_userspace.html">audit_userspace</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+<p>See the <strong>“Auditing an R package you have just received”</strong> vignette for the full walkthrough. The per-category walkthroughs live in the other vignettes on the pkgdown site.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>

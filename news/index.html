@@ -47,6 +47,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
+      <a href="../articles/auditing-an-r-package.html">Auditing an R package you have just received</a>
+    </li>
+    <li>
       <a href="../articles/check-with-real-cran-settings.html">Check with real CRAN settings</a>
     </li>
     <li>
@@ -83,6 +86,11 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
+<div class="section level3">
+<h3 id="share-one-r-cmd-check-across-audits-development-version">Share one R CMD check across audits<a class="anchor" aria-label="anchor" href="#share-one-r-cmd-check-across-audits-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/audit_globals.html">audit_globals()</a></code> and <code><a href="../reference/fix_globals.html">fix_globals()</a></code> gain a <code>checks =</code> argument that accepts a pre-computed <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code> result. When supplied, they skip running <code>R CMD check</code> and reuse the existing output. Lets you run the check <strong>once</strong> and feed both functions during a full package audit. See the new vignette <em>“Auditing an R package you have just received”</em>.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="api-refresh--audit_--fix_-façades-development-version">API refresh — <code>audit_*</code> / <code>fix_*</code> façades<a class="anchor" aria-label="anchor" href="#api-refresh--audit_--fix_-fa%C3%A7ades-development-version"></a></h3>
 <p>The package now exposes a uniform CRAN-oriented API: each category of <code>R CMD check</code> issue gets one <code>audit_*</code> (read-only) function and, when an automated fix is safe, one <code>fix_*</code> (action) function. Type <code>audit_&lt;TAB&gt;</code> or <code>fix_&lt;TAB&gt;</code> in RStudio to discover the surface.</p>
