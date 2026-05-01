@@ -69,13 +69,7 @@
       <a href="../articles/auditing-an-r-package.html">Auditing an R package you have just received</a>
     </li>
     <li>
-      <a href="../articles/check-with-real-cran-settings.html">Check with real CRAN settings</a>
-    </li>
-    <li>
-      <a href="../articles/deal-with-check-outputs.html">Deal with check outputs</a>
-    </li>
-    <li>
-      <a href="../articles/no-files-left-after-check.html">No files left after check</a>
+      <a href="../articles/pre-submission-gates.html">Pre-submission gates</a>
     </li>
   </ul>
 </li>
@@ -124,10 +118,14 @@ received</h1>
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span></code></pre></div>
-<p>This vignette walks through the practical sequence of commands when a
-colleague hands you an R package and asks “is this CRAN-ready?”. The
-goal is to surface every CRAN-blocking issue with the <strong>smallest
-possible number of <code>R CMD check</code> runs</strong>.</p>
+<p>This vignette is the canonical end-to-end walkthrough: a colleague
+hands you an R package and asks “is this CRAN-ready?”. The goal is to
+surface every CRAN-blocking issue with the <strong>smallest possible
+number of <code>R CMD check</code> runs</strong>, then apply the safe
+automatic fixes.</p>
+<p>For audits that have their own pipeline (full CRAN environment,
+file-system snapshots), see the companion vignette
+<code><a href="../articles/pre-submission-gates.html">vignette("pre-submission-gates", package = "checkhelper")</a></code>.</p>
 <div class="section level2">
 <h2 id="tldr-the-audit-script">TL;DR — the audit script<a class="anchor" aria-label="anchor" href="#tldr-the-audit-script"></a>
 </h2>
@@ -145,15 +143,18 @@ possible number of <code>R CMD check</code> runs</strong>.</p>
 <span><span class="co"># 3. Audits that need the check output — pass `chk` to skip a 2nd run.</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 4. Userspace audit (separate workflow: it runs tests + examples + check</span></span>
-<span><span class="co">#    with file-system snapshots between steps, can't reuse `chk`).</span></span>
-<span><span class="fu"><a href="../reference/audit_userspace.html">audit_userspace</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># 5. Apply the safe fixes.</span></span>
+<span><span class="co"># 4. Apply the safe fixes.</span></span>
 <span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>        <span class="co"># review first</span></span>
-<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>       <span class="co"># then apply</span></span>
-<span><span class="fu"><a href="../reference/fix_dataset_doc.html">fix_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span><span class="co"># Preview before applying: fix_ascii() returns invisibly, so capture</span></span>
+<span><span class="co"># it to see which files would change.</span></span>
+<span><span class="va">preview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">preview</span><span class="op">[</span><span class="va">preview</span><span class="op">$</span><span class="va">changed</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>        <span class="co"># then apply</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/fix_dataset_doc.html">fix_dataset_doc</a></span><span class="op">(</span><span class="st">"my_data"</span>, pkg <span class="op">=</span> <span class="va">pkg</span>,</span>
+<span>                description <span class="op">=</span> <span class="st">"Description of my_data"</span>,</span>
+<span>                source <span class="op">=</span> <span class="st">"Internal"</span><span class="op">)</span>        <span class="co"># one call per undocumented dataset</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="why-share-the-check-object">Why share the check object?<a class="anchor" aria-label="anchor" href="#why-share-the-check-object"></a>
@@ -224,26 +225,81 @@ reuse the result for the whole audit.</p>
 </table>
 </div>
 <div class="section level2">
-<h2 id="choosing-between-rcmdcheck-and-audit_check">Choosing between <code>rcmdcheck()</code> and
-<code>audit_check()</code><a class="anchor" aria-label="anchor" href="#choosing-between-rcmdcheck-and-audit_check"></a>
+<h2 id="per-issue-cheatsheet">Per-issue cheatsheet<a class="anchor" aria-label="anchor" href="#per-issue-cheatsheet"></a>
 </h2>
-<ul>
-<li>
-<code>rcmdcheck::rcmdcheck(pkg, args = "--as-cran")</code> — fast,
-returns the list shape that <code>audit_globals(checks = ...)</code>
-expects. Use it for the shared-check workflow above.</li>
-<li>
-<code>audit_check(pkg)</code> — runs the check with the full
-<strong>CRAN incoming</strong> environment (env vars, options, lib path
-mirrored from CRAN). Heavier and uses
-<code><a href="https://rdrr.io/r/tools/check_packages_in_dir.html" class="external-link">tools::check_packages_in_dir()</a></code> under the hood; use it as a
-final gate before submission, not as the audit driver.</li>
-</ul>
+<div class="section level3">
+<h3 id="globals-no-visible-binding">Globals (<code>no visible binding</code>)<a class="anchor" aria-label="anchor" href="#globals-no-visible-binding"></a>
+</h3>
+<p><code><a href="../reference/audit_globals.html">audit_globals()</a></code> returns a 2-element list
+(<code>globalVariables</code>, <code>functions</code>) of names CRAN
+flagged. <code>fix_globals(write = TRUE)</code> materializes them into
+<code>R/globals.R</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Without <code>write = TRUE</code>, <code><a href="../reference/fix_globals.html">fix_globals()</a></code> only
+prints the <code>utils::globalVariables(...)</code> block to
+copy-paste.</p>
+</div>
+<div class="section level3">
+<h3 id="missing-roxygen-tags">Missing roxygen tags<a class="anchor" aria-label="anchor" href="#missing-roxygen-tags"></a>
+</h3>
+<p><code><a href="../reference/audit_tags.html">audit_tags()</a></code> flags exported functions without
+<code>@return</code> and documented internals without
+<code>@noRd</code>. Read-only — no automatic fix because adding accurate
+<code>@return</code> text needs a human:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="non-ascii-characters">Non-ASCII characters<a class="anchor" aria-label="anchor" href="#non-ascii-characters"></a>
+</h3>
+<p><code><a href="../reference/audit_ascii.html">audit_ascii()</a></code> walks <code>R/</code>,
+<code>tests/</code>, <code>vignettes/</code>, <code>man/</code> and
+DESCRIPTION line-by-line and reports every line containing non-ASCII
+characters (columns: <code>file</code>, <code>line</code>,
+<code>text</code>, <code>n_tokens</code>). <code><a href="../reference/fix_ascii.html">fix_ascii()</a></code> then
+rewrites them — using the parser AST so each token is rewritten per its
+context: string literals become <code>\uXXXX</code> escapes, comments
+and roxygen get <code>Latin-ASCII</code> transliteration. <strong>It
+dry-runs by default</strong>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Always preview which files would change. fix_ascii() returns</span></span>
+<span><span class="co"># invisibly — capture the result to inspect per-file detail</span></span>
+<span><span class="co"># (path, changed, n_tokens, n_chars).</span></span>
+<span><span class="va">preview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">preview</span><span class="op">[</span><span class="va">preview</span><span class="op">$</span><span class="va">changed</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Apply when you've reviewed the proposed rewrite.</span></span>
+<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Identifiers with non-ASCII characters are refused by default
+(renaming would be a breaking change).</p>
+</div>
+<div class="section level3">
+<h3 id="undocumented-datasets">Undocumented datasets<a class="anchor" aria-label="anchor" href="#undocumented-datasets"></a>
+</h3>
+<p><code><a href="../reference/audit_dataset_doc.html">audit_dataset_doc()</a></code> lists every <code>data/*.rda</code>
+without a matching roxygen block under <code>R/</code>.
+<code><a href="../reference/fix_dataset_doc.html">fix_dataset_doc()</a></code> writes a documentation skeleton (one call
+per dataset, takes the dataset name):</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/fix_dataset_doc.html">fix_dataset_doc</a></span><span class="op">(</span><span class="st">"my_data"</span>,</span>
+<span>                pkg <span class="op">=</span> <span class="va">pkg</span>,</span>
+<span>                description <span class="op">=</span> <span class="st">"Description of my_data"</span>,</span>
+<span>                source <span class="op">=</span> <span class="st">"Internal"</span><span class="op">)</span></span></code></pre></div>
+<p>The skeleton is editable: you fill in the description / source /
+column-by-column comments by hand, then re-run
+<code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code>.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="minimal-end-to-end-on-a-fake-package">Minimal end-to-end on a fake package<a class="anchor" aria-label="anchor" href="#minimal-end-to-end-on-a-fake-package"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">chk</span> <span class="op">&lt;-</span> <span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span><span class="va">pkg</span>, args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span>
@@ -258,6 +314,23 @@ final gate before submission, not as the audit driver.</li>
 <p>After applying the fixes, re-run the check (the package state has
 changed, so a new <code>rcmdcheck()</code> is needed) and confirm 0 / 0
 / 0.</p>
+</div>
+<div class="section level2">
+<h2 id="next-step-pre-submission-gates">Next step: pre-submission gates<a class="anchor" aria-label="anchor" href="#next-step-pre-submission-gates"></a>
+</h2>
+<p>When the dev-time audits above are clean, run the heavier gates that
+have their own pipeline and <strong>cannot</strong> reuse
+<code>chk</code>:</p>
+<ul>
+<li>
+<code><a href="../reference/audit_check.html">audit_check()</a></code> — <code>R CMD check</code> with the full
+CRAN incoming environment.</li>
+<li>
+<code><a href="../reference/audit_userspace.html">audit_userspace()</a></code> — checks that tests / examples /
+vignettes leave no files behind.</li>
+</ul>
+<p>Both are documented in
+<code><a href="../articles/pre-submission-gates.html">vignette("pre-submission-gates", package = "checkhelper")</a></code>.</p>
 </div>
   </div>
 
