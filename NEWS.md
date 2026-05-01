@@ -1,5 +1,14 @@
 # checkhelper (development version)
 
+## Share one R CMD check across audits
+
+- `audit_globals()` and `fix_globals()` gain a `checks =` argument
+  that accepts a pre-computed `rcmdcheck::rcmdcheck()` result. When
+  supplied, they skip running `R CMD check` and reuse the existing
+  output. Lets you run the check **once** and feed both functions
+  during a full package audit. See the new vignette
+  *"Auditing an R package you have just received"*.
+
 ## Documentation
 
 - Vignettes consolidated to two: *"Auditing an R package you have just
@@ -12,15 +21,6 @@
   in those two and in the function reference.
 - `README` Quick start now uses the shared-`chk` workflow as the
   default example.
-
-## Share one R CMD check across audits
-
-- `audit_globals()` and `fix_globals()` gain a `checks =` argument
-  that accepts a pre-computed `rcmdcheck::rcmdcheck()` result. When
-  supplied, they skip running `R CMD check` and reuse the existing
-  output. Lets you run the check **once** and feed both functions
-  during a full package audit. See the new vignette
-  *"Auditing an R package you have just received"*.
 
 ## API refresh — `audit_*` / `fix_*` façades
 

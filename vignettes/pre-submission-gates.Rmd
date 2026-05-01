@@ -46,7 +46,10 @@ It is heavier than a plain `rcmdcheck::rcmdcheck()` — use it as the
 # Store the check outputs in a directory you can browse afterwards.
 check_output <- tempfile("example")
 
-audit_check(pkg = ".", check_output = check_output)
+# `Ncpus = 1` matches CRAN's incoming-pretest. Bump it on a multi-core
+# host (e.g. `Ncpus = parallel::detectCores() - 1`) when you just need
+# a fast pre-flight rather than a faithful CRAN reproduction.
+audit_check(pkg = ".", check_output = check_output, Ncpus = 1)
 
 # Open the directory with all outputs (logs, install, tests).
 utils::browseURL(check_output)

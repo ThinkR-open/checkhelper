@@ -48,7 +48,9 @@ audit_globals(pkg, checks = chk)
 fix_globals(pkg, checks = chk, write = TRUE)
 fix_ascii(pkg, dry_run = TRUE)         # review first
 fix_ascii(pkg, dry_run = FALSE)        # then apply
-fix_dataset_doc("my_data", pkg = pkg)  # one call per undocumented dataset
+fix_dataset_doc("my_data", pkg = pkg,
+                description = "Description of my_data",
+                source = "Internal")        # one call per undocumented dataset
 ```
 
 ## Why share the check object?
