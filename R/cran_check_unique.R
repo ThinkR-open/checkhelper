@@ -16,7 +16,7 @@ cran_check_unique <- function(check_dir, lib_dir, scratch, Ncpus) {
   # check_dir <- file.path(normalizePath("~"), "tmp", "CRAN")
 
   user <- Sys.info()["user"]
-  if (user == "unknown") user <- Sys.getenv("LOGNAME")
+  if (user == "unknown") { user <- Sys.getenv("LOGNAME") }
   # Sys.setenv(
   #   "R_USER_DATA_DIR" =
   #     sprintf("/tmp/check-CRAN-incoming-%s/data", user),

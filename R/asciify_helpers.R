@@ -21,7 +21,7 @@
 #' @export
 find_nonascii_tokens <- function(text) {
   stopifnot(is.character(text), length(text) == 1L)
-  if (!nzchar(text)) return(empty_token_pd())
+  if (!nzchar(text)) { return(empty_token_pd()) }
 
   parsed <- tryCatch(
     parse(text = text, keep.source = TRUE),
@@ -35,7 +35,7 @@ find_nonascii_tokens <- function(text) {
   )
 
   pd <- utils::getParseData(parsed, includeText = TRUE)
-  if (is.null(pd) || !nrow(pd)) return(empty_token_pd())
+  if (is.null(pd) || !nrow(pd)) { return(empty_token_pd()) }
 
   pd <- pd[!is.na(pd$text) & nzchar(pd$text), , drop = FALSE]
   # `expr` rows wrap their children and would cause overlapping rewrites
@@ -59,7 +59,7 @@ find_nonascii_tokens <- function(text) {
 
   hits <- !stringi::stri_enc_isascii(pd$text)
   pd <- pd[hits, , drop = FALSE]
-  if (!nrow(pd)) return(empty_token_pd())
+  if (!nrow(pd)) { return(empty_token_pd()) }
 
   pd$is_identifier <- pd$token %in% c(
     "SYMBOL", "SYMBOL_FUNCTION_CALL",
@@ -84,7 +84,7 @@ isTRUE_each <- function(x) {
 #'   [find_nonascii_tokens()] to avoid an O(n_tokens) re-split).
 #' @noRd
 extract_token_source <- function(lines, row) {
-  if (row$line1 < 1L || row$line2 > length(lines)) return(row$text)
+  if (row$line1 < 1L || row$line2 > length(lines)) { return(row$text) }
   if (row$line1 == row$line2) {
     return(stringi::stri_sub(lines[row$line1], row$col1, row$col2))
   }
@@ -126,9 +126,9 @@ rewrite_nonascii_token <- function(text, token, strategy) {
     strategy,
     c("auto", "escape", "translit", "report")
   )
-  if (strategy == "report") return(text)
+  if (strategy == "report") { return(text) }
   if (strategy == "auto") {
-    strategy <- if (token == "STR_CONST") "escape" else "translit"
+    strategy <- if (token == "STR_CONST") { "escape" } else { "translit" }
   }
   if (strategy == "escape") {
     if (token == "STR_CONST") {
@@ -151,10 +151,10 @@ rewrite_nonascii_token <- function(text, token, strategy) {
 #'
 #' @noRd
 escape_chars_only <- function(text) {
-  if (stringi::stri_enc_isascii(text)) return(text)
+  if (stringi::stri_enc_isascii(text)) { return(text) }
   chars <- strsplit(text, "", fixed = TRUE)[[1L]]
   bad <- !stringi::stri_enc_isascii(chars)
-  if (!any(bad)) return(text)
+  if (!any(bad)) { return(text) }
   cps <- utf8ToInt(paste(chars[bad], collapse = ""))
   enc <- ifelse(
     cps <= 0xFFFFL,
@@ -252,7 +252,7 @@ asciify_r_source <- function(text,
   identifiers <- match.arg(identifiers)
 
   pd <- find_nonascii_tokens(text)
-  if (!nrow(pd)) return(text)
+  if (!nrow(pd)) { return(text) }
 
   bad_ids <- pd[pd$is_identifier, , drop = FALSE]
   if (nrow(bad_ids)) {
@@ -268,7 +268,7 @@ asciify_r_source <- function(text,
   }
 
   pd <- pd[!pd$is_identifier, , drop = FALSE]
-  if (!nrow(pd) || strategy == "report") return(text)
+  if (!nrow(pd) || strategy == "report") { return(text) }
 
   # Process tokens from end to start so earlier byte/char offsets stay valid.
   pd <- pd[order(-pd$line1, -pd$col1), , drop = FALSE]
@@ -277,7 +277,7 @@ asciify_r_source <- function(text,
   # the round-trip preserves it.
   has_trailing_nl <- substr(text, nchar(text), nchar(text)) == "\n"
   lines <- strsplit(text, "\n", fixed = TRUE)[[1L]]
-  if (length(lines) == 0L) lines <- ""
+  if (length(lines) == 0L) { lines <- "" }
 
   for (i in seq_len(nrow(pd))) {
     tok <- pd[i, ]
@@ -291,13 +291,13 @@ asciify_r_source <- function(text,
       head <- char_left(lines[tok$line1], tok$col1 - 1L)
       tail <- char_right(lines[tok$line2], tok$col2 + 1L)
       new_lines <- strsplit(new, "\n", fixed = TRUE)[[1L]]
-      if (length(new_lines) == 0L) new_lines <- ""
+      if (length(new_lines) == 0L) { new_lines <- "" }
       new_lines[1L] <- paste0(head, new_lines[1L])
       new_lines[length(new_lines)] <- paste0(new_lines[length(new_lines)], tail)
       lines <- c(
-        if (tok$line1 > 1L) lines[seq_len(tok$line1 - 1L)],
+        if (tok$line1 > 1L) { lines[seq_len(tok$line1 - 1L)] },
         new_lines,
-        if (tok$line2 < length(lines)) lines[seq.int(tok$line2 + 1L, length(lines))]
+        if (tok$line2 < length(lines)) { lines[seq.int(tok$line2 + 1L, length(lines))] }
       )
     }
   }
@@ -320,12 +320,12 @@ char_splice <- function(line, col1, col2, replacement) {
 
 #' @noRd
 char_left <- function(line, n) {
-  if (n <= 0L) "" else stringi::stri_sub(line, 1L, n)
+  if (n <= 0L) { "" } else { stringi::stri_sub(line, 1L, n) }
 }
 
 #' @noRd
 char_right <- function(line, from) {
-  if (from > stringi::stri_length(line)) "" else stringi::stri_sub(line, from, -1L)
+  if (from > stringi::stri_length(line)) { "" } else { stringi::stri_sub(line, from, -1L) }
 }
 
 #' Apply the asciify rewrite to a single R / R-related file
@@ -416,10 +416,10 @@ asciify_file <- function(path,
 sum_chunk_nonascii_tokens <- function(text) {
   rx <- "(?ms)^([ \\t]*```\\{r[^\\n]*\\n)(.*?)(\\n[ \\t]*```\\s*$)"
   m <- regmatches(text, gregexpr(rx, text, perl = TRUE))[[1L]]
-  if (!length(m)) return(0L)
+  if (!length(m)) { return(0L) }
   bodies <- vapply(m, function(chunk) {
     parts <- regmatches(chunk, regexec(rx, chunk, perl = TRUE))[[1L]]
-    if (length(parts) >= 4L) parts[3L] else ""
+    if (length(parts) >= 4L) { parts[3L] } else { "" }
   }, character(1L))
   sum(vapply(bodies, function(b) nrow(find_nonascii_tokens_safe(b)),
              integer(1L)))
@@ -428,7 +428,7 @@ sum_chunk_nonascii_tokens <- function(text) {
 #' @noRd
 has_trailing_newline <- function(path) {
   size <- file.size(path)
-  if (is.na(size) || size == 0L) return(FALSE)
+  if (is.na(size) || size == 0L) { return(FALSE) }
   con <- file(path, "rb")
   on.exit(close(con))
   seek(con, where = size - 1L, origin = "start")
@@ -452,7 +452,7 @@ write_text_preserving_eol <- function(text, path, trailing_nl) {
 
 #' @noRd
 count_nonascii_chars <- function(text) {
-  if (!length(text) || !nzchar(text)) return(0L)
+  if (!length(text) || !nzchar(text)) { return(0L) }
   sum(!stringi::stri_enc_isascii(strsplit(text, "", fixed = TRUE)[[1L]]))
 }
 
@@ -467,7 +467,7 @@ asciify_rmd <- function(text, strategy, identifiers) {
   # Match ```{r ...} ... ``` chunks (knitr's standard form).
   rx <- "(?ms)^([ \\t]*```\\{r[^\\n]*\\n)(.*?)(\\n[ \\t]*```\\s*$)"
   m <- gregexpr(rx, text, perl = TRUE)[[1L]]
-  if (length(m) == 1L && m == -1L) return(text)
+  if (length(m) == 1L && m == -1L) { return(text) }
   starts <- as.integer(m)
   lengths <- attr(m, "match.length")
 
@@ -476,7 +476,7 @@ asciify_rmd <- function(text, strategy, identifiers) {
   for (i in ord) {
     chunk <- substr(text, starts[i], starts[i] + lengths[i] - 1L)
     parts <- regmatches(chunk, regexec(rx, chunk, perl = TRUE))[[1L]]
-    if (length(parts) < 4L) next
+    if (length(parts) < 4L) { next }
     head <- parts[2L]; body <- parts[3L]; tail <- parts[4L]
     new_body <- tryCatch(
       asciify_r_source(body, strategy = strategy, identifiers = identifiers),
@@ -525,14 +525,14 @@ asciify_rmd <- function(text, strategy, identifiers) {
     # file.size() returns NA for unreadable entries (e.g. broken symlinks);
     # skip silently rather than letting the >= comparison error out the scan.
     sz <- file.size(f)
-    if (is.na(sz) || sz >= size_limit) return(NULL)
+    if (is.na(sz) || sz >= size_limit) { return(NULL) }
     raw <- tryCatch(
       readLines(f, warn = FALSE, encoding = "UTF-8"),
       error = function(e) NULL
     )
-    if (is.null(raw) || !length(raw)) return(NULL)
+    if (is.null(raw) || !length(raw)) { return(NULL) }
     bad <- which(!stringi::stri_enc_isascii(raw))
-    if (!length(bad)) return(NULL)
+    if (!length(bad)) { return(NULL) }
     data.frame(
       file = f,
       line = bad,
@@ -558,7 +558,7 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
   out <- character()
   for (s in scope) {
     p <- file.path(path, s)
-    if (!file.exists(p)) next
+    if (!file.exists(p)) { next }
     if (file.info(p)$isdir) {
       out <- c(out, list.files(p, recursive = TRUE, full.names = TRUE,
                                include.dirs = FALSE, no.. = TRUE))
@@ -642,15 +642,19 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
       stringsAsFactors = FALSE
     )
   })
-  out <- if (length(rows)) do.call(rbind, rows) else data.frame(
-    path = character(), changed = logical(),
-    n_tokens = integer(), n_chars = integer(),
-    stringsAsFactors = FALSE
-  )
+  out <- if (length(rows)) {
+    do.call(rbind, rows)
+  } else {
+    data.frame(
+      path = character(), changed = logical(),
+      n_tokens = integer(), n_chars = integer(),
+      stringsAsFactors = FALSE
+    )
+  }
 
   n_changed <- sum(out$changed, na.rm = TRUE)
   n_chars <- sum(out$n_chars, na.rm = TRUE)
-  verb <- if (isTRUE(dry_run)) "would change" else "rewrote"
+  verb <- if (isTRUE(dry_run)) { "would change" } else { "rewrote" }
   lines <- sprintf(
     "asciify_pkg: %d file(s) scanned, %s %d, %d non-ASCII character(s).",
     nrow(out), verb, n_changed, n_chars
@@ -673,4 +677,4 @@ collect_pkg_files <- function(path, scope, ignore_ext) {
 }
 
 # tiny null-coalescer to avoid an extra dep just for it
-`%||%` <- function(a, b) if (is.null(a)) b else a
+`%||%` <- function(a, b) if (is.null(a)) { b } else { a }

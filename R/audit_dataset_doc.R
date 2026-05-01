@@ -40,7 +40,7 @@ audit_dataset_doc <- function(pkg = ".") {
   }
 
   has_doc <- vapply(names, function(n) {
-    if (!length(r_files)) return(FALSE)
+    if (!length(r_files)) { return(FALSE) }
     # Escape regex metacharacters: dataset names can contain `.` and other
     # symbols that would otherwise mis-match (e.g. `iris.setosa` would match
     # `irisXsetosa`).

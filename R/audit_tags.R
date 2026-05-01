@@ -115,19 +115,19 @@ audit_tags <- function(pkg = ".") {
   ##
   res_functions <- map(
     .x = blocks,
-    .f = ~ if (class(.x[["object"]])[1] == "function") .x
+    .f = ~ if (class(.x[["object"]])[1] == "function") { .x }
   ) %>%
     compact()
 
   res_package <- map(
     .x = blocks,
-    .f = ~ if (class(.x[["object"]])[1] == "package") .x
+    .f = ~ if (class(.x[["object"]])[1] == "package") { .x }
   ) %>%
     compact()
 
   res_data <- map(
     .x = blocks,
-    .f = ~ if (class(.x[["object"]])[1] == "data") .x
+    .f = ~ if (class(.x[["object"]])[1] == "data") { .x }
   ) %>%
     compact()
 
@@ -136,7 +136,7 @@ audit_tags <- function(pkg = ".") {
   ## because the object class is not "function".
   res_topic_only <- map(
     .x = blocks,
-    .f = ~ if (!(class(.x[["object"]])[1] %in% c("function", "package", "data"))) .x
+    .f = ~ if (!(class(.x[["object"]])[1] %in% c("function", "package", "data"))) { .x }
   ) %>%
     compact()
 
@@ -214,7 +214,7 @@ audit_tags <- function(pkg = ".") {
   ) %>%
     mutate(
       rdname_value = if_else(rdname_value == "", topic, rdname_value),
-      id = if (n() == 0L) integer() else seq_len(n())
+      id = if (n() == 0L) { integer() } else { seq_len(n()) }
     )
 
   # Pull `@return` values from topic-only blocks (`#' @name foo \n NULL`) so
@@ -374,7 +374,7 @@ topic_block_returns <- function(topic_blocks) {
   out <- character()
   for (b in topic_blocks) {
     val <- block_get_return_value(b)
-    if (!nzchar(val)) next
+    if (!nzchar(val)) { next }
     rdname <- roxygen2::block_get_tag_value(b, tag = "rdname")
     if (is.null(rdname) || !nzchar(rdname)) {
       rdname <- b[["object"]][["topic"]]
@@ -382,7 +382,7 @@ topic_block_returns <- function(topic_blocks) {
     if (is.null(rdname) || !nzchar(rdname)) {
       rdname <- roxygen2::block_get_tag_value(b, tag = "name")
     }
-    if (is.null(rdname) || !nzchar(rdname)) next
+    if (is.null(rdname) || !nzchar(rdname)) { next }
     out[rdname] <- val
   }
   out

@@ -84,8 +84,8 @@ fix_ascii <- function(pkg = ".",
     dry_run = dry_run
   )
 
-  n_changed <- if (is.null(out)) 0L else sum(out$changed, na.rm = TRUE)
-  verb <- if (isTRUE(dry_run)) "would rewrite" else "rewrote"
+  n_changed <- if (is.null(out)) { 0L } else { sum(out$changed, na.rm = TRUE) }
+  verb <- if (isTRUE(dry_run)) { "would rewrite" } else { "rewrote" }
 
   cli::cli_inform(c(
     "i" = "fix_ascii(): {verb} {n_changed} file{?s} (non-ASCII)."
