@@ -79,5 +79,22 @@ create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
   # This package will have warnings, but it is intentional
   # so that functions can detect problems
   suppressWarnings(attachment::att_amend_desc(path = path, must.exist = FALSE))
-  return(path)
+
+  fixtures <- c(
+    if (isTRUE(with_functions)) "bad-function examples (tags, globals)",
+    if (isTRUE(with_extra_notes)) "extra-note long-path file",
+    if (isTRUE(with_nonascii)) "non-ASCII source file",
+    if (isTRUE(with_undocumented_data)) "undocumented dataset under data/"
+  )
+
+  cli::cli_inform(c(
+    "v" = "Demo package created at {.path {path}}",
+    "i" = if (length(fixtures)) {
+      "Active fixtures: {fixtures}."
+    } else {
+      "No fixtures activated (all with_* flags are FALSE)."
+    }
+  ))
+
+  invisible(path)
 }
