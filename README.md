@@ -1,6 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 [![checkhelper status
@@ -15,31 +14,31 @@ status](https://www.r-pkg.org/badges/version/checkhelper)](https://CRAN.R-projec
 
 # checkhelper
 
-A toolkit for R package authors that turns each `R CMD check` warning
-or NOTE into a clear two-step workflow: **audit** what the issue is,
-then **fix** it. The goal is to reduce the risk of CRAN rejection.
+A toolkit for R package authors that turns each `R CMD check` warning or
+NOTE into a clear two-step workflow: **audit** what the issue is, then
+**fix** it. The goal is to reduce the risk of CRAN rejection.
 
 Complete documentation in the {pkgdown} site:
 <https://thinkr-open.github.io/checkhelper/>
 
 ## API at a glance
 
-Each category of CRAN issue gets one read-only `audit_*()` function
-and, when an automated fix is safe, one `fix_*()` function. Type
+Each category of CRAN issue gets one read-only `audit_*()` function and,
+when an automated fix is safe, one `fix_*()` function. Type
 `audit_<TAB>` or `fix_<TAB>` in RStudio to discover the surface.
 
-| CRAN issue | Audit (read-only) | Fix (action) |
-|---|---|---|
-| Globals to declare (`no visible binding`) | `audit_globals()` | `fix_globals()` |
-| Missing roxygen tags (`@return`, `@noRd`) | `audit_tags()` | — |
-| Non-ASCII characters | `audit_ascii()` | `fix_ascii()` |
-| Files left in user space by checks | `audit_userspace()` | — |
-| `R CMD check` with CRAN settings | `audit_check()` | — |
-| Undocumented datasets | `audit_dataset_doc()` | `fix_dataset_doc()` |
+| CRAN issue                                | Audit (read-only)     | Fix (action)        |
+|-------------------------------------------|-----------------------|---------------------|
+| Globals to declare (`no visible binding`) | `audit_globals()`     | `fix_globals()`     |
+| Missing roxygen tags (`@return`, `@noRd`) | `audit_tags()`        | —                   |
+| Non-ASCII characters                      | `audit_ascii()`       | `fix_ascii()`       |
+| Files left in user space by checks        | `audit_userspace()`   | —                   |
+| `R CMD check` with CRAN settings          | `audit_check()`       | —                   |
+| Undocumented datasets                     | `audit_dataset_doc()` | `fix_dataset_doc()` |
 
 Lower-level helpers (`asciify_file()`, `asciify_r_source()`,
-`find_nonascii_tokens()`, `create_example_pkg()`) are also exported
-for fine-grained scripting.
+`find_nonascii_tokens()`, `create_example_pkg()`) are also exported for
+fine-grained scripting.
 
 The 10 historic functions (`get_no_visible()`, `find_missing_tags()`,
 `asciify_pkg()`, `check_as_cran()`, …) remain callable but emit a
@@ -68,40 +67,15 @@ remotes::install_github("thinkr-open/checkhelper")
 
 ## Quick start
 
-`create_example_pkg()` ships a fake package that already trips most of
-the checks `checkhelper` covers. Use it to feel the workflow:
+The recommended dev-time workflow runs `R CMD check` **once** and reuses
+the result across every audit that accepts a `checks =` argument.
+`create_example_pkg()` ships a fake package that trips most of the
+checks `checkhelper` covers — use it to feel the flow:
 
 ``` r
 library(checkhelper)
 
 pkg <- create_example_pkg()
-
-# Find exported functions missing @return / documented internals missing @noRd
-audit_tags(pkg)
-
-# Surface globals to declare (slow: runs R CMD check under the hood)
-audit_globals(pkg)
-
-# Then either print the globalVariables() block or write it to R/globals.R
-fix_globals(pkg)
-fix_globals(pkg, write = TRUE)
-
-# Find non-ASCII characters across R/, tests/, vignettes/, man/, DESCRIPTION
-audit_ascii(pkg)
-
-# Rewrite them CRAN-cleanly (escape literals, transliterate comments).
-# Dry-run by default — pass dry_run = FALSE to apply.
-fix_ascii(pkg, dry_run = FALSE)
-```
-
-## Auditing an unknown package — share one check across audits
-
-`audit_globals()` and `fix_globals()` both need the output of
-`R CMD check`. To avoid running it twice, pass a pre-computed
-`rcmdcheck::rcmdcheck()` result via `checks =`:
-
-``` r
-pkg <- "/path/to/the/package"
 
 # Run R CMD check ONCE.
 chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
@@ -111,17 +85,20 @@ audit_tags(pkg)
 audit_ascii(pkg)
 audit_dataset_doc(pkg)
 
-# Audits that consume the check — reuse `chk`.
+# Audits that consume the check — reuse `chk` via the `checks =` argument.
 audit_globals(pkg, checks = chk)
-fix_globals(pkg,   checks = chk, write = TRUE)
 
-# Userspace audit has its own pipeline (tests + examples + vignettes + check).
-audit_userspace(pkg)
+# Apply the safe fixes.
+fix_globals(pkg, checks = chk, write = TRUE)
+fix_ascii(pkg, dry_run = FALSE)
 ```
 
-See the **"Auditing an R package you have just received"** vignette
-for the full walkthrough. The per-category walkthroughs live in the
-other vignettes on the pkgdown site.
+See `vignette("auditing-an-r-package", package = "checkhelper")` for the
+full walkthrough (per-issue cheatsheet, when to share `chk`, how to fix
+each category). For the heavier final-gate audits — `audit_check()`
+(full CRAN environment) and `audit_userspace()` (no files left after
+check) — see
+`vignette("pre-submission-gates", package = "checkhelper")`.
 
 ## Code of Conduct
 

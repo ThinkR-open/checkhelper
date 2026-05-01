@@ -1,0 +1,95 @@
+---
+title: "Pre-submission gates"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pre-submission gates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(checkhelper)
+```
+
+Once the dev-time audits described in
+`vignette("auditing-an-r-package", package = "checkhelper")` are clean,
+two heavier audits remain. They both have their **own pipeline** —
+they cannot reuse the shared `chk` object — and you typically run
+them last, just before `devtools::release()`.
+
+| Audit                | What it does                                           | When to run            |
+|----------------------|--------------------------------------------------------|------------------------|
+| `audit_check()`      | `R CMD check` with the full CRAN incoming environment  | final gate             |
+| `audit_userspace()`  | Detects files left behind by tests / examples / vignettes | before tagging a release |
+
+## `audit_check()` — check with CRAN settings
+
+`R CMD check` on your machine and `R CMD check` on CRAN's machines do
+**not** see the same environment: CRAN sets a long list of env vars
+and options before running the incoming-pretest. `audit_check()`
+mirrors those settings (sourced from
+<https://github.com/r-devel/r-dev-web/tree/master/CRAN/>) so a check
+that is green locally has the highest chance of being green on CRAN.
+
+It is heavier than a plain `rcmdcheck::rcmdcheck()` — use it as the
+**final gate**, not as the audit driver during development.
+
+```{r}
+# Store the check outputs in a directory you can browse afterwards.
+check_output <- tempfile("example")
+
+# `Ncpus = 1` matches CRAN's incoming-pretest. Bump it on a multi-core
+# host (e.g. `Ncpus = parallel::detectCores() - 1`) when you just need
+# a fast pre-flight rather than a faithful CRAN reproduction.
+audit_check(pkg = ".", check_output = check_output, Ncpus = 1)
+
+# Open the directory with all outputs (logs, install, tests).
+utils::browseURL(check_output)
+```
+
+The settings are originally tuned for the Linux pretest, so
+`audit_check()` will run on any OS but the env it reproduces is the
+Linux one.
+
+## `audit_userspace()` — no files left after check
+
+CRAN flags packages whose tests, examples or vignettes leak files
+into the user space:
+
+```
+Check: for non-standard things in the check directory
+Result: NOTE
+    Found the following files/directories:
+     'extrapackage'
+```
+
+`audit_userspace()` runs the package's tests, examples, vignettes and
+full check, takes file-system snapshots of the **package directory**
+and **`tempdir()`** between each step, and lists every file that
+appeared in those two locations outside the check directory. (Files
+created elsewhere — `~/.cache`, `~/.config`, etc. — are out of
+scope; CRAN's "non-standard things in the check directory" NOTE only
+catches package-local leaks, which is exactly what this audit
+targets.)
+
+```{r}
+leaks <- audit_userspace(pkg = ".")
+leaks
+```
+
+Each row points to the source (`tests`, `examples`, `vignettes`,
+`check`), the file, and where it landed. Use that to decide whether
+the offending code should `withr::local_*()` its temp files,
+`unlink()` on exit, or move under `tempdir()`.
+
+This audit takes file-system snapshots that depend on the package's
+real run, which is why it can't share the `rcmdcheck` object with
+`audit_globals()`.

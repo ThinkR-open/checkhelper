@@ -9,6 +9,19 @@
   during a full package audit. See the new vignette
   *"Auditing an R package you have just received"*.
 
+## Documentation
+
+- Vignettes consolidated to two: *"Auditing an R package you have just
+  received"* (canonical dev-time workflow with the shared `chk`
+  pattern, plus a per-issue cheatsheet) and *"Pre-submission gates"*
+  (heavier audits run before release: `audit_check()` and
+  `audit_userspace()`). The historic per-issue vignettes
+  (`deal-with-check-outputs`, `check-with-real-cran-settings`,
+  `no-files-left-after-check`) have been removed; their content lives
+  in those two and in the function reference.
+- `README` Quick start now uses the shared-`chk` workflow as the
+  default example.
+
 ## API refresh — `audit_*` / `fix_*` façades
 
 The package now exposes a uniform CRAN-oriented API: each category of
