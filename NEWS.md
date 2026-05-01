@@ -1,5 +1,18 @@
 # checkhelper (development version)
 
+## Documentation
+
+- Vignettes consolidated to two: *"Auditing an R package you have just
+  received"* (canonical dev-time workflow with the shared `chk`
+  pattern, plus a per-issue cheatsheet) and *"Pre-submission gates"*
+  (heavier audits run before release: `audit_check()` and
+  `audit_userspace()`). The historic per-issue vignettes
+  (`deal-with-check-outputs`, `check-with-real-cran-settings`,
+  `no-files-left-after-check`) have been removed; their content lives
+  in those two and in the function reference.
+- `README` Quick start now uses the shared-`chk` workflow as the
+  default example.
+
 ## Share one R CMD check across audits
 
 - `audit_globals()` and `fix_globals()` gain a `checks =` argument

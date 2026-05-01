@@ -19,10 +19,14 @@ knitr::opts_chunk$set(
 library(checkhelper)
 ```
 
-This vignette walks through the practical sequence of commands when a
-colleague hands you an R package and asks "is this CRAN-ready?". The
-goal is to surface every CRAN-blocking issue with the **smallest
-possible number of `R CMD check` runs**.
+This vignette is the canonical end-to-end walkthrough: a colleague hands
+you an R package and asks "is this CRAN-ready?". The goal is to surface
+every CRAN-blocking issue with the **smallest possible number of
+`R CMD check` runs**, then apply the safe automatic fixes.
+
+For audits that have their own pipeline (full CRAN environment,
+file-system snapshots), see the companion vignette
+`vignette("pre-submission-gates", package = "checkhelper")`.
 
 ## TL;DR — the audit script
 
@@ -40,15 +44,11 @@ audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
 # 3. Audits that need the check output — pass `chk` to skip a 2nd run.
 audit_globals(pkg, checks = chk)
 
-# 4. Userspace audit (separate workflow: it runs tests + examples + check
-#    with file-system snapshots between steps, can't reuse `chk`).
-audit_userspace(pkg)
-
-# 5. Apply the safe fixes.
+# 4. Apply the safe fixes.
 fix_globals(pkg, checks = chk, write = TRUE)
-fix_ascii(pkg, dry_run = TRUE)        # review first
-fix_ascii(pkg, dry_run = FALSE)       # then apply
-fix_dataset_doc(pkg)
+fix_ascii(pkg, dry_run = TRUE)         # review first
+fix_ascii(pkg, dry_run = FALSE)        # then apply
+fix_dataset_doc("my_data", pkg = pkg)  # one call per undocumented dataset
 ```
 
 ## Why share the check object?
@@ -81,15 +81,71 @@ The other audits do not need a check at all:
 | `audit_userspace()`  | yes (own pipeline)    | takes file-system snapshots, separate  |
 | `audit_check()`      | yes                   | this **is** the check, with CRAN env   |
 
-## Choosing between `rcmdcheck()` and `audit_check()`
+## Per-issue cheatsheet
 
-- `rcmdcheck::rcmdcheck(pkg, args = "--as-cran")` — fast, returns the
-  list shape that `audit_globals(checks = ...)` expects. Use it for the
-  shared-check workflow above.
-- `audit_check(pkg)` — runs the check with the full **CRAN incoming**
-  environment (env vars, options, lib path mirrored from CRAN). Heavier
-  and uses `tools::check_packages_in_dir()` under the hood; use it as a
-  final gate before submission, not as the audit driver.
+### Globals (`no visible binding`)
+
+`audit_globals()` returns a 2-element list (`globalVariables`,
+`functions`) of names CRAN flagged. `fix_globals(write = TRUE)`
+materializes them into `R/globals.R`:
+
+```{r}
+audit_globals(pkg, checks = chk)
+fix_globals(pkg, checks = chk, write = TRUE)
+```
+
+Without `write = TRUE`, `fix_globals()` only prints the
+`utils::globalVariables(...)` block to copy-paste.
+
+### Missing roxygen tags
+
+`audit_tags()` flags exported functions without `@return` and
+documented internals without `@noRd`. Read-only — no automatic fix
+because adding accurate `@return` text needs a human:
+
+```{r}
+audit_tags(pkg)
+```
+
+### Non-ASCII characters
+
+`audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/` and
+DESCRIPTION via the parser AST and reports every non-ASCII token
+(string literal, comment, identifier). `fix_ascii()` rewrites them in
+place — string literals become `\uXXXX` escapes, comments and roxygen
+get `Latin-ASCII` transliteration. **It dry-runs by default**:
+
+```{r}
+audit_ascii(pkg)
+
+# Always preview the diff first.
+fix_ascii(pkg, dry_run = TRUE)
+
+# Apply when you've reviewed the proposed rewrite.
+fix_ascii(pkg, dry_run = FALSE)
+```
+
+Identifiers with non-ASCII characters are refused by default
+(renaming would be a breaking change).
+
+### Undocumented datasets
+
+`audit_dataset_doc()` lists every `data/*.rda` without a matching
+roxygen block under `R/`. `fix_dataset_doc()` writes a documentation
+skeleton (one call per dataset, takes the dataset name):
+
+```{r}
+audit_dataset_doc(pkg)
+
+fix_dataset_doc("my_data",
+                pkg = pkg,
+                description = "Description of my_data",
+                source = "Internal")
+```
+
+The skeleton is editable: you fill in the description / source /
+column-by-column comments by hand, then re-run
+`devtools::document()`.
 
 ## Minimal end-to-end on a fake package
 
@@ -109,3 +165,16 @@ fix_ascii(pkg, dry_run = FALSE)
 
 After applying the fixes, re-run the check (the package state has
 changed, so a new `rcmdcheck()` is needed) and confirm 0 / 0 / 0.
+
+## Next step: pre-submission gates
+
+When the dev-time audits above are clean, run the heavier gates that
+have their own pipeline and **cannot** reuse `chk`:
+
+- `audit_check()` — `R CMD check` with the full CRAN incoming
+  environment.
+- `audit_userspace()` — checks that tests / examples / vignettes
+  leave no files behind.
+
+Both are documented in
+`vignette("pre-submission-gates", package = "checkhelper")`.

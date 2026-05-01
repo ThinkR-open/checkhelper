@@ -6,6 +6,13 @@ url: https://thinkr-open.github.io/checkhelper/
 development:
   mode: auto
 
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - auditing-an-r-package
+  - pre-submission-gates
+
 reference:
 - title: Audit
   desc: >
