@@ -120,8 +120,8 @@
 <p>Once the dev-time audits described in
 <code><a href="../articles/auditing-an-r-package.html">vignette("auditing-an-r-package", package = "checkhelper")</a></code>
 are clean, two heavier audits remain. They both have their <strong>own
-pipeline</strong> — they cannot reuse the shared <code>chk</code> object
-— and you typically run them last, just before
+pipeline</strong> - they cannot reuse the shared <code>chk</code> object
+- and you typically run them last, just before
 <code><a href="https://devtools.r-lib.org/reference/release.html" class="external-link">devtools::release()</a></code>.</p>
 <table class="table">
 <colgroup>
@@ -150,8 +150,8 @@ environment</td>
 </tbody>
 </table>
 <div class="section level2">
-<h2 id="audit_check-check-with-cran-settings">
-<code>audit_check()</code> — check with CRAN settings<a class="anchor" aria-label="anchor" href="#audit_check-check-with-cran-settings"></a>
+<h2 id="audit_check---check-with-cran-settings">
+<code>audit_check()</code> - check with CRAN settings<a class="anchor" aria-label="anchor" href="#audit_check---check-with-cran-settings"></a>
 </h2>
 <p><code>R CMD check</code> on your machine and <code>R CMD check</code>
 on CRAN’s machines do <strong>not</strong> see the same environment:
@@ -160,7 +160,7 @@ incoming-pretest. <code><a href="../reference/audit_check.html">audit_check()</a
 (sourced from <a href="https://github.com/r-devel/r-dev-web/tree/master/CRAN/" class="external-link uri">https://github.com/r-devel/r-dev-web/tree/master/CRAN/</a>)
 so a check that is green locally has the highest chance of being green
 on CRAN.</p>
-<p>It is heavier than a plain <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code> — use
+<p>It is heavier than a plain <code><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck::rcmdcheck()</a></code> - use
 it as the <strong>final gate</strong>, not as the audit driver during
 development.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -179,8 +179,8 @@ development.</p>
 is the Linux one.</p>
 </div>
 <div class="section level2">
-<h2 id="audit_userspace-no-files-left-after-check">
-<code>audit_userspace()</code> — no files left after check<a class="anchor" aria-label="anchor" href="#audit_userspace-no-files-left-after-check"></a>
+<h2 id="audit_userspace---no-files-left-after-check">
+<code>audit_userspace()</code> - no files left after check<a class="anchor" aria-label="anchor" href="#audit_userspace---no-files-left-after-check"></a>
 </h2>
 <p>CRAN flags packages whose tests, examples or vignettes leak files
 into the user space:</p>
@@ -193,8 +193,8 @@ vignettes and full check, takes file-system snapshots of the
 <strong>package directory</strong> and
 <strong><code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code></strong> between each step, and lists
 every file that appeared in those two locations outside the check
-directory. (Files created elsewhere — <code>~/.cache</code>,
-<code>~/.config</code>, etc. — are out of scope; CRAN’s “non-standard
+directory. (Files created elsewhere - <code>~/.cache</code>,
+<code>~/.config</code>, etc. - are out of scope; CRAN’s “non-standard
 things in the check directory” NOTE only catches package-local leaks,
 which is exactly what this audit targets.)</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">

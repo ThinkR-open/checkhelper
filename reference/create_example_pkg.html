@@ -87,7 +87,9 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">create_example_pkg</span><span class="op">(</span></span>
 <span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"pkg-"</span><span class="op">)</span>,</span>
 <span>  with_functions <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  with_extra_notes <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  with_extra_notes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_nonascii <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  with_undocumented_data <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -106,6 +108,18 @@
 <dt id="arg-with-extra-notes">with_extra_notes<a class="anchor" aria-label="anchor" href="#arg-with-extra-notes"></a></dt>
 <dd><p>Logical. Whether there are extra notes or not</p></dd>
 
+
+<dt id="arg-with-nonascii">with_nonascii<a class="anchor" aria-label="anchor" href="#arg-with-nonascii"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, copy a fixture file containing
+non-ASCII characters (French comments, string literals, message text)
+so <code><a href="audit_ascii.html">audit_ascii()</a></code> / <code><a href="fix_ascii.html">fix_ascii()</a></code> have something to surface.</p></dd>
+
+
+<dt id="arg-with-undocumented-data">with_undocumented_data<a class="anchor" aria-label="anchor" href="#arg-with-undocumented-data"></a></dt>
+<dd><p>Logical. If <code>TRUE</code>, save a small
+<code>data.frame</code> to <code>data/</code> <em>without</em> writing a roxygen block for it,
+so <code><a href="audit_dataset_doc.html">audit_dataset_doc()</a></code> flags it as undocumented.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -115,8 +129,8 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">create_example_pkg</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">/tmp/RtmpanMGUF/pkg-19f2c7c1248/checkpackage/</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">"/tmp/RtmpanMGUF/pkg-19f2c7c1248/checkpackage"</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">/tmp/RtmpUdhrjI/pkg-1a8b2f15704d/checkpackage/</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">"/tmp/RtmpUdhrjI/pkg-1a8b2f15704d/checkpackage"</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Creating <span style="color: #0000BB;">R/</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">DESCRIPTION</span>.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Package</span>: checkpackage</span>
@@ -129,7 +143,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     pick a license</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Encoding</span>: UTF-8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">Roxygen</span>: list(markdown = TRUE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">RoxygenNote</span>: 7.3.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">RoxygenNote</span>: 8.0.0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Writing <span style="color: #0000BB;">NAMESPACE</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Setting active project to <span style="color: #0000BB;">"&lt;no active project&gt;"</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Saving attachment parameters to yaml config file</span>
@@ -144,7 +158,8 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">checkpackage</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> function.R:4: <span style="font-weight: bold;">@return</span> requires a value.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [+] 1 package(s) added: dplyr.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/tmp/RtmpanMGUF/pkg-19f2c7c1248/checkpackage"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Demo package created at <span style="color: #0000BB;">/tmp/RtmpUdhrjI/pkg-1a8b2f15704d/checkpackage</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Active fixtures: bad-function examples (tags, globals).</span>
 </code></pre></div>
     </div>
   </div>

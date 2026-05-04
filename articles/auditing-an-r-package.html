@@ -127,7 +127,7 @@ automatic fixes.</p>
 file-system snapshots), see the companion vignette
 <code><a href="../articles/pre-submission-gates.html">vignette("pre-submission-gates", package = "checkhelper")</a></code>.</p>
 <div class="section level2">
-<h2 id="tldr-the-audit-script">TL;DR — the audit script<a class="anchor" aria-label="anchor" href="#tldr-the-audit-script"></a>
+<h2 id="tldr---the-audit-script">TL;DR - the audit script<a class="anchor" aria-label="anchor" href="#tldr---the-audit-script"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="st">"/path/to/the/package"</span></span>
@@ -140,7 +140,7 @@ file-system snapshots), see the companion vignette
 <span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>           <span class="co"># non-ASCII characters in R/, tests/, vignettes/, man/</span></span>
 <span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>     <span class="co"># datasets in data/ without a roxygen block</span></span>
 <span></span>
-<span><span class="co"># 3. Audits that need the check output — pass `chk` to skip a 2nd run.</span></span>
+<span><span class="co"># 3. Audits that need the check output - pass `chk` to skip a 2nd run.</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 4. Apply the safe fixes.</span></span>
@@ -246,7 +246,7 @@ copy-paste.</p>
 </h3>
 <p><code><a href="../reference/audit_tags.html">audit_tags()</a></code> flags exported functions without
 <code>@return</code> and documented internals without
-<code>@noRd</code>. Read-only — no automatic fix because adding accurate
+<code>@noRd</code>. Read-only - no automatic fix because adding accurate
 <code>@return</code> text needs a human:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
@@ -259,7 +259,7 @@ copy-paste.</p>
 DESCRIPTION line-by-line and reports every line containing non-ASCII
 characters (columns: <code>file</code>, <code>line</code>,
 <code>text</code>, <code>n_tokens</code>). <code><a href="../reference/fix_ascii.html">fix_ascii()</a></code> then
-rewrites them — using the parser AST so each token is rewritten per its
+rewrites them - using the parser AST so each token is rewritten per its
 context: string literals become <code>\uXXXX</code> escapes, comments
 and roxygen get <code>Latin-ASCII</code> transliteration. <strong>It
 dry-runs by default</strong>:</p>
@@ -267,7 +267,7 @@ dry-runs by default</strong>:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Always preview which files would change. fix_ascii() returns</span></span>
-<span><span class="co"># invisibly — capture the result to inspect per-file detail</span></span>
+<span><span class="co"># invisibly - capture the result to inspect per-file detail</span></span>
 <span><span class="co"># (path, changed, n_tokens, n_chars).</span></span>
 <span><span class="va">preview</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">preview</span><span class="op">[</span><span class="va">preview</span><span class="op">$</span><span class="va">changed</span>, <span class="op">]</span></span>
@@ -299,18 +299,26 @@ column-by-column comments by hand, then re-run
 <div class="section level2">
 <h2 id="minimal-end-to-end-on-a-fake-package">Minimal end-to-end on a fake package<a class="anchor" aria-label="anchor" href="#minimal-end-to-end-on-a-fake-package"></a>
 </h2>
+<p><code><a href="../reference/create_example_pkg.html">create_example_pkg()</a></code> builds a fake package that
+deliberately trips each audit. The two <code>with_*</code> flags below
+activate the non-ASCII and undocumented-dataset fixtures so every audit
+has something to surface:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span>with_nonascii <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                          with_undocumented_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">chk</span> <span class="op">&lt;-</span> <span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span><span class="va">pkg</span>, args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>             <span class="co"># @return / @noRd issues</span></span>
+<span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>             <span class="co"># accents in comments / strings</span></span>
+<span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>       <span class="co"># data/demo_dataset.rda has no doc</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/fix_dataset_doc.html">fix_dataset_doc</a></span><span class="op">(</span><span class="st">"demo_dataset"</span>, pkg <span class="op">=</span> <span class="va">pkg</span>,</span>
+<span>                description <span class="op">=</span> <span class="st">"A small demo dataset"</span>,</span>
+<span>                source <span class="op">=</span> <span class="st">"Generated by create_example_pkg()"</span><span class="op">)</span></span></code></pre></div>
 <p>After applying the fixes, re-run the check (the package state has
 changed, so a new <code>rcmdcheck()</code> is needed) and confirm 0 / 0
 / 0.</p>
@@ -323,10 +331,10 @@ have their own pipeline and <strong>cannot</strong> reuse
 <code>chk</code>:</p>
 <ul>
 <li>
-<code><a href="../reference/audit_check.html">audit_check()</a></code> — <code>R CMD check</code> with the full
+<code><a href="../reference/audit_check.html">audit_check()</a></code> - <code>R CMD check</code> with the full
 CRAN incoming environment.</li>
 <li>
-<code><a href="../reference/audit_userspace.html">audit_userspace()</a></code> — checks that tests / examples /
+<code><a href="../reference/audit_userspace.html">audit_userspace()</a></code> - checks that tests / examples /
 vignettes leave no files behind.</li>
 </ul>
 <p>Both are documented in

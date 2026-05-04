@@ -137,7 +137,7 @@
 <tr>
 <td>Missing roxygen tags (<code>@return</code>, <code>@noRd</code>)</td>
 <td><code><a href="reference/audit_tags.html">audit_tags()</a></code></td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>Non-ASCII characters</td>
@@ -147,13 +147,13 @@
 <tr>
 <td>Files left in user space by checks</td>
 <td><code><a href="reference/audit_userspace.html">audit_userspace()</a></code></td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>
 <code>R CMD check</code> with CRAN settings</td>
 <td><code><a href="reference/audit_check.html">audit_check()</a></code></td>
-<td>—</td>
+<td>-</td>
 </tr>
 <tr>
 <td>Undocumented datasets</td>
@@ -163,7 +163,7 @@
 </tbody>
 </table>
 <p>Lower-level helpers (<code><a href="reference/asciify_file.html">asciify_file()</a></code>, <code><a href="reference/asciify_r_source.html">asciify_r_source()</a></code>, <code><a href="reference/find_nonascii_tokens.html">find_nonascii_tokens()</a></code>, <code><a href="reference/create_example_pkg.html">create_example_pkg()</a></code>) are also exported for fine-grained scripting.</p>
-<p>The 10 historic functions (<code><a href="reference/get_no_visible.html">get_no_visible()</a></code>, <code><a href="reference/find_missing_tags.html">find_missing_tags()</a></code>, <code><a href="reference/asciify_pkg.html">asciify_pkg()</a></code>, <code><a href="reference/check_as_cran.html">check_as_cran()</a></code>, …) remain callable but emit a <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html" class="external-link">lifecycle::deprecate_warn()</a></code> and delegate to the new façades — see <code>NEWS.md</code> for the full mapping.</p>
+<p>The 10 historic functions (<code><a href="reference/get_no_visible.html">get_no_visible()</a></code>, <code><a href="reference/find_missing_tags.html">find_missing_tags()</a></code>, <code><a href="reference/asciify_pkg.html">asciify_pkg()</a></code>, <code><a href="reference/check_as_cran.html">check_as_cran()</a></code>, …) remain callable but emit a <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html" class="external-link">lifecycle::deprecate_warn()</a></code> and delegate to the new façades - see <code>NEWS.md</code> for the full mapping.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -181,27 +181,34 @@
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<p>The recommended dev-time workflow runs <code>R CMD check</code> <strong>once</strong> and reuses the result across every audit that accepts a <code>checks =</code> argument. <code><a href="reference/create_example_pkg.html">create_example_pkg()</a></code> ships a fake package that trips most of the checks <code>checkhelper</code> covers — use it to feel the flow:</p>
+<p>The recommended dev-time workflow runs <code>R CMD check</code> <strong>once</strong> and reuses the result across every audit that accepts a <code>checks =</code> argument. <code><a href="reference/create_example_pkg.html">create_example_pkg()</a></code> ships a fake package that trips every audit when you opt into the full set of fixtures - use it to feel the flow end to end:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co"># `with_nonascii = TRUE` adds a file with French accents in comments</span></span>
+<span><span class="co"># and strings; `with_undocumented_data = TRUE` saves an undocumented</span></span>
+<span><span class="co"># dataset under data/. Both default to FALSE for backwards compat.</span></span>
+<span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span>with_nonascii <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                          with_undocumented_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run R CMD check ONCE.</span></span>
 <span><span class="va">chk</span> <span class="op">&lt;-</span> <span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span><span class="va">pkg</span>, args <span class="op">=</span> <span class="st">"--as-cran"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Static audits — no check needed.</span></span>
+<span><span class="co"># Static audits - no check needed.</span></span>
 <span><span class="fu"><a href="reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Audits that consume the check — reuse `chk` via the `checks =` argument.</span></span>
+<span><span class="co"># Audits that consume the check - reuse `chk` via the `checks =` argument.</span></span>
 <span><span class="fu"><a href="reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Apply the safe fixes.</span></span>
 <span><span class="fu"><a href="reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p>See <code><a href="articles/auditing-an-r-package.html">vignette("auditing-an-r-package", package = "checkhelper")</a></code> for the full walkthrough (per-issue cheatsheet, when to share <code>chk</code>, how to fix each category). For the heavier final-gate audits — <code><a href="reference/audit_check.html">audit_check()</a></code> (full CRAN environment) and <code><a href="reference/audit_userspace.html">audit_userspace()</a></code> (no files left after check) — see <code><a href="articles/pre-submission-gates.html">vignette("pre-submission-gates", package = "checkhelper")</a></code>.</p>
+<span><span class="fu"><a href="reference/fix_ascii.html">fix_ascii</a></span><span class="op">(</span><span class="va">pkg</span>, dry_run <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/fix_dataset_doc.html">fix_dataset_doc</a></span><span class="op">(</span><span class="st">"demo_dataset"</span>, pkg <span class="op">=</span> <span class="va">pkg</span>,</span>
+<span>                description <span class="op">=</span> <span class="st">"A small demo dataset"</span>,</span>
+<span>                source <span class="op">=</span> <span class="st">"Generated by create_example_pkg()"</span><span class="op">)</span></span></code></pre></div>
+<p>See <code><a href="articles/auditing-an-r-package.html">vignette("auditing-an-r-package", package = "checkhelper")</a></code> for the full walkthrough (per-issue cheatsheet, when to share <code>chk</code>, how to fix each category). For the heavier final-gate audits - <code><a href="reference/audit_check.html">audit_check()</a></code> (full CRAN environment) and <code><a href="reference/audit_userspace.html">audit_userspace()</a></code> (no files left after check) - see <code><a href="articles/pre-submission-gates.html">vignette("pre-submission-gates", package = "checkhelper")</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
