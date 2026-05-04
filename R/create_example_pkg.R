@@ -86,11 +86,12 @@ create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
     if (isTRUE(with_nonascii)) "non-ASCII source file",
     if (isTRUE(with_undocumented_data)) "undocumented dataset under data/"
   )
+  fixtures_text <- paste(fixtures, collapse = ", ")
 
   cli::cli_inform(c(
     "v" = "Demo package created at {.path {path}}",
     "i" = if (length(fixtures)) {
-      "Active fixtures: {fixtures}."
+      "Active fixtures: {fixtures_text}."
     } else {
       "No fixtures activated (all with_* flags are FALSE)."
     }
