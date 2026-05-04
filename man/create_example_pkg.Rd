@@ -7,7 +7,9 @@
 create_example_pkg(
   path = tempfile(pattern = "pkg-"),
   with_functions = TRUE,
-  with_extra_notes = FALSE
+  with_extra_notes = FALSE,
+  with_nonascii = FALSE,
+  with_undocumented_data = FALSE
 )
 }
 \arguments{
@@ -16,6 +18,14 @@ create_example_pkg(
 \item{with_functions}{Logical. Whether there will be functions or not (with notes)}
 
 \item{with_extra_notes}{Logical. Whether there are extra notes or not}
+
+\item{with_nonascii}{Logical. If \code{TRUE}, copy a fixture file containing
+non-ASCII characters (French comments, string literals, message text)
+so \code{audit_ascii()} / \code{fix_ascii()} have something to surface.}
+
+\item{with_undocumented_data}{Logical. If \code{TRUE}, save a small
+\code{data.frame} to \verb{data/} \emph{without} writing a roxygen block for it,
+so \code{audit_dataset_doc()} flags it as undocumented.}
 }
 \value{
 Path where the example package is stored.
