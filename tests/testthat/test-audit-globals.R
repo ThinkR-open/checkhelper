@@ -4,7 +4,7 @@ test_that("audit_globals() exists with the expected signature", {
   expect_null(eval(formals(audit_globals)$checks))
 })
 
-test_that("audit_globals() returns either NULL or a 2-element list (globalVariables, functions)", {
+test_that("audit_globals() returns either NULL or a list with globalVariables / functions / operators", {
   skip_on_cran()
   local_tempdir_clean()
   path <- suppressWarnings(create_example_pkg())
@@ -12,7 +12,7 @@ test_that("audit_globals() returns either NULL or a 2-element list (globalVariab
   out <- suppressMessages(suppressWarnings(audit_globals(path)))
   if (!is.null(out)) {
     expect_type(out, "list")
-    expect_named(out, c("globalVariables", "functions"))
+    expect_named(out, c("globalVariables", "functions", "operators"))
   } else {
     succeed("audit_globals returned NULL — package had no notes")
   }
@@ -54,7 +54,7 @@ test_that("audit_globals(checks = ...) reuses a precomputed rcmdcheck and does n
   )
 
   expect_type(out, "list")
-  expect_named(out, c("globalVariables", "functions"))
+  expect_named(out, c("globalVariables", "functions", "operators"))
   expect_true("foo" %in% out$globalVariables$variable)
   expect_true("bar" %in% out$functions$variable)
 })
