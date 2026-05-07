@@ -217,7 +217,7 @@ audit_tags <- function(pkg = ".") {
     # file. Without this fallback the method's rdname_value lands on
     # its own topic, ending up in a singleton group; the method then
     # looks like it lacks `@return` even though the merged Rd inherits
-    # it from the generic (Copilot review of #105).
+    # it from the generic.
     descin <- roxygen2::block_get_tag_value(x, tag = "describeIn")
     if (is.null(descin)) {
       return("")
