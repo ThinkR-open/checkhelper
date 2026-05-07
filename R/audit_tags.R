@@ -137,9 +137,10 @@ audit_tags <- function(pkg = ".") {
     # title, no @rdname, no @name) is namespace-only and produces no
     # Rd, so CRAN never asks for `\value` on it — flagging it would be
     # a false positive.
-    # block_has_tags() is vectorised in `tags` and already returns
-    # a scalar logical (`any(block_tags(block) %in% tags)`), so a
-    # single call is enough.
+    # block_has_tags() is vectorised in `tags` and reduces internally
+    # via any(); the surrounding any() here is defensive in case a
+    # future version returns the per-tag vector. Either way a single
+    # call covers all four tag names.
     any(roxygen2::block_has_tags(
       b,
       tags = list("title", "rdname", "describeIn", "name")
