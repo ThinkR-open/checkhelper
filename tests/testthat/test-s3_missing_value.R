@@ -107,3 +107,34 @@ test_that("plain function without @return is still flagged (regression guard)", 
   flagged <- res$functions[res$functions$test_has_export_and_return == "not_ok", ]
   expect_true("helper" %in% flagged$topic)
 })
+
+test_that("S3 method documented with @describeIn inherits @return from the generic (#105 Copilot)", {
+  local_tempdir_clean()
+  path <- local_s3_pkg()
+  cat(
+    "#' Generic",
+    "#' @param x x",
+    "#' @return character",
+    "#' @export",
+    "foo <- function(x) {",
+    "  UseMethod(\"foo\")",
+    "}",
+    "",
+    "#' @describeIn foo Method for character",
+    "#' @export",
+    "foo.character <- function(x) {",
+    "  x",
+    "}",
+    sep = "\n",
+    file = file.path(path, "R", "foo.R")
+  )
+  suppressWarnings(attachment::att_amend_desc(path = path))
+
+  res <- suppressMessages(suppressWarnings(.find_missing_tags(package.dir = path)))
+
+  flagged <- res$functions[res$functions$test_has_export_and_return == "not_ok", ]
+  expect_false("foo.character" %in% flagged$topic,
+    info = "@describeIn must group the method under the generic so the inherited @return propagates"
+  )
+  expect_false("foo" %in% flagged$topic)
+})

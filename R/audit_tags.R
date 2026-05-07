@@ -210,11 +210,23 @@ audit_tags <- function(pkg = ".") {
 
   res_find_rdname_value <- lapply(res_functions, function(x) {
     rdname <- roxygen2::block_get_tag_value(x, tag = "rdname")
-    if (is.null(rdname)) {
-      ""
-    } else {
-      rdname
+    if (!is.null(rdname)) {
+      return(rdname)
     }
+    # `@describeIn target` groups the method with its generic's Rd
+    # file. Without this fallback the method's rdname_value lands on
+    # its own topic, ending up in a singleton group; the method then
+    # looks like it lacks `@return` even though the merged Rd inherits
+    # it from the generic (Copilot review of #105).
+    descin <- roxygen2::block_get_tag_value(x, tag = "describeIn")
+    if (is.null(descin)) {
+      return("")
+    }
+    name <- descin[["name"]]
+    if (is.null(name)) {
+      return("")
+    }
+    as.character(name)
   })
   res_find_return_value <- lapply(res_functions, function(x) {
     block_get_return_value(x)
