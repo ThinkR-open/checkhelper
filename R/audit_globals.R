@@ -11,8 +11,14 @@
 #'   reuses it instead of re-running `R CMD check` on `pkg`. Useful to share
 #'   a single check between [audit_globals()] and [fix_globals()].
 #'
-#' @return A list with two tibbles, `globalVariables` and `functions`,
-#'   or `NULL` if the package has no global notes.
+#' @return A list with three tibbles, `globalVariables`, `functions`
+#'   and `operators`, or `NULL` if the package has no global notes.
+#'   `globalVariables` collects names that need a
+#'   `utils::globalVariables()` declaration; `functions` collects
+#'   external functions to import via `@importFrom`; `operators`
+#'   collects NSE tokens / data.table / rlang pronouns (`:=`,
+#'   `.SD`, `.data`, `!!`, …) that also need `@importFrom` rather
+#'   than a `globalVariables()` entry.
 #' @export
 #' @seealso [fix_globals()], [get_no_visible()].
 #' @examples
@@ -102,9 +108,20 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
     if (has_operators) {
       message(printed[["liste_operators"]])
     }
+    # Two destinations: the globalVariables block goes to
+    # R/globals.R; the operators / pronouns block goes to a roxygen
+    # `@importFrom` somewhere in the package (any R file). Don't
+    # collapse them into a single "paste above into R/globals.R"
+    # message (Copilot review of #110: that wording would have the
+    # user paste NAMESPACE concerns into globals.R).
     cli::cli_inform(c(
-      "i" = "fix_globals(): paste the block above into R/globals.R, or call fix_globals(write = TRUE)."
+      "i" = "fix_globals(): paste the `utils::globalVariables(...)` block above into R/globals.R, or call fix_globals(write = TRUE)."
     ))
+    if (has_operators) {
+      cli::cli_inform(c(
+        "i" = "fix_globals(): paste the operators / pronouns `@importFrom` lines into a roxygen block in any R file (e.g. R/utils-imports.R), NOT into R/globals.R."
+      ))
+    }
     return(invisible(NULL))
   }
 
@@ -532,25 +549,32 @@ format_operators_section <- function(operators) {
     for (i in seq_len(nrow(amb))) {
       sym <- amb$variable[i]
       candidates <- strsplit(amb$source_pkg[i], ";", fixed = TRUE)[[1]]
+      # `# #'` would be invisible to roxygen2 — pasting verbatim
+       # gives the user zero @importFrom declared (Copilot review of
+       # #110). Emit the lines as real `#'` and add a `# KEEP ONE:`
+       # banner so the user knows to delete every other line.
       ambiguous_lines <- c(
         ambiguous_lines,
         sprintf(
-          "# `%s` is exported by %s -- pick the one your package uses:",
+          "# `%s` is exported by %s - KEEP ONE of the lines below, delete the other:",
           sym,
           paste0("'", candidates, "'", collapse = " or ")
         ),
         vapply(
           candidates,
-          function(pkg) paste0("# #' @importFrom ", pkg, " ", sym),
+          function(pkg) paste0("#' @importFrom ", pkg, " ", sym),
           character(1)
         )
       )
     }
   }
 
+  # Banners are `#`-prefixed so the whole block survives a verbatim
+  # paste into an R file (Copilot review of #110: the previous bare
+  # `--- ... ---` lines parse-errored when pasted as-is).
   paste(c(
-    "--- Operators / pronouns to import via NAMESPACE ---",
-    "-- add to an R file (e.g. R/utils-imports.R) --",
+    "# --- Operators / pronouns to import via NAMESPACE ---",
+    "# --- add to an R file (e.g. R/utils-imports.R) ---",
     "",
     unambiguous_lines,
     ambiguous_lines,

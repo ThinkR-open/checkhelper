@@ -15,8 +15,14 @@ reuses it instead of re-running \verb{R CMD check} on \code{pkg}. Useful to shar
 a single check between \code{\link[=audit_globals]{audit_globals()}} and \code{\link[=fix_globals]{fix_globals()}}.}
 }
 \value{
-A list with two tibbles, \code{globalVariables} and \code{functions},
-or \code{NULL} if the package has no global notes.
+A list with three tibbles, \code{globalVariables}, \code{functions}
+and \code{operators}, or \code{NULL} if the package has no global notes.
+\code{globalVariables} collects names that need a
+\code{utils::globalVariables()} declaration; \code{functions} collects
+external functions to import via \verb{@importFrom}; \code{operators}
+collects NSE tokens / data.table / rlang pronouns (\verb{:=},
+\code{.SD}, \code{.data}, \verb{!!}, …) that also need \verb{@importFrom} rather
+than a \code{globalVariables()} entry.
 }
 \description{
 Runs \verb{R CMD check} on the package and extracts every
