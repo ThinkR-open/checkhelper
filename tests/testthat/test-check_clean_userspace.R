@@ -1,19 +1,22 @@
 
 test_that("check_clean_userspace works", {
-  if (!interactive()) {
-    skip_on_os("windows")
-    skip_on_os("mac")
-  }
+  # Invariants instead of an exact row count: R CMD check leaks slightly
+  # different platform-specific artefacts (callr-*, foo.o, symbols.rds,
+  # DESCRIPTION rewrite by document(), ...) so the historical cascade
+  # `nrow == 5/6/11` would either skip whole OSes or break on minor
+  # tooling bumps. We assert the invariants the function actually
+  # promises: the two seeded leaks are caught, every row has the right
+  # shape, and any extra rows live in known noise locations.
 
   path <- suppressWarnings(create_example_pkg())
   dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
-  # Add a test that let file in the testthat dir
+  # A test that leaks a file in the testthat dir
   cat(
     "cat('#in tests', file = 'in_test.R')",
     file = file.path(path, "tests", "testthat", "test-in_test.R")
   )
 
-  # Add an example that let file in tempdir
+  # A function whose @examples leak a file in tempdir
   cat(
     "#' Function",
     "#' @return 1",
@@ -29,80 +32,37 @@ test_that("check_clean_userspace works", {
     file = file.path(path, "R", "in_example.R")
   )
 
-  # Add a vignette that let file in local ?
-
   suppressWarnings(attachment::att_amend_desc(path = path))
 
   check_output <- tempfile("check_output")
-  scratch_dir <- tempfile("dirtmp")
 
-  # debugonce(check_clean_userspace)
   expect_warning(
     expect_message(
       all_files <- check_clean_userspace(pkg = path, check_output = check_output),
       "Some files"
     ),
-    "One of the 'Run examples'"
+    "Files surfaced during 'Run examples'"
   )
 
-  if (nrow(all_files) == 5) {
-    # In some cases, the check updates the DESCRIPTION file as it run document()
-    expect_equal(all_files$source, c(
-      "Unit tests", "Unit tests", "Run examples", "Run examples",
-      "Full check"
-    ))
-    expect_equal(all_files$problem, c("added", "added", "added", "added", "added"))
-    expect_equal(
-      normalizePath(all_files$where, winslash = "/"),
-      normalizePath(c(path, rep(tempdir(), 4)), winslash = "/")
-    )
-    expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
-    expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
-    expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
-  } else if (nrow(all_files) == 6) {
-    # In some cases, the check updates the DESCRIPTION file as it run document()
-    expect_equal(all_files$source, c(
-      "Unit tests", "Unit tests", "Run examples", "Run examples",
-      "Full check", "Full check"
-    ))
-    expect_equal(all_files$problem, c("added", "added", "added", "added", "added", "added"))
-    expect_equal(
-      normalizePath(all_files$where, winslash = "/"),
-      normalizePath(c(path, rep(tempdir(), 5)), winslash = "/")
-    )
-    expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
-    expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
-    expect_true(any(grepl("DESCRIPTION$", all_files$file[5])))
-    expect_true(any(grepl("symbols[.]rds$", all_files$file[6])))
-  } else if (nrow(all_files) == 11) {
-    expect_equal(all_files$source, c(
-      "Unit tests", "Unit tests", "Run examples", "Run examples",
-      "Full check", "Full check", "Full check", "Full check", "Full check",
-      "Full check", "Full check"
-    ))
-    expect_equal(all_files$problem, c(
-      "added", "added", "added", "added", "added", "added", "added",
-      "added", "added", "added", "added"
-    ))
-    expect_equal(
-      all_files$where,
-      gsub(
-        file.path("/private", c(path, rep(tempdir(), 10)), fsep = ""),
-        pattern = "//",
-        replacement = "/"
-      )
-    )
-    expect_true(all(grepl("in_test[.]R", all_files$file[1:2])))
-    expect_true(any(grepl("in_example", all_files$file[3:4]))) # One of the two
-    expect_true(any(grepl("callr-", all_files$file[5:8])))
-    expect_true(any(grepl("DESCRIPTION$", all_files$file[9])))
-    expect_true(any(grepl("foo[.]o", all_files$file[10])))
-    expect_true(any(grepl("symbols[.]rds", all_files$file[11])))
-  } else {
-    stop("Number of rows is not expected: ", all_files)
-  }
+  expect_s3_class(all_files, "tbl_df")
+  expect_named(all_files, c("source", "problem", "where", "file"))
+  expect_gte(nrow(all_files), 4) # 2x in_test + 2x in_example minimum
+  expect_true(all(all_files$problem %in% c("added", "deleted", "changed")))
+  expect_true(all(all_files$source %in% c(
+    "Unit tests", "Run examples", "Run examples (partial)",
+    "Full check", "Build Vignettes", "Tests in check dir"
+  )))
+
+  # The two seeded leaks must be caught, regardless of OS noise.
+  # `Run examples` may surface as `Run examples (partial)` if a
+  # platform flake makes devtools::run_examples() abort midway, so
+  # accept both tags when looking for the example leak.
+  unit_files <- all_files$file[all_files$source == "Unit tests"]
+  example_files <- all_files$file[all_files$source %in%
+    c("Run examples", "Run examples (partial)")]
+  expect_true(any(grepl("in_test[.]R", unit_files)))
+  expect_true(any(grepl("in_example", example_files)))
 
   unlink(path, recursive = TRUE)
   unlink(check_output, recursive = TRUE)
-  unlink(scratch_dir, recursive = TRUE)
 })

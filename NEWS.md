@@ -1,5 +1,28 @@
 # checkhelper (development version)
 
+## `audit_userspace()` / `check_clean_userspace()` robustness
+
+- The `Run examples` step is now wrapped in a `tryCatch()`. When
+  `devtools::run_examples()` fails deep inside `pkgload` (e.g. the
+  `srcrefs[[1L]]: subscript out of bounds` crash on `@examplesIf`
+  examples whose body is fully under `\donttest{}`, on older R +
+  pkgload combos), the audit no longer aborts: it warns, skips the
+  examples slice, and still runs the unit tests / full check /
+  vignettes steps (#93).
+- On a partial run, the snapshot diff is still computed (rows tagged
+  `source = "Run examples (partial)"`) so files created before the
+  crash do not slip into the next baseline and disappear from the
+  report.
+- The follow-up warning that surfaces files added during examples
+  now lists the files instead of telling the user to "not bother
+  about it" — a real leak written from inside an example would
+  previously have been silently dismissed.
+- `tests/testthat/test-check_clean_userspace.R` no longer hardcodes a
+  `nrow == 5/6/11` cascade. It asserts the invariants the function
+  promises (the seeded leaks are caught, every row has the right
+  shape) instead of an exact OS-dependent row count, so the test now
+  runs on every OS (#54).
+
 ## `audit_globals()` / `fix_globals()` skip vignettes / tests / examples
 
 - The internal `R CMD check` triggered by `audit_globals()` and

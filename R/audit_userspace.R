@@ -85,10 +85,41 @@ audit_userspace <- function(pkg = ".",
   scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
   cli::cli_rule("Run examples")
-  devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
-  all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
-  if (any(all_files$source == "Run examples")) {
-    warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
+  examples_ok <- tryCatch(
+    {
+      devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
+      TRUE
+    },
+    error = function(e) {
+      warning(
+        "Skipping the 'Run examples' step: devtools::run_examples() failed (",
+        conditionMessage(e),
+        "). The remaining steps (full check, vignettes) will still run.",
+        call. = FALSE
+      )
+      FALSE
+    }
+  )
+  # Always diff the snapshots, even on a partial run. Without this,
+  # files created before the crash slipped into the next baseline and
+  # became invisible to the rest of the audit. The source label is
+  # tagged so the report distinguishes a clean run from a partial one.
+  examples_source <- if (isTRUE(examples_ok)) {
+    "Run examples"
+  } else {
+    "Run examples (partial)"
+  }
+  before_examples_rows <- nrow(all_files)
+  all_files <- what_changed(local_shot, scratch_shot, source = examples_source, all_files, check_output)
+  example_leaks <- all_files[
+    seq.int(from = before_examples_rows + 1L, length.out = nrow(all_files) - before_examples_rows),
+  ]
+  if (nrow(example_leaks) > 0L) {
+    warning(
+      "Files surfaced during '", examples_source, "' (review whether each is a real leak or just a helper file):\n",
+      paste0("  - ", example_leaks$file, collapse = "\n"),
+      call. = FALSE
+    )
   }
 
   local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
