@@ -9,6 +9,14 @@
   pkgload combos), the audit no longer aborts: it warns, skips the
   examples slice, and still runs the unit tests / full check /
   vignettes steps (#93).
+- On a partial run, the snapshot diff is still computed (rows tagged
+  `source = "Run examples (partial)"`) so files created before the
+  crash do not slip into the next baseline and disappear from the
+  report.
+- The follow-up warning that surfaces files added during examples
+  now lists the files instead of telling the user to "not bother
+  about it" — a real leak written from inside an example would
+  previously have been silently dismissed.
 - `tests/testthat/test-check_clean_userspace.R` no longer hardcodes a
   `nrow == 5/6/11` cascade. It asserts the invariants the function
   promises (the seeded leaks are caught, every row has the right

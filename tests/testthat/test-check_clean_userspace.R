@@ -35,14 +35,13 @@ test_that("check_clean_userspace works", {
   suppressWarnings(attachment::att_amend_desc(path = path))
 
   check_output <- tempfile("check_output")
-  scratch_dir <- tempfile("dirtmp")
 
   expect_warning(
     expect_message(
       all_files <- check_clean_userspace(pkg = path, check_output = check_output),
       "Some files"
     ),
-    "One of the 'Run examples'"
+    "Files surfaced during 'Run examples'"
   )
 
   expect_s3_class(all_files, "tbl_df")
@@ -50,8 +49,8 @@ test_that("check_clean_userspace works", {
   expect_gte(nrow(all_files), 4) # 2x in_test + 2x in_example minimum
   expect_true(all(all_files$problem %in% c("added", "deleted", "changed")))
   expect_true(all(all_files$source %in% c(
-    "Unit tests", "Run examples", "Full check", "Build Vignettes",
-    "Tests in check dir"
+    "Unit tests", "Run examples", "Run examples (partial)",
+    "Full check", "Build Vignettes", "Tests in check dir"
   )))
 
   # The two seeded leaks must be caught, regardless of OS noise:
@@ -62,5 +61,4 @@ test_that("check_clean_userspace works", {
 
   unlink(path, recursive = TRUE)
   unlink(check_output, recursive = TRUE)
-  unlink(scratch_dir, recursive = TRUE)
 })
