@@ -32,7 +32,11 @@ test_that("audit_citation() flags personList(), as.personList() and citEntry()",
 
   expect_s3_class(out, "tbl_df")
   expect_named(out, c("call", "line", "suggestion"))
-  expect_setequal(out$call, c("citEntry", "personList"))
+  # Use expect_equal on a sorted vector rather than expect_setequal
+  # so a duplicated row (one source position fanned out into two
+  # rows) would fail the test instead of slipping through under
+  # set-equality semantics.
+  expect_equal(sort(out$call), sort(c("citEntry", "personList")))
   expect_true(all(out$line >= 1L))
   expect_match(out$suggestion[out$call == "citEntry"], "bibentry", fixed = TRUE)
   expect_match(

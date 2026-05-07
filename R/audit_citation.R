@@ -73,9 +73,21 @@ audit_citation <- function(pkg = ".") {
     line = integer(0),
     suggestion = character(0)
   )
+  # Surface a parse error as a warning rather than swallowing it
+  # silently — otherwise a syntactically broken CITATION (missing
+  # comma, unclosed paren, ...) would be reported as "no old-style
+  # calls detected", which is misleading. Still return the empty
+  # tibble so the caller can keep going.
   exprs <- tryCatch(
     parse(file = path, keep.source = TRUE),
-    error = function(e) NULL
+    error = function(e) {
+      warning(
+        "Could not parse `", path, "`: ", conditionMessage(e),
+        ". audit_citation() cannot inspect a syntactically broken file.",
+        call. = FALSE
+      )
+      NULL
+    }
   )
   if (is.null(exprs)) {
     return(empty)
