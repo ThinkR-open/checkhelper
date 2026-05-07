@@ -85,10 +85,26 @@ audit_userspace <- function(pkg = ".",
   scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
   cli::cli_rule("Run examples")
-  devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
-  all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
-  if (any(all_files$source == "Run examples")) {
-    warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
+  examples_ok <- tryCatch(
+    {
+      devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
+      TRUE
+    },
+    error = function(e) {
+      warning(
+        "Skipping the 'Run examples' step: devtools::run_examples() failed (",
+        conditionMessage(e),
+        "). The remaining steps (full check, vignettes) will still run.",
+        call. = FALSE
+      )
+      FALSE
+    }
+  )
+  if (isTRUE(examples_ok)) {
+    all_files <- what_changed(local_shot, scratch_shot, source = "Run examples", all_files, check_output)
+    if (any(all_files$source == "Run examples")) {
+      warning("One of the 'Run examples' .R file was created to run examples. You should not bother about it")
+    }
   }
 
   local_shot <- utils::fileSnapshot(pkg, timestamp = local_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)

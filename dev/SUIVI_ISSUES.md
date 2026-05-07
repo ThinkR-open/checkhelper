@@ -106,15 +106,36 @@ fonctions du paquet (y compris non exportées) deviennent visibles.
   Ajout de `pkgload` aux `Imports`.
 - **Commit** : `fix(find_missing_tags): unload target package on exit (#77)`
 
+### #93 — `Error in srcrefs[[1L]]: subscript out of bounds` sur `@examplesIf`
+Bug environnemental dans `pkgload::run_example()` (ancien R / ancien
+pkgload, exemple `@examplesIf` dont le corps tombe entièrement dans
+`\donttest{}`). Pas reproductible localement avec R 4.5 + pkgload
+récent. Le fix est défensif côté checkhelper plutôt que pourchasser
+l'upstream :
+
+- **Test** : `tests/testthat/test-check_clean_userspace_robust.R` —
+  mocke `devtools::run_examples` pour lever l'erreur et vérifie que
+  `.check_clean_userspace()` continue (warning + tibble valide).
+- **Fix** : `tryCatch()` autour de `devtools::run_examples()` dans
+  `R/audit_userspace.R`, message clair, skip de la passe examples,
+  continuation sur les passes suivantes.
+
+### #54 — Test `check_clean_userspace` brittle / non testable Windows
+La cascade `nrow == 5/6/11` dans `tests/testthat/test-check_clean_userspace.R`
+forçait à `skip_on_os("windows", "mac")` car les artefacts laissés par
+`R CMD check` varient par OS.
+
+- **Refactor** : assertions d'invariants (`nrow >= 4`, `source` et
+  `problem` dans des ensembles connus, les deux fuites seedées sont
+  retrouvées). Plus de `skip_on_os` : le test tourne sur tous les OS.
+
 ## Issues envisagées mais non traitées dans cette passe
 
 | # | Pourquoi pas |
 |---|---|
 | 92 | Demande la repro complète sur `gggenomes` ; je n'ai pas pu reproduire en l'état avec un cas minimal — à creuser sur le repo cité. |
 | 87 | Demande UX (forcer `interactive() == FALSE`) qui touche au lifecycle de RStudio ; à arbitrer avec mainteneur. |
-| 86 | Compatibilité avec roxygen2 dev qui change les `warnings()` en `messages()` ; les tests existants s'adaptent déjà via `if (packageVersion("roxygen2") >= "7.3.0")`. |
-| 93 | `Error in srcrefs[[1L]]` profond, pas de repro minimal sans le paquet `rjd3tramoseats` JVM-dépendant. |
-| 67, 62, 27, 21, 12, 53, 52, 54, 23, 29 | Features ou refactors qui demandent une décision design avant code. |
+| 67, 62, 27, 52, 29 | Features qui demandent une décision design avant code. |
 
 ## CI
 
