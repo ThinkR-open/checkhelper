@@ -19,13 +19,11 @@ test_that(".check_clean_userspace() runs examples in a fresh non-interactive R",
     invisible(NULL)
   }
   # Stub the rest of the heavy pipeline so this contract test stays
-  # cheap and deterministic. Without this, the test was running the
-  # full devtools::test + rcmdcheck::rcmdcheck + devtools::build_vignettes
-  # pipeline against a freshly created example package — tens of seconds
-  # plus CRAN-mirror dependence — only to check one mocked argument
-  # (Copilot review on PR #106). Internal namespace access goes through
-  # checkhelper::: so the mock survives `R CMD check` against the
-  # installed package (Copilot review on PR #107).
+  # cheap and deterministic: this is a contract test on one mocked
+  # argument, it must not pull in devtools::test, rcmdcheck and
+  # build_vignettes against a freshly created example package.
+  # Internal namespace access goes through checkhelper::: so the
+  # mock survives `R CMD check` against the installed package.
   fake_test <- function(...) invisible(NULL)
   fake_rcmdcheck <- function(...) {
     list(notes = character(0), warnings = character(0), errors = character(0))
@@ -35,7 +33,7 @@ test_that(".check_clean_userspace() runs examples in a fresh non-interactive R",
   # No `try(silent = TRUE)`: a real failure inside .check_clean_userspace()
   # (e.g. attachment::att_amend_desc() blowing up, a mock-binding miss)
   # must surface as a real error rather than being silently dropped and
-  # then misreported as "fresh != TRUE" (Copilot review of #106).
+  # then misreported downstream as "fresh != TRUE".
   suppressWarnings(suppressMessages(
     testthat::with_mocked_bindings(
       testthat::with_mocked_bindings(
