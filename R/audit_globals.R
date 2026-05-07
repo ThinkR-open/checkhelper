@@ -147,6 +147,14 @@ extract_existing_globals <- function(globals_path) {
     if (!is_globalVariables_call(e)) {
       next
     }
+    # Guard against `utils::globalVariables()` with no arguments
+    # (length(e) == 1 is just the function symbol itself). Without
+    # this guard `e[[2]]` raises subscript out of bounds and aborts
+    # the whole `fix_globals(write = TRUE)` pass on a degenerate
+    # but otherwise legal `globals.R`.
+    if (length(e) < 2L) {
+      next
+    }
     out <- c(out, collect_string_literals(e[[2]]))
   }
   unique(out)
@@ -158,7 +166,7 @@ extract_existing_globals <- function(globals_path) {
 #' file's contents — the historic `eval(arg, envir = safe_env)` ran
 #' under `baseenv()` (which exposes `system()`, `library()`, `file()`,
 #' …), so a crafted `globals.R` could execute arbitrary code at
-#' `fix_globals(write = TRUE)` time (Copilot review of #108).
+#' `fix_globals(write = TRUE)` time.
 #'
 #' Symbols, numerics, logicals, `NULL`, and arbitrary calls
 #' (`system(...)`, `c(...)`, `unique(...)`) are walked through but

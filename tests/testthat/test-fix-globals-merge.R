@@ -81,13 +81,13 @@ test_that("fix_globals(write = TRUE) deduplicates across old / new", {
 })
 
 test_that("fix_globals(write = TRUE) handles empty fresh + non-empty preserved", {
-  # Regression for the bug Copilot flagged on PR #108: when R CMD check
-  # surfaces only function notes (no `is_global_variable` rows), the
-  # freshly built `globalVariables(unique(c(\n\n)))` body is empty.
-  # The previous merge injected a leading `,` before the preserved
-  # chunk, producing `c(, \n# ...\n"a")` which parses but errors at
-  # eval time with "argument 1 is empty". The output must always be
-  # both parseable AND evaluable (sourcing the file must not throw).
+  # When R CMD check surfaces only function notes (no
+  # `is_global_variable` rows), the freshly built
+  # `globalVariables(unique(c(\n\n)))` body is empty. A naive merge
+  # would inject a leading `,` before the preserved chunk, producing
+  # `c(, \n# ...\n"a")` which parses but errors at eval time with
+  # "argument 1 is empty". The output must always be both parseable
+  # AND evaluable (sourcing the file must not throw).
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
   writeLines(
@@ -133,24 +133,26 @@ test_that("fix_globals(write = TRUE) handles empty fresh + non-empty preserved",
   )
 })
 
-test_that("extract_existing_globals does NOT execute side effects from globals.R (RCE guard, Copilot #108)", {
-  # Sanity guard against the security finding Copilot raised on PR
-  # #108: previously extract_existing_globals() ran
-  # `eval(arg, envir = safe_env)` where `safe_env`'s parent was
-  # `baseenv()`. baseenv() exposes `system()`, `library()`, `file()`,
-  # so a malicious or accidentally clever R/globals.R could execute
-  # arbitrary code at fix_globals(write = TRUE) time. The fix walks
-  # the AST and collects only character literals — the side effect
-  # must never fire, even though the file contains a perfectly
-  # evaluable call.
+test_that("extract_existing_globals does NOT execute side effects from globals.R (RCE guard)", {
+  # Sanity guard against a known RCE shape: if extract_existing_globals
+  # ever fell back to `eval()` under `baseenv()` (which exposes
+  # `file.create`, `system`, `library`, `file`, ...), a malicious or
+  # accidentally clever `R/globals.R` could execute arbitrary code at
+  # `fix_globals(write = TRUE)` time. The current implementation walks
+  # the AST and collects only character literals; the side effect must
+  # never fire even though the embedded call is perfectly evaluable.
+  #
+  # Use `file.create()` (cross-platform: Linux / macOS / Windows)
+  # rather than `system("touch ...")`, which silently no-ops on
+  # Windows and would make the test toothless on that platform.
   marker <- tempfile("rce_marker_")
   expect_false(file.exists(marker))
 
   globals_path <- tempfile(fileext = ".R")
   writeLines(
     sprintf(
-      'utils::globalVariables(c(system("touch %s", intern = TRUE), "real_var"))',
-      marker
+      'utils::globalVariables(c(if (file.create(%s)) "leaked" else "ok", "real_var"))',
+      shQuote(marker)
     ),
     globals_path
   )
@@ -165,6 +167,23 @@ test_that("extract_existing_globals does NOT execute side effects from globals.R
     info = "extract_existing_globals must never execute calls inside globals.R"
   )
   expect_true("real_var" %in% result)
+})
+
+test_that("extract_existing_globals tolerates `globalVariables()` with no arguments", {
+  # Degenerate but legal call shape: a `globals.R` containing just
+  # `utils::globalVariables()` (no args) used to crash the extractor
+  # with `subscript out of bounds` on `e[[2]]`, aborting the entire
+  # `fix_globals(write = TRUE)` pass. The walker now arity-checks the
+  # call before dereferencing.
+  globals_path <- tempfile(fileext = ".R")
+  writeLines(
+    'utils::globalVariables()',
+    globals_path
+  )
+  on.exit(unlink(globals_path), add = TRUE)
+
+  expect_no_error(result <- extract_existing_globals(globals_path))
+  expect_equal(result, character(0))
 })
 
 test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
