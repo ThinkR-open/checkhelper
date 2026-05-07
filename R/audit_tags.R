@@ -137,10 +137,13 @@ audit_tags <- function(pkg = ".") {
     # title, no @rdname, no @name) is namespace-only and produces no
     # Rd, so CRAN never asks for `\value` on it — flagging it would be
     # a false positive.
-    rd_tags <- list("title", "rdname", "describeIn", "name")
-    any(vapply(rd_tags, function(tag) {
-      isTRUE(roxygen2::block_has_tags(b, tags = list(tag)))
-    }, logical(1)))
+    # block_has_tags() is vectorised in `tags` and already returns
+    # a scalar logical (`any(block_tags(block) %in% tags)`), so a
+    # single call is enough.
+    any(roxygen2::block_has_tags(
+      b,
+      tags = list("title", "rdname", "describeIn", "name")
+    ))
   }
 
   res_functions <- map(
