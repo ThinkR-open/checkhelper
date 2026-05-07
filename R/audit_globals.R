@@ -106,9 +106,18 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
     dir.create(dirname(globals_path), recursive = TRUE)
   }
 
-  writeLines(printed[["liste_globals_code"]], globals_path)
+  # Merge with whatever the file already declared. R CMD check filters
+  # out names already covered by an existing globalVariables() call,
+  # so by the time fix_globals() runs the second time, the new notes
+  # only list *uncovered* names. Overwriting would erase the curated
+  # set and re-flag those names on the very next check — a circular
+  # game the user can never win.
+  preserved <- extract_existing_globals(globals_path)
+  merged_block <- merge_globals_block(printed[["liste_globals_code"]], preserved)
+
+  writeLines(merged_block, globals_path)
   cli::cli_inform(c(
-    "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}}."
+    "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}} (merged with {length(preserved)} previously declared name{?s})."
   ))
 
   invisible(globals_path)
@@ -116,6 +125,82 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
 
 
 # Internal implementations ---------------------------------------------------
+
+#' Extract the names already declared by `globalVariables()` calls in
+#' an existing `R/globals.R`. Returns `character(0)` when the file
+#' doesn't exist or doesn't parse.
+#'
+#' @noRd
+extract_existing_globals <- function(globals_path) {
+  if (!file.exists(globals_path)) {
+    return(character(0))
+  }
+  exprs <- tryCatch(parse(file = globals_path), error = function(e) NULL)
+  if (is.null(exprs)) {
+    return(character(0))
+  }
+  out <- character(0)
+  safe_env <- new.env(parent = baseenv())
+  for (i in seq_along(exprs)) {
+    e <- exprs[[i]]
+    if (!is_globalVariables_call(e)) {
+      next
+    }
+    arg <- e[[2]]
+    vals <- tryCatch(eval(arg, envir = safe_env), error = function(e2) NULL)
+    if (is.character(vals)) {
+      out <- c(out, vals)
+    }
+  }
+  unique(out)
+}
+
+#' TRUE when `e` is a call to `globalVariables()` or
+#' `utils::globalVariables()`.
+#' @noRd
+is_globalVariables_call <- function(e) {
+  if (!is.call(e)) {
+    return(FALSE)
+  }
+  fn <- e[[1]]
+  if (is.name(fn) && identical(fn, as.name("globalVariables"))) {
+    return(TRUE)
+  }
+  if (is.call(fn) && length(fn) == 3 &&
+        identical(fn[[1]], as.name("::")) &&
+        identical(fn[[2]], as.name("utils")) &&
+        identical(fn[[3]], as.name("globalVariables"))) {
+    return(TRUE)
+  }
+  FALSE
+}
+
+#' Inject the previously-declared names into the freshly generated
+#' `globalVariables(unique(c(...)))` block so that the rewrite is a
+#' superset of the existing declarations.
+#'
+#' @param fresh_block character(1), the block produced by
+#'   `.print_globals()$liste_globals_code`. Always wrapped in
+#'   `unique(c(...))` so duplicates are harmless.
+#' @param preserved character vector of names parsed from the
+#'   existing `globals.R` (may be empty).
+#' @noRd
+merge_globals_block <- function(fresh_block, preserved) {
+  if (length(preserved) == 0L) {
+    return(fresh_block)
+  }
+  preserved <- sort(unique(preserved))
+  preserved_chunk <- paste0(
+    "# previously declared:\n",
+    paste0("\"", preserved, "\"", collapse = ", ")
+  )
+  # Inject just before the final closing `)))`.
+  sub(
+    "\n\\)\\)\\)$",
+    paste0(", \n", preserved_chunk, "\n)))"),
+    fresh_block
+  )
+}
 
 #' List notes from check and identify global variables.
 #'

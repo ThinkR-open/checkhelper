@@ -1,5 +1,22 @@
 # checkhelper (development version)
 
+## `fix_globals(write = TRUE)` now merges with the existing `R/globals.R`
+
+- Previously, `fix_globals(write = TRUE)` overwrote `R/globals.R`
+  with a fresh `utils::globalVariables(unique(c(...)))` block. That
+  was unsafe: `R CMD check` already filters out names covered by an
+  existing `globalVariables()` call, so the second time
+  `fix_globals()` ran on a curated package, only the *uncovered*
+  names showed up in the notes - overwriting then erased every
+  previously-declared name and re-flagged it on the next check
+  (circular game).
+- The function now parses the existing `R/globals.R`, extracts the
+  names from any `globalVariables()` / `utils::globalVariables()`
+  calls it finds, and rewrites the file as the deduplicated union
+  of the freshly detected names and the already-declared ones. The
+  preserved block is appended under a `# previously declared:`
+  banner inside the same `unique(c(...))` payload.
+
 ## `audit_userspace()` / `check_clean_userspace()` robustness
 
 - The `Run examples` step is now wrapped in a `tryCatch()`. When
@@ -15,7 +32,7 @@
   report.
 - The follow-up warning that surfaces files added during examples
   now lists the files instead of telling the user to "not bother
-  about it" — a real leak written from inside an example would
+  about it" - a real leak written from inside an example would
   previously have been silently dismissed.
 - `tests/testthat/test-check_clean_userspace.R` no longer hardcodes a
   `nrow == 5/6/11` cascade. It asserts the invariants the function
