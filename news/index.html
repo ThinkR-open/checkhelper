@@ -81,6 +81,11 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
 <div class="section level3">
+<h3 id="audit_globals--fix_globals-skip-vignettes--tests--examples-development-version">
+<code>audit_globals()</code> / <code>fix_globals()</code> skip vignettes / tests / examples<a class="anchor" aria-label="anchor" href="#audit_globals--fix_globals-skip-vignettes--tests--examples-development-version"></a></h3>
+<ul><li>The internal <code>R CMD check</code> triggered by <code><a href="../reference/audit_globals.html">audit_globals()</a></code> and <code><a href="../reference/fix_globals.html">fix_globals()</a></code> now passes <code>build_args = "--no-build-vignettes"</code> and <code>args = c("--no-manual", "--no-tests", "--no-examples", "--no-vignettes")</code>. The “no visible binding for global variable” / “no visible global function definition” notes come from R CMD check’s static <code>* checking R code for possible problems</code> step and never depended on those phases. On a vignette-heavy package this turns a multi-minute wait into a few seconds. The defaults are exposed as <code>build_args</code> / <code>args</code> arguments to <code>.get_notes()</code> so a caller can still opt back in if needed.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="create_example_pkg-covers-every-audit-development-version">
 <code>create_example_pkg()</code> covers every audit<a class="anchor" aria-label="anchor" href="#create_example_pkg-covers-every-audit-development-version"></a></h3>
 <ul><li>
