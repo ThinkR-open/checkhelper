@@ -2,7 +2,16 @@
 
 ## `audit_userspace()` / `check_clean_userspace()` robustness
 
-- The `Run examples` step is now wrapped in a `tryCatch()`. When
+- The `Run examples` step now spawns a fresh non-interactive R
+  subprocess (`devtools::run_examples(fresh = TRUE)`). Examples
+  wrapped in `if (interactive())` are therefore skipped exactly as
+  they would be under `R CMD check`, instead of being executed in
+  the parent RStudio session (#87).
+- The `<tempdir>/callr` filter in `what_changed()` is anchored with
+  a trailing `/` so it no longer over-matches sibling directories
+  whose name happens to start with `callr` (e.g.
+  `callr2/leaked.txt`, `callright_a_real_leak/...`).
+- The same step is wrapped in a `tryCatch()`. When
   `devtools::run_examples()` fails deep inside `pkgload` (e.g. the
   `srcrefs[[1L]]: subscript out of bounds` crash on `@examplesIf`
   examples whose body is fully under `\donttest{}`, on older R +
