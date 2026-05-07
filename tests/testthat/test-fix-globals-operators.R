@@ -32,7 +32,7 @@ test_that(":= is routed to operators, not to globalVariables", {
     note_var("indicator_fn", "real_global")
   ))
 
-  res <- .get_no_visible(checks = chk)
+  res <- checkhelper:::.get_no_visible(checks = chk)
 
   expect_true("operators" %in% names(res),
     info = "the no-visible struct must surface a third bucket for operators"
@@ -42,7 +42,7 @@ test_that(":= is routed to operators, not to globalVariables", {
   expect_false(":=" %in% res$functions$variable)
   expect_true("real_global" %in% res$globalVariables$variable)
 
-  printed <- .print_globals(res, message = FALSE)
+  printed <- checkhelper:::.print_globals(res, message = FALSE)
 
   # The Rd payload (what gets written to R/globals.R) must keep the
   # real global and drop the operator.
@@ -62,8 +62,8 @@ test_that(".data and .env are routed to operators (rlang pronouns)", {
     note_var("my_fn", "real_col")
   ))
 
-  res <- .get_no_visible(checks = chk)
-  printed <- .print_globals(res, message = FALSE)
+  res <- checkhelper:::.get_no_visible(checks = chk)
+  printed <- checkhelper:::.print_globals(res, message = FALSE)
 
   expect_setequal(res$operators$variable, c(".data", ".env"))
   expect_setequal(res$globalVariables$variable, "real_col")
@@ -79,8 +79,8 @@ test_that("data.table pronouns (.SD, .N, .I, .GRP, .BY, .EACHI) are routed to op
   notes <- vapply(toks, function(t) note_var("dt_fn", t), character(1))
   chk <- fake_check_with_notes(notes)
 
-  res <- .get_no_visible(checks = chk)
-  printed <- .print_globals(res, message = FALSE)
+  res <- checkhelper:::.get_no_visible(checks = chk)
+  printed <- checkhelper:::.print_globals(res, message = FALSE)
 
   expect_setequal(res$operators$variable, toks)
   expect_equal(nrow(res$globalVariables), 0L)
@@ -93,7 +93,10 @@ test_that("data.table pronouns (.SD, .N, .I, .GRP, .BY, .EACHI) are routed to op
 
 test_that("ambiguous source (`:=` from data.table OR rlang) lists both candidates", {
   chk <- fake_check_with_notes(note_fun("my_fn", ":="))
-  printed <- .print_globals(.get_no_visible(checks = chk), message = FALSE)
+  printed <- checkhelper:::.print_globals(
+    checkhelper:::.get_no_visible(checks = chk),
+    message = FALSE
+  )
 
   # Both candidate packages must be visible — never silently pick one.
   expect_match(printed$liste_operators, "data.table", fixed = TRUE)
@@ -106,8 +109,8 @@ test_that("plain global variables still go to utils::globalVariables() (no regre
     note_var("fn", "var2")
   ))
 
-  res <- .get_no_visible(checks = chk)
-  printed <- .print_globals(res, message = FALSE)
+  res <- checkhelper:::.get_no_visible(checks = chk)
+  printed <- checkhelper:::.print_globals(res, message = FALSE)
 
   expect_equal(nrow(res$operators), 0L)
   expect_setequal(res$globalVariables$variable, c("var1", "var2"))

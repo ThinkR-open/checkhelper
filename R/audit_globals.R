@@ -110,10 +110,9 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
     }
     # Two destinations: the globalVariables block goes to
     # R/globals.R; the operators / pronouns block goes to a roxygen
-    # `@importFrom` somewhere in the package (any R file). Don't
-    # collapse them into a single "paste above into R/globals.R"
-    # message (Copilot review of #110: that wording would have the
-    # user paste NAMESPACE concerns into globals.R).
+    # `@importFrom` somewhere in the package (any R file). Keep the
+    # two cli messages separate so the user does not paste NAMESPACE
+    # concerns into globals.R.
     cli::cli_inform(c(
       "i" = "fix_globals(): paste the `utils::globalVariables(...)` block above into R/globals.R, or call fix_globals(write = TRUE)."
     ))
@@ -550,9 +549,9 @@ format_operators_section <- function(operators) {
       sym <- amb$variable[i]
       candidates <- strsplit(amb$source_pkg[i], ";", fixed = TRUE)[[1]]
       # `# #'` would be invisible to roxygen2 — pasting verbatim
-       # gives the user zero @importFrom declared (Copilot review of
-       # #110). Emit the lines as real `#'` and add a `# KEEP ONE:`
-       # banner so the user knows to delete every other line.
+       # gives the user zero @importFrom declared. Emit the lines as
+       # real `#'` and add a `# KEEP ONE:` banner so the user knows
+       # to delete every other line.
       ambiguous_lines <- c(
         ambiguous_lines,
         sprintf(
@@ -570,8 +569,7 @@ format_operators_section <- function(operators) {
   }
 
   # Banners are `#`-prefixed so the whole block survives a verbatim
-  # paste into an R file (Copilot review of #110: the previous bare
-  # `--- ... ---` lines parse-errored when pasted as-is).
+  # paste into an R file. Bare `--- ... ---` would parse-error.
   paste(c(
     "# --- Operators / pronouns to import via NAMESPACE ---",
     "# --- add to an R file (e.g. R/utils-imports.R) ---",
