@@ -125,16 +125,35 @@ La cascade `nrow == 5/6/11` dans `tests/testthat/test-check_clean_userspace.R`
 forçait à `skip_on_os("windows", "mac")` car les artefacts laissés par
 `R CMD check` varient par OS.
 
-- **Refactor** : assertions d'invariants (`nrow >= 4`, `source` et
-  `problem` dans des ensembles connus, les deux fuites seedées sont
-  retrouvées). Plus de `skip_on_os` : le test tourne sur tous les OS.
+- **Refactor** : assertions d'invariants (`nrow >= 2`, `source` et
+  `problem` dans des ensembles connus, la fuite seedée `in_test.R` est
+  retrouvée). Plus de `skip_on_os` : le test tourne sur tous les OS.
+
+### #87 — Examples `if (interactive())` exécutés par `check_clean_userspace()`
+L'utilisateur lance `check_clean_userspace()` depuis RStudio.
+`devtools::run_examples(fresh = FALSE)` exécutait les examples dans la
+session courante (interactive), donc les blocs `if (interactive()) {...}`
+tournaient — ce qui n'arrive pas sous `R CMD check`.
+
+- **Test** : `tests/testthat/test-check_clean_userspace_interactive.R` —
+  mocke `devtools::run_examples`, capture les arguments, asserte
+  `fresh = TRUE`.
+- **Fix** : `fresh = TRUE` dans l'appel `devtools::run_examples()` dans
+  `R/audit_userspace.R`. Le sous-process callr est non-interactif, donc
+  `interactive()` y vaut `FALSE` exactement comme sous CRAN.
+- **Effet de bord** : les fuites synthétiques d'examples dans
+  `tempfile()` ne sont plus détectées (le sous-process nettoie son
+  tempdir). C'est aligné avec ce que `R CMD check` voit. Le test
+  `check_clean_userspace works` a été simplifié en conséquence (la
+  fuite seedée est désormais celle, réelle, dans `pkg/tests/`).
+  Élargissement de la regex `file.no.problem` pour ignorer aussi le
+  préfixe `callr/` (en plus de `callr-`) introduit par les versions
+  récentes de callr.
 
 ## Issues envisagées mais non traitées dans cette passe
 
 | # | Pourquoi pas |
 |---|---|
-| 92 | Demande la repro complète sur `gggenomes` ; je n'ai pas pu reproduire en l'état avec un cas minimal — à creuser sur le repo cité. |
-| 87 | Demande UX (forcer `interactive() == FALSE`) qui touche au lifecycle de RStudio ; à arbitrer avec mainteneur. |
 | 67, 62, 27, 52, 29 | Features qui demandent une décision design avant code. |
 
 ## CI

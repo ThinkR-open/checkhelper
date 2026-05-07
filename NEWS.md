@@ -2,7 +2,12 @@
 
 ## `audit_userspace()` / `check_clean_userspace()` robustness
 
-- The `Run examples` step is now wrapped in a `tryCatch()`. When
+- The `Run examples` step now spawns a fresh non-interactive R
+  subprocess (`devtools::run_examples(fresh = TRUE)`). Examples
+  wrapped in `if (interactive())` are therefore skipped exactly as
+  they would be under `R CMD check`, instead of being executed in
+  the parent RStudio session (#87).
+- The same step is wrapped in a `tryCatch()`. When
   `devtools::run_examples()` fails deep inside `pkgload` (e.g. the
   `srcrefs[[1L]]: subscript out of bounds` crash on `@examplesIf`
   examples whose body is fully under `\donttest{}`, on older R +

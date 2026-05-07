@@ -85,9 +85,14 @@ audit_userspace <- function(pkg = ".",
   scratch_shot <- utils::fileSnapshot(scratch_dir, timestamp = scratch_tmpfile, md5sum = TRUE, recursive = TRUE, full.names = TRUE)
 
   cli::cli_rule("Run examples")
+  # fresh = TRUE spawns a non-interactive callr subprocess so examples
+  # wrapped in `if (interactive())` are skipped exactly as they would be
+  # under R CMD check (#87). With fresh = FALSE the call inherited the
+  # parent session's `interactive()` value and ran example bodies the
+  # user only meant to run in RStudio.
   examples_ok <- tryCatch(
     {
-      devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = FALSE, document = FALSE)
+      devtools::run_examples(pkg = pkg, run_donttest = FALSE, run_dontrun = FALSE, fresh = TRUE, document = FALSE)
       TRUE
     },
     error = function(e) {
@@ -170,6 +175,8 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
     normalizePath(check_output, winslash = "/"),
     "|[.]Rcheck/|",
     normalizePath(file.path(tempdir(), "callr-"), winslash = "/", mustWork = FALSE),
+    "|",
+    normalizePath(file.path(tempdir(), "callr"), winslash = "/", mustWork = FALSE),
     "|",
     normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/", mustWork = FALSE),
     "|",
