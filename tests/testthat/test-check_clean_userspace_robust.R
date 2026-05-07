@@ -13,9 +13,9 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
   suppressWarnings(attachment::att_amend_desc(path = path))
 
   # Counter env: each fake collaborator records that it was called so
-  # the test can assert continuation (Copilot review on PR #104:
-  # otherwise the test only proves that the function returns a tibble,
-  # not that the rest of the pipeline ran).
+  # the test can assert continuation. Without this counter the test
+  # would only prove that the function returns a tibble, not that the
+  # rest of the pipeline ran after the run_examples crash.
   calls <- new.env(parent = emptyenv())
   calls$test <- 0L
   calls$rcmdcheck <- 0L
@@ -28,9 +28,8 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
   }
   # The fake leaks a file into the scratch dir BEFORE throwing, so the
   # snapshot diff afterwards is guaranteed to add at least one row
-  # tagged "Run examples (partial)" — that's what we want to assert
-  # on (Copilot review of #104: otherwise the partial-tag invariant
-  # was short-circuited by the empty-diff escape hatch).
+  # tagged "Run examples (partial)". Without this the partial-tag
+  # invariant would be short-circuited by an empty-diff escape hatch.
   partial_marker <- file.path(tempdir(), "fake_partial_leak.txt")
   fake_run_examples <- function(...) {
     calls$run_examples <- calls$run_examples + 1L
@@ -46,10 +45,9 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
     NULL
   }
 
-  # The header contract is "surface a clear warning". Assert it:
-  # expect_warning catches the warning emitted when run_examples()
-  # fails (Copilot review of #104: suppressWarnings/suppressMessages
-  # was burying the contract).
+  # The header contract is "surface a clear warning". Assert it
+  # explicitly with expect_warning() rather than swallowing it
+  # under suppressWarnings / suppressMessages.
   out <- expect_warning(
     suppressMessages(
       testthat::with_mocked_bindings(
