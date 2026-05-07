@@ -61,9 +61,9 @@ audit_citation <- function(pkg = ".") {
 #' Static parse of `inst/CITATION` collecting every legacy call site.
 #'
 #' Uses `parse(file, keep.source = TRUE)` + `utils::getParseData()` so
-#' the file is never sourced (avoids accidental side effects and
-#' upholds the same hygiene as `extract_existing_globals()`). Returns
-#' a tibble with one row per legacy call occurrence — nested calls
+#' the file is never sourced; this avoids accidental side effects from
+#' executing `inst/CITATION` at audit time. Returns a tibble with one
+#' row per legacy call occurrence: nested calls
 #' (e.g. `citEntry(author = personList(...))`) yield two rows.
 #'
 #' @noRd
