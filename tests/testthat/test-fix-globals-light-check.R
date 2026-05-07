@@ -23,7 +23,7 @@ test_that(".get_notes() runs rcmdcheck with the light flags", {
   }
 
   testthat::with_mocked_bindings(
-    .get_notes(path = "."),
+    checkhelper:::.get_notes(path = "."),
     rcmdcheck = fake_rcmdcheck,
     .package = "checkhelper"
   )
@@ -48,7 +48,7 @@ test_that("user-supplied `checks =` bypasses rcmdcheck entirely", {
   precomputed <- list(notes = character(0))
 
   testthat::with_mocked_bindings(
-    .get_notes(path = ".", checks = precomputed),
+    checkhelper:::.get_notes(path = ".", checks = precomputed),
     rcmdcheck = fake_rcmdcheck,
     .package = "checkhelper"
   )
