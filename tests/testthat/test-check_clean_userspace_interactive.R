@@ -32,7 +32,11 @@ test_that(".check_clean_userspace() runs examples in a fresh non-interactive R",
   }
   fake_build_vignettes <- function(...) NULL
 
-  suppressWarnings(suppressMessages(try(
+  # No `try(silent = TRUE)`: a real failure inside .check_clean_userspace()
+  # (e.g. attachment::att_amend_desc() blowing up, a mock-binding miss)
+  # must surface as a real error rather than being silently dropped and
+  # then misreported as "fresh != TRUE" (Copilot review of #106).
+  suppressWarnings(suppressMessages(
     testthat::with_mocked_bindings(
       testthat::with_mocked_bindings(
         checkhelper:::.check_clean_userspace(pkg = path, check_output = tempfile("check_output")),
@@ -43,9 +47,8 @@ test_that(".check_clean_userspace() runs examples in a fresh non-interactive R",
       run_examples = fake_run_examples,
       build_vignettes = fake_build_vignettes,
       .package = "devtools"
-    ),
-    silent = TRUE
-  )))
+    )
+  ))
 
   expect_true(isTRUE(captured$args$fresh),
     info = paste(

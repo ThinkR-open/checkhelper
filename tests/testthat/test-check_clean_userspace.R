@@ -32,8 +32,10 @@ test_that("check_clean_userspace works", {
   # With fresh = TRUE the example body runs in a callr subprocess
   # whose tempdir is torn down before our post-step snapshot runs, so
   # no example leak is surfaced and the file-list warning never fires
-  # in this fixture. The "Files surfaced during 'Run examples'"
-  # warning is exercised in test-check_clean_userspace_robust.R.
+  # in this fixture. (The "Files surfaced during 'Run examples'"
+  # warning path is not currently asserted on by any test — TODO add
+  # a regression that seeds a real package-tree leak from inside an
+  # example so the warning fires.)
   expect_message(
     all_files <- check_clean_userspace(pkg = path, check_output = check_output),
     "Some files"
