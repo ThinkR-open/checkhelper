@@ -32,7 +32,7 @@ test_that("S3 generic without @return is flagged as missing", {
   )
   suppressWarnings(attachment::att_amend_desc(path = path))
 
-  res <- .find_missing_tags(package.dir = path)
+  res <- suppressMessages(suppressWarnings(.find_missing_tags(package.dir = path)))
 
   flagged <- res$functions[res$functions$test_has_export_and_return == "not_ok", ]
   expect_true("strand_chr" %in% flagged$topic,
@@ -77,7 +77,7 @@ test_that("S3 method with its own doc but no @return is flagged", {
   )
   suppressWarnings(attachment::att_amend_desc(path = path))
 
-  res <- .find_missing_tags(package.dir = path)
+  res <- suppressMessages(suppressWarnings(.find_missing_tags(package.dir = path)))
 
   flagged <- res$functions[res$functions$test_has_export_and_return == "not_ok", ]
   expect_true("dim.gggenomes_layout" %in% flagged$topic,
@@ -102,7 +102,7 @@ test_that("plain function without @return is still flagged (regression guard)", 
   )
   suppressWarnings(attachment::att_amend_desc(path = path))
 
-  res <- .find_missing_tags(package.dir = path)
+  res <- suppressMessages(suppressWarnings(.find_missing_tags(package.dir = path)))
 
   flagged <- res$functions[res$functions$test_has_export_and_return == "not_ok", ]
   expect_true("helper" %in% flagged$topic)
