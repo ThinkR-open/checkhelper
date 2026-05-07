@@ -1,5 +1,19 @@
 # checkhelper (development version)
 
+## `audit_globals()` / `fix_globals()` skip vignettes / tests / examples
+
+- The internal `R CMD check` triggered by `audit_globals()` and
+  `fix_globals()` now passes
+  `build_args = "--no-build-vignettes"` and
+  `args = c("--no-manual", "--no-tests", "--no-examples", "--no-vignettes")`.
+  The "no visible binding for global variable" /
+  "no visible global function definition" notes come from R CMD
+  check's static `* checking R code for possible problems` step
+  and never depended on those phases. On a vignette-heavy package
+  this turns a multi-minute wait into a few seconds. The defaults
+  are exposed as `build_args` / `args` arguments to `.get_notes()`
+  so a caller can still opt back in if needed.
+
 ## `create_example_pkg()` covers every audit
 
 - `create_example_pkg()` gains two opt-in flags so the same one-line
