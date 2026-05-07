@@ -123,9 +123,28 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
 #' @importFrom dplyr mutate tibble
 #' @importFrom stringr str_extract str_extract_all
 #' @noRd
-.get_notes <- function(path = ".", checks, ...) {
+.get_notes <- function(path = ".", checks,
+                       build_args = "--no-build-vignettes",
+                       args = c(
+                         "--no-manual", "--no-tests",
+                         "--no-examples", "--no-vignettes"
+                       ),
+                       ...) {
+  # The globals notes ("no visible binding for global variable",
+  # "no visible global function definition") come from R CMD check's
+  # static `* checking R code for possible problems` step. They do
+  # not depend on building vignettes, running tests, running
+  # examples, or rendering the manual. Skipping those four phases
+  # turns audit_globals() / fix_globals() from a multi-minute call on
+  # vignette-heavy packages into a few seconds. Caller can still
+  # override via `build_args` / `args` if needed.
   if (missing(checks)) {
-    checks <- rcmdcheck(path = path, ...)
+    checks <- rcmdcheck(
+      path = path,
+      build_args = build_args,
+      args = args,
+      ...
+    )
   }
 
   if (length(checks[["notes"]]) == 0) {
