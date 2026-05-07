@@ -26,8 +26,15 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
     calls$test <- calls$test + 1L
     invisible(NULL)
   }
+  # The fake leaks a file into the scratch dir BEFORE throwing, so the
+  # snapshot diff afterwards is guaranteed to add at least one row
+  # tagged "Run examples (partial)" — that's what we want to assert
+  # on (Copilot review of #104: otherwise the partial-tag invariant
+  # was short-circuited by the empty-diff escape hatch).
+  partial_marker <- file.path(tempdir(), "fake_partial_leak.txt")
   fake_run_examples <- function(...) {
     calls$run_examples <- calls$run_examples + 1L
+    writeLines("partial", partial_marker)
     stop("subscript out of bounds")
   }
   fake_rcmdcheck <- function(...) {
@@ -39,19 +46,26 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
     NULL
   }
 
-  out <- suppressMessages(suppressWarnings(
-    testthat::with_mocked_bindings(
+  # The header contract is "surface a clear warning". Assert it:
+  # expect_warning catches the warning emitted when run_examples()
+  # fails (Copilot review of #104: suppressWarnings/suppressMessages
+  # was burying the contract).
+  out <- expect_warning(
+    suppressMessages(
       testthat::with_mocked_bindings(
-        checkhelper:::.check_clean_userspace(pkg = path, check_output = tempfile("check_output")),
-        rcmdcheck = fake_rcmdcheck,
-        .package = "rcmdcheck"
-      ),
-      test = fake_test,
-      run_examples = fake_run_examples,
-      build_vignettes = fake_build_vignettes,
-      .package = "devtools"
-    )
-  ))
+        testthat::with_mocked_bindings(
+          checkhelper:::.check_clean_userspace(pkg = path, check_output = tempfile("check_output")),
+          rcmdcheck = fake_rcmdcheck,
+          .package = "rcmdcheck"
+        ),
+        test = fake_test,
+        run_examples = fake_run_examples,
+        build_vignettes = fake_build_vignettes,
+        .package = "devtools"
+      )
+    ),
+    regexp = "Skipping the 'Run examples' step"
+  )
 
   expect_s3_class(out, "tbl_df")
   expect_true(all(c("source", "problem", "where", "file") %in% names(out)))
@@ -62,12 +76,10 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
   expect_gte(calls$rcmdcheck, 1L)
   expect_gte(calls$build_vignettes, 1L)
 
-  # And the partial-run tag must surface in the report so the user
-  # knows the examples slice was incomplete.
-  expect_true(
-    any(out$source == "Run examples (partial)") || nrow(out) == 0L,
-    info = "either the partial tag is present, or the snapshot diff was empty"
-  )
+  # The partial-run tag must surface in the report so the user knows
+  # the examples slice was incomplete. The fake leaked a file before
+  # throwing, so the diff is guaranteed to produce at least one row.
+  expect_true(any(out$source == "Run examples (partial)"))
 
   unlink(path, recursive = TRUE)
 })

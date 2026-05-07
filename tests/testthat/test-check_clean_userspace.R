@@ -53,9 +53,13 @@ test_that("check_clean_userspace works", {
     "Full check", "Build Vignettes", "Tests in check dir"
   )))
 
-  # The two seeded leaks must be caught, regardless of OS noise:
+  # The two seeded leaks must be caught, regardless of OS noise.
+  # `Run examples` may surface as `Run examples (partial)` if a
+  # platform flake makes devtools::run_examples() abort midway, so
+  # accept both tags when looking for the example leak.
   unit_files <- all_files$file[all_files$source == "Unit tests"]
-  example_files <- all_files$file[all_files$source == "Run examples"]
+  example_files <- all_files$file[all_files$source %in%
+    c("Run examples", "Run examples (partial)")]
   expect_true(any(grepl("in_test[.]R", unit_files)))
   expect_true(any(grepl("in_example", example_files)))
 
