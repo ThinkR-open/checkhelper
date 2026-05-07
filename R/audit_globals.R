@@ -56,8 +56,10 @@ audit_globals <- function(pkg = ".", checks = NULL) {
 #' `R/globals.R`. Wraps [print_globals()].
 #'
 #' @param pkg Path to the package.
-#' @param write If `TRUE`, **overwrite** `<pkg>/R/globals.R` with a
-#'   single `globalVariables(...)` call. Default `FALSE` (print the
+#' @param write If `TRUE`, write a single `globalVariables(...)` call
+#'   to `<pkg>/R/globals.R`, **merging** with whatever names that file
+#'   already declares (the freshly detected names are added on top of
+#'   the existing ones, deduplicated). Default `FALSE` (print the
 #'   block to the console for manual paste).
 #' @param checks Optional. A pre-computed [rcmdcheck::rcmdcheck()] result
 #'   (a list with at least a `notes` element). When supplied, `fix_globals()`
@@ -194,6 +196,22 @@ merge_globals_block <- function(fresh_block, preserved) {
     "# previously declared:\n",
     paste0("\"", preserved, "\"", collapse = ", ")
   )
+  # When R CMD check surfaces only function notes, the fresh block's
+  # `c()` body is empty (`utils::globalVariables(unique(c(\n\n)))`).
+  # Naively prepending a `,` then injecting yields `c(, "a", "b")`,
+  # which parses but errors at eval with "argument 1 is empty".
+  # Detect the empty-body shape and rebuild from scratch.
+  is_empty_body <- grepl(
+    "utils::globalVariables\\(unique\\(c\\(\\s*\\n\\s*\\n\\s*\\)\\)\\)$",
+    fresh_block
+  )
+  if (is_empty_body) {
+    return(paste0(
+      "utils::globalVariables(unique(c(\n",
+      preserved_chunk,
+      "\n)))"
+    ))
+  }
   # Inject just before the final closing `)))`.
   sub(
     "\n\\)\\)\\)$",

@@ -80,6 +80,59 @@ test_that("fix_globals(write = TRUE) deduplicates across old / new", {
   expect_setequal(collected, c("shared", "old_only", "new_only"))
 })
 
+test_that("fix_globals(write = TRUE) handles empty fresh + non-empty preserved", {
+  # Regression for the bug Copilot flagged on PR #108: when R CMD check
+  # surfaces only function notes (no `is_global_variable` rows), the
+  # freshly built `globalVariables(unique(c(\n\n)))` body is empty.
+  # The previous merge injected a leading `,` before the preserved
+  # chunk, producing `c(, \n# ...\n"a")` which parses but errors at
+  # eval time with "argument 1 is empty". The output must always be
+  # both parseable AND evaluable (sourcing the file must not throw).
+  path <- local_pkg_with_globals()
+  globals_path <- file.path(path, "R", "globals.R")
+  writeLines(
+    'utils::globalVariables(c("preserved_only_var"))',
+    globals_path
+  )
+
+  empty_globals <- list(
+    globalVariables = tibble::tibble(
+      fun = character(0), variable = character(0)
+    ),
+    functions = tibble::tibble(
+      fun = "fn", variable = "some_fn", proposed = NA_character_
+    )
+  )
+
+  testthat::with_mocked_bindings(
+    fix_globals(pkg = path, write = TRUE),
+    .get_no_visible = function(...) empty_globals,
+    .package = "checkhelper"
+  )
+
+  # The file must parse, and the c(...) argument inside the
+  # globalVariables() call must evaluate to a character vector
+  # containing the preserved name. The previous bug produced
+  # `c(, "preserved_only_var")` which parses but fails at eval
+  # with "argument 1 is empty".
+  expect_silent(parse(file = globals_path))
+  exprs <- parse(file = globals_path)
+  found <- character(0)
+  for (i in seq_along(exprs)) {
+    e <- exprs[[i]]
+    if (is.call(e) && length(e) >= 2L) {
+      vals <- eval(e[[2]], envir = baseenv())
+      expect_true(is.character(vals),
+        info = "the c(...) argument must evaluate to a character vector"
+      )
+      found <- c(found, vals)
+    }
+  }
+  expect_true("preserved_only_var" %in% found,
+    info = "the preserved name must round-trip through write+parse"
+  )
+})
+
 test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
