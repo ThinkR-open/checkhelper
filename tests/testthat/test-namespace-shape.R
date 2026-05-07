@@ -8,6 +8,7 @@ expected_exports <- c(
   ## Public façades — audit_*
   "audit_ascii",
   "audit_check",
+  "audit_citation",
   "audit_dataset_doc",
   "audit_globals",
   "audit_tags",
