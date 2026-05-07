@@ -113,9 +113,39 @@ audit_tags <- function(pkg = ".") {
   ##
   ## Split blocks into functions or documentations
   ##
+  ## Function-like blocks: plain functions, but also S3 generics and S3
+  ## methods. Pre-#92 the filter was strictly `class[1] == "function"`
+  ## which silently dropped both `s3generic` and `s3method`, so CRAN
+  ## could ask for `\value` on `strand_chr.Rd` (generic) or
+  ## `dim.gggenomes_layout.Rd` (documented method) while
+  ## `find_missing_tags()` still answered "Good!".
+  ##
+  ## We only keep blocks that roxygen2 will actually turn into an Rd
+  ## file, i.e. blocks carrying a title. A bare-`@export` method (no
+  ## title, no description) does not generate its own Rd — it just
+  ## contributes a NAMESPACE entry — so CRAN will not ask for `\value`
+  ## on it and we must not flag it.
+  func_classes <- c("function", "s3generic", "s3method")
+  block_makes_rd <- function(b) {
+    cls <- class(b[["object"]])[1]
+    if (!isTRUE(cls %in% func_classes)) {
+      return(FALSE)
+    }
+    # A block contributes to an Rd file when it has a title (own doc),
+    # or it joins an existing Rd via @rdname / @describeIn, or it sets
+    # the Rd name explicitly via @name. A bare-`@export` block (no
+    # title, no @rdname, no @name) is namespace-only and produces no
+    # Rd, so CRAN never asks for `\value` on it — flagging it would be
+    # a false positive.
+    rd_tags <- list("title", "rdname", "describeIn", "name")
+    any(vapply(rd_tags, function(tag) {
+      isTRUE(roxygen2::block_has_tags(b, tags = list(tag)))
+    }, logical(1)))
+  }
+
   res_functions <- map(
     .x = blocks,
-    .f = ~ if (class(.x[["object"]])[1] == "function") { .x }
+    .f = ~ if (block_makes_rd(.x)) { .x }
   ) %>%
     compact()
 
@@ -136,7 +166,7 @@ audit_tags <- function(pkg = ".") {
   ## because the object class is not "function".
   res_topic_only <- map(
     .x = blocks,
-    .f = ~ if (!(class(.x[["object"]])[1] %in% c("function", "package", "data"))) { .x }
+    .f = ~ if (!(class(.x[["object"]])[1] %in% c(func_classes, "package", "data"))) { .x }
   ) %>%
     compact()
 
