@@ -176,7 +176,10 @@ what_changed <- function(local_shot, scratch_shot, source, all_files, check_outp
     "|[.]Rcheck/|",
     normalizePath(file.path(tempdir(), "callr-"), winslash = "/", mustWork = FALSE),
     "|",
-    normalizePath(file.path(tempdir(), "callr"), winslash = "/", mustWork = FALSE),
+    # Anchor with a trailing "/" so we don't accidentally match
+    # sibling directories like `callr2/`, `callrxyz/`, or
+    # `callright_a_real_leak/` that just happen to share the prefix.
+    normalizePath(file.path(tempdir(), "callr"), winslash = "/", mustWork = FALSE), "/",
     "|",
     normalizePath(file.path(tempdir(), "test.*[.](o|c|so)$"), winslash = "/", mustWork = FALSE),
     "|",
