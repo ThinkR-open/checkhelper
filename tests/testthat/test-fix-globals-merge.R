@@ -161,7 +161,7 @@ test_that("extract_existing_globals does NOT execute side effects from globals.R
     unlink(marker)
   }, add = TRUE)
 
-  result <- extract_existing_globals(globals_path)
+  result <- checkhelper:::extract_existing_globals(globals_path)
 
   expect_false(file.exists(marker),
     info = "extract_existing_globals must never execute calls inside globals.R"
@@ -182,7 +182,7 @@ test_that("extract_existing_globals tolerates `globalVariables()` with no argume
   )
   on.exit(unlink(globals_path), add = TRUE)
 
-  expect_no_error(result <- extract_existing_globals(globals_path))
+  expect_no_error(result <- checkhelper:::extract_existing_globals(globals_path))
   expect_equal(result, character(0))
 })
 
