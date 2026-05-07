@@ -142,19 +142,40 @@ extract_existing_globals <- function(globals_path) {
     return(character(0))
   }
   out <- character(0)
-  safe_env <- new.env(parent = baseenv())
   for (i in seq_along(exprs)) {
     e <- exprs[[i]]
     if (!is_globalVariables_call(e)) {
       next
     }
-    arg <- e[[2]]
-    vals <- tryCatch(eval(arg, envir = safe_env), error = function(e2) NULL)
-    if (is.character(vals)) {
-      out <- c(out, vals)
-    }
+    out <- c(out, collect_string_literals(e[[2]]))
   }
   unique(out)
+}
+
+#' Recursively collect every character-literal leaf of an unevaluated R
+#' expression. Used by `extract_existing_globals()` to read the names
+#' from an existing `R/globals.R` without ever calling `eval()` on the
+#' file's contents — the historic `eval(arg, envir = safe_env)` ran
+#' under `baseenv()` (which exposes `system()`, `library()`, `file()`,
+#' …), so a crafted `globals.R` could execute arbitrary code at
+#' `fix_globals(write = TRUE)` time (Copilot review of #108).
+#'
+#' Symbols, numerics, logicals, `NULL`, and arbitrary calls
+#' (`system(...)`, `c(...)`, `unique(...)`) are walked through but
+#' never evaluated; only quoted character literals are returned.
+#' @noRd
+collect_string_literals <- function(expr) {
+  if (is.character(expr) && length(expr) >= 1L) {
+    return(as.character(expr))
+  }
+  if (is.call(expr)) {
+    out <- character(0)
+    for (i in seq_along(expr)) {
+      out <- c(out, collect_string_literals(expr[[i]]))
+    }
+    return(out)
+  }
+  character(0)
 }
 
 #' TRUE when `e` is a call to `globalVariables()` or
