@@ -1,5 +1,18 @@
 # checkhelper (development version)
 
+## `audit_description()`: catch unquoted package names in DESCRIPTION
+
+- New `audit_description(pkg)` reads the `Description` field of
+  `DESCRIPTION`, tokenises it, and surfaces every word that matches
+  an installed package name yet is not wrapped in single quotes.
+  CRAN incoming pretest emits
+  `Package names should be quoted in the Description field` when
+  this rule is violated. Detection is purely static: no package is
+  loaded, no namespace is touched. The package's own name and
+  compound forms (`dplyr-style`, `httr2-based`, ...) are
+  intentionally not flagged. Returns a tibble with `word`,
+  `position` and `suggestion`. Closes #52.
+
 ## `audit_dontrun()`: surface every `\dontrun{}` block in `man/*.Rd`
 
 - New `audit_dontrun(pkg)` walks `man/*.Rd` line by line and surfaces

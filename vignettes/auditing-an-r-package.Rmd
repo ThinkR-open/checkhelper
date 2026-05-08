@@ -42,6 +42,7 @@ audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man
 audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
 audit_citation(pkg)        # old-style personList() / citEntry() in inst/CITATION
 audit_dontrun(pkg)         # \dontrun{} blocks in man/*.Rd
+audit_description(pkg)     # unquoted package names in DESCRIPTION's Description field
 
 # 3. Audits that need the check output - pass `chk` to skip a 2nd run.
 audit_globals(pkg, checks = chk)
@@ -87,6 +88,7 @@ The other audits do not need a check at all:
 | `audit_ascii()`      | no                    | line-by-line via `stringi::stri_enc_isascii()` |
 | `audit_dataset_doc()`| no                    | inspects `data/` and `R/`              |
 | `audit_citation()`   | no                    | static parse of `inst/CITATION`        |
+| `audit_description()`| no                    | tokenises DESCRIPTION's Description    |
 | `audit_dontrun()`    | no                    | line-by-line scan of `man/*.Rd`        |
 | `audit_globals()`    | **yes** (reusable)    | accepts `checks =`                     |
 | `audit_userspace()`  | yes (own pipeline)    | takes file-system snapshots, separate  |
@@ -198,6 +200,29 @@ audit_citation(pkg)
 Read-only - rewriting a CITATION file usually needs editorial
 judgment, so there is no automated `fix_citation()`.
 
+### Unquoted package names in `Description`
+
+CRAN incoming pretest emits
+`Package names should be quoted in the Description field` when a
+package name (or any software name) appears in the `Description`
+field of `DESCRIPTION` without surrounding single quotes.
+
+`audit_description()` reads the `Description` field, tokenises it,
+and surfaces every word that matches an installed package name yet
+is not wrapped in single quotes. The package's own name is
+intentionally skipped, and so are compound forms like
+`dplyr-style` or `httr2-based` (a hyphen on either side disqualifies
+the token from being a standalone package reference). Returns a
+tibble with `word`, `position` and `suggestion`:
+
+```{r}
+audit_description(pkg)
+```
+
+Read-only - the fix is editorial (decide whether each hit is a
+real package reference or a coincidental word, then wrap with
+single quotes).
+
 ### `\dontrun{}` blocks in examples
 
 CRAN policy is that `\dontrun{}` should only wrap example code
@@ -234,6 +259,7 @@ audit_ascii(pkg)             # accents in comments / strings
 audit_dataset_doc(pkg)       # data/demo_dataset.rda has no doc
 audit_citation(pkg)          # old-style personList() / citEntry()
 audit_dontrun(pkg)           # \dontrun{} blocks in examples
+audit_description(pkg)       # unquoted package names in Description
 audit_globals(pkg, checks = chk)
 
 fix_globals(pkg, checks = chk, write = TRUE)
