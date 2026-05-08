@@ -17,7 +17,7 @@
 #'   `utils::globalVariables()` declaration; `functions` collects
 #'   external functions to import via `@importFrom`; `operators`
 #'   collects NSE tokens / data.table / rlang pronouns (`:=`,
-#'   `.SD`, `.data`, `!!`, …) that also need `@importFrom` rather
+#'   `.SD`, `.data`, `!!`, ...) that also need `@importFrom` rather
 #'   than a `globalVariables()` entry.
 #' @export
 #' @seealso [fix_globals()], [get_no_visible()].
@@ -133,7 +133,7 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
   # out names already covered by an existing globalVariables() call,
   # so by the time fix_globals() runs the second time, the new notes
   # only list *uncovered* names. Overwriting would erase the curated
-  # set and re-flag those names on the very next check — a circular
+  # set and re-flag those names on the very next check - a circular
   # game the user can never win.
   preserved <- extract_existing_globals(globals_path)
   merged_block <- merge_globals_block(printed[["liste_globals_code"]], preserved)
@@ -149,7 +149,7 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
   if (has_operators) {
     message(printed[["liste_operators"]])
     cli::cli_inform(c(
-      "i" = "fix_globals(): operators / pronouns above need an `@importFrom` line, NOT a globalVariables() entry — see operators section."
+      "i" = "fix_globals(): operators / pronouns above need an `@importFrom` line, NOT a globalVariables() entry - see operators section."
     ))
   }
 
@@ -216,9 +216,9 @@ extract_existing_globals <- function(globals_path) {
 #' Recursively collect every character-literal leaf of an unevaluated R
 #' expression. Used by `extract_existing_globals()` to read the names
 #' from an existing `R/globals.R` without ever calling `eval()` on the
-#' file's contents — the historic `eval(arg, envir = safe_env)` ran
+#' file's contents - the historic `eval(arg, envir = safe_env)` ran
 #' under `baseenv()` (which exposes `system()`, `library()`, `file()`,
-#' …), so a crafted `globals.R` could execute arbitrary code at
+#' ...), so a crafted `globals.R` could execute arbitrary code at
 #' `fix_globals(write = TRUE)` time.
 #'
 #' Symbols, numerics, logicals, `NULL`, and arbitrary calls
@@ -517,7 +517,7 @@ merge_globals_block <- function(fresh_block, preserved) {
 #' `@importFrom` lines for the operators / pronouns surfaced by
 #' `.get_no_visible()`. When a token is exported by more than one
 #' candidate package (currently only `:=` from data.table OR rlang),
-#' every candidate is listed and the user picks one consciously — no
+#' every candidate is listed and the user picks one consciously - no
 #' silent guessing.
 #' @noRd
 format_operators_section <- function(operators) {
@@ -548,7 +548,7 @@ format_operators_section <- function(operators) {
     for (i in seq_len(nrow(amb))) {
       sym <- amb$variable[i]
       candidates <- strsplit(amb$source_pkg[i], ";", fixed = TRUE)[[1]]
-      # `# #'` would be invisible to roxygen2 — pasting verbatim
+      # `# #'` would be invisible to roxygen2 - pasting verbatim
        # gives the user zero @importFrom declared. Emit the lines as
        # real `#'` and add a `# KEEP ONE:` banner so the user knows
        # to delete every other line.
