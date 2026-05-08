@@ -25,6 +25,7 @@ reference:
   - audit_userspace
   - audit_check
   - audit_dataset_doc
+  - audit_citation
 
 - title: Fix
   desc: >
