@@ -117,8 +117,8 @@ audit_downloads <- function(pkg = ".") {
 }
 
 #' List every `.R` / `.Rmd` / `.Rnw` / `.qmd` file under the watched
-#' directories of the package. Lowercase variants of each extension
-#' are also matched.
+#' directories of the package. Matching is case-insensitive so e.g.
+#' `.QMD`, `.Rmd`, `.RMD` are all picked up.
 #' @noRd
 .download_audit_files <- function(pkg) {
   dirs <- file.path(pkg, c("R", "tests", "vignettes", "inst"))
@@ -128,9 +128,10 @@ audit_downloads <- function(pkg = ".") {
   }
   list.files(
     dirs,
-    pattern = "\\.(R|r|Rmd|rmd|Rnw|rnw|qmd)$",
+    pattern = "\\.(R|Rmd|Rnw|qmd)$",
     recursive = TRUE,
-    full.names = TRUE
+    full.names = TRUE,
+    ignore.case = TRUE
   )
 }
 
@@ -217,7 +218,12 @@ audit_downloads <- function(pkg = ".") {
     } else {
       paste0(pkg$pkg, pkg$op, fn)
     }
-    if (!qualified %in% .known_download_functions) {
+    lookup <- if (is.null(pkg)) {
+      fn
+    } else {
+      paste0(pkg$pkg, "::", fn)
+    }
+    if (!lookup %in% .known_download_functions) {
       next
     }
     records[[length(records) + 1L]] <- data.frame(

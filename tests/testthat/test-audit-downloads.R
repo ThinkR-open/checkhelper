@@ -184,3 +184,29 @@ test_that("audit_downloads() emits a cli summary message", {
 
   expect_message(audit_downloads(pkg), regexp = "audit_downloads.*download")
 })
+
+test_that("audit_downloads() flags pkg::: (triple colon) variants", {
+  pkg <- local_pkg_with_r(list(
+    "R/foo.R" = "f <- function() utils:::download.file('x', 'y')"
+  ))
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "utils:::download.file")
+})
+
+test_that("audit_downloads() scans uppercase extension variants", {
+  pkg <- local_pkg_with_r(list(
+    "vignettes/foo.QMD" = c(
+      "```{r}",
+      "utils::download.file('x', 'y')",
+      "```"
+    )
+  ))
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "utils::download.file")
+})
