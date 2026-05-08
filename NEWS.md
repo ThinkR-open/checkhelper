@@ -1,42 +1,5 @@
 # checkhelper (development version)
 
-## `audit_userspace()` / `check_clean_userspace()` robustness
-
-- The `Run examples` step is now wrapped in a `tryCatch()`. When
-  `devtools::run_examples()` fails deep inside `pkgload` (e.g. the
-  `srcrefs[[1L]]: subscript out of bounds` crash on `@examplesIf`
-  examples whose body is fully under `\donttest{}`, on older R +
-  pkgload combos), the audit no longer aborts: it warns, skips the
-  examples slice, and still runs the unit tests / full check /
-  vignettes steps (#93).
-- On a partial run, the snapshot diff is still computed (rows tagged
-  `source = "Run examples (partial)"`) so files created before the
-  crash do not slip into the next baseline and disappear from the
-  report.
-- The follow-up warning that surfaces files added during examples
-  now lists the files instead of telling the user to "not bother
-  about it" — a real leak written from inside an example would
-  previously have been silently dismissed.
-- `tests/testthat/test-check_clean_userspace.R` no longer hardcodes a
-  `nrow == 5/6/11` cascade. It asserts the invariants the function
-  promises (the seeded leaks are caught, every row has the right
-  shape) instead of an exact OS-dependent row count, so the test now
-  runs on every OS (#54).
-
-## `audit_globals()` / `fix_globals()` skip vignettes / tests / examples
-
-- The internal `R CMD check` triggered by `audit_globals()` and
-  `fix_globals()` now passes
-  `build_args = "--no-build-vignettes"` and
-  `args = c("--no-manual", "--no-tests", "--no-examples", "--no-vignettes")`.
-  The "no visible binding for global variable" /
-  "no visible global function definition" notes come from R CMD
-  check's static `* checking R code for possible problems` step
-  and never depended on those phases. On a vignette-heavy package
-  this turns a multi-minute wait into a few seconds. The defaults
-  are exposed as `build_args` / `args` arguments to `.get_notes()`
-  so a caller can still opt back in if needed.
-
 ## `fix_globals(write = TRUE)` now merges with the existing `R/globals.R`
 
 - Previously, `fix_globals(write = TRUE)` overwrote `R/globals.R`
