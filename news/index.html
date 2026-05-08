@@ -95,6 +95,13 @@
 <ul><li>The internal <code>R CMD check</code> triggered by <code><a href="../reference/audit_globals.html">audit_globals()</a></code> and <code><a href="../reference/fix_globals.html">fix_globals()</a></code> now passes <code>build_args = "--no-build-vignettes"</code> and <code>args = c("--no-manual", "--no-tests", "--no-examples", "--no-vignettes")</code>. The “no visible binding for global variable” / “no visible global function definition” notes come from R CMD check’s static <code>* checking R code for possible problems</code> step and never depended on those phases. On a vignette-heavy package this turns a multi-minute wait into a few seconds. The defaults are exposed as <code>build_args</code> / <code>args</code> arguments to <code>.get_notes()</code> so a caller can still opt back in if needed.</li>
 </ul></div>
 <div class="section level3">
+<h3 id="audit_tags--find_missing_tags-now-detect-s3-cases-development-version">
+<code>audit_tags()</code> / <code>find_missing_tags()</code> now detect S3 cases<a class="anchor" aria-label="anchor" href="#audit_tags--find_missing_tags-now-detect-s3-cases-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/audit_tags.html">audit_tags()</a></code> and <code><a href="../reference/find_missing_tags.html">find_missing_tags()</a></code> now flag missing <code>@return</code> on S3 generics and on S3 methods that have their own Rd file (block carrying a title or <code>@rdname</code> / <code>@describeIn</code> / <code>@name</code>). Previously a strict <code>class(object)[1] == "function"</code> filter dropped these blocks silently, so packages like the one reported in <a href="https://github.com/ThinkR-open/checkhelper/issues/92" class="external-link">#92</a> were told “Good!” while CRAN was still asking for <code>\value</code> on generics’ Rd files (e.g. <code>strand_chr.Rd</code>, <code>dim.gggenomes_layout.Rd</code>).</li>
+<li>Bare-<code>@export</code> blocks (no title, no <code>@rdname</code> / <code>@describeIn</code> / <code>@name</code>) are intentionally not flagged: they produce no Rd file and CRAN does not ask for <code>\value</code> on them.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="create_example_pkg-covers-every-audit-development-version">
 <code>create_example_pkg()</code> covers every audit<a class="anchor" aria-label="anchor" href="#create_example_pkg-covers-every-audit-development-version"></a></h3>
 <ul><li>
