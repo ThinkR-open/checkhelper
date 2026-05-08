@@ -81,13 +81,49 @@
     <div class="section level2">
 <h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
 <div class="section level3">
+<h3 id="audit_description-catch-unquoted-package-names-in-description-development-version">
+<code>audit_description()</code>: catch unquoted package names in DESCRIPTION<a class="anchor" aria-label="anchor" href="#audit_description-catch-unquoted-package-names-in-description-development-version"></a></h3>
+<ul><li>New <code>audit_description(pkg)</code> reads the <code>Description</code> field of <code>DESCRIPTION</code>, tokenises it, and surfaces every word that matches an installed package name yet is not wrapped in single quotes. CRAN incoming pretest emits <code>Package names should be quoted in the Description field</code> when this rule is violated. Detection is purely static: no package is loaded, no namespace is touched. The package’s own name and compound forms (<code>dplyr-style</code>, <code>httr2-based</code>, …) are intentionally not flagged. Returns a tibble with <code>word</code>, <code>position</code> and <code>suggestion</code>. Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/52" class="external-link">#52</a>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="audit_dontrun-surface-every-dontrun-block-in-manrd-development-version">
+<code>audit_dontrun()</code>: surface every <code>\dontrun{}</code> block in <code>man/*.Rd</code>
+<a class="anchor" aria-label="anchor" href="#audit_dontrun-surface-every-dontrun-block-in-manrd-development-version"></a></h3>
+<ul><li>New <code>audit_dontrun(pkg)</code> walks <code>man/*.Rd</code> line by line and surfaces every <code>\dontrun{}</code> block, with the source Rd file, the documented topic, the line number and a one-line suggestion to switch to <code>\donttest{}</code> unless the example genuinely cannot be executed (missing API key, missing system dependency, side effect on the user’s filespace). Detection is purely static: each Rd file is read line-by-line and never sourced. Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/72" class="external-link">#72</a>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fix_globals-separates-operators--pronouns-from-real-globals-development-version">
+<code>fix_globals()</code> separates operators / pronouns from real globals<a class="anchor" aria-label="anchor" href="#fix_globals-separates-operators--pronouns-from-real-globals-development-version"></a></h3>
+<ul><li>
+<code>:=</code>, <code>.SD</code>, <code>.N</code>, <code>.I</code>, <code>.GRP</code>, <code>.BY</code>, <code>.EACHI</code> (data.table), <code>.data</code>, <code>.env</code>, <code>!!</code>, <code>!!!</code> (rlang) are no longer routed into the <code>utils::globalVariables(c(...))</code> block. They are exports from another package - not undeclared variables - and the right fix is an <code>@importFrom</code> line, not a <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">globalVariables()</a></code> entry.</li>
+<li>
+<code><a href="../reference/audit_globals.html">audit_globals()</a></code> / <code>.get_no_visible()</code> now return a third tibble <code>operators</code> next to <code>globalVariables</code> and <code>functions</code>. The token is paired with its candidate source package(s).</li>
+<li>
+<code><a href="../reference/fix_globals.html">fix_globals()</a></code> prints a third section <em>“Operators / pronouns to import via NAMESPACE”</em> with ready-to-paste <code>#' <a href="https://github.com/importFrom" class="external-link">@importFrom</a> &lt;pkg&gt; &lt;token&gt;</code> lines. When the source is ambiguous (<code>:=</code> is exported by both data.table and rlang) every candidate is listed and the user picks one consciously - no silent guessing.</li>
+<li>
+<code>fix_globals(write = TRUE)</code> only writes real globals to <code>R/globals.R</code>. The operators section is printed on stdout so the user wires the <code>@importFrom</code> lines into NAMESPACE manually.</li>
+<li>The internal regex that extracts the function name from a check note (<code>fun = str_extract(fun, ".+(?=:)")</code>) was greedy and ate the whole prose of <code>:=</code> notes. Anchored to the first <code>:</code> so it now reports the actual caller.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="fix_globalswrite--true-now-merges-with-the-existing-rglobalsr-development-version">
+<code>fix_globals(write = TRUE)</code> now merges with the existing <code>R/globals.R</code>
+<a class="anchor" aria-label="anchor" href="#fix_globalswrite--true-now-merges-with-the-existing-rglobalsr-development-version"></a></h3>
+<ul><li>Previously, <code>fix_globals(write = TRUE)</code> overwrote <code>R/globals.R</code> with a fresh <code>utils::globalVariables(unique(c(...)))</code> block. That was unsafe: <code>R CMD check</code> already filters out names covered by an existing <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">globalVariables()</a></code> call, so the second time <code><a href="../reference/fix_globals.html">fix_globals()</a></code> ran on a curated package, only the <em>uncovered</em> names showed up in the notes - overwriting then erased every previously-declared name and re-flagged it on the next check (circular game).</li>
+<li>The function now parses the existing <code>R/globals.R</code>, extracts the names from any <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">globalVariables()</a></code> / <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">utils::globalVariables()</a></code> calls it finds, and rewrites the file as the deduplicated union of the freshly detected names and the already-declared ones. The preserved block is appended under a <code># previously declared:</code> banner inside the same <code>unique(c(...))</code> payload.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="audit_userspace--check_clean_userspace-robustness-development-version">
 <code>audit_userspace()</code> / <code>check_clean_userspace()</code> robustness<a class="anchor" aria-label="anchor" href="#audit_userspace--check_clean_userspace-robustness-development-version"></a></h3>
 <ul><li>The <code>Run examples</code> step is now wrapped in a <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code>. When <code><a href="https://devtools.r-lib.org/reference/run_examples.html" class="external-link">devtools::run_examples()</a></code> fails deep inside <code>pkgload</code> (e.g. the <code>srcrefs[[1L]]: subscript out of bounds</code> crash on <code>@examplesIf</code> examples whose body is fully under <code>\donttest{}</code>, on older R + pkgload combos), the audit no longer aborts: it warns, skips the examples slice, and still runs the unit tests / full check / vignettes steps (<a href="https://github.com/ThinkR-open/checkhelper/issues/93" class="external-link">#93</a>).</li>
 <li>On a partial run, the snapshot diff is still computed (rows tagged <code>source = "Run examples (partial)"</code>) so files created before the crash do not slip into the next baseline and disappear from the report.</li>
-<li>The follow-up warning that surfaces files added during examples now lists the files instead of telling the user to “not bother about it” — a real leak written from inside an example would previously have been silently dismissed.</li>
+<li>The follow-up warning that surfaces files added during examples now lists the files instead of telling the user to “not bother about it” - a real leak written from inside an example would previously have been silently dismissed.</li>
 <li>
 <code>tests/testthat/test-check_clean_userspace.R</code> no longer hardcodes a <code>nrow == 5/6/11</code> cascade. It asserts the invariants the function promises (the seeded leaks are caught, every row has the right shape) instead of an exact OS-dependent row count, so the test now runs on every OS (<a href="https://github.com/ThinkR-open/checkhelper/issues/54" class="external-link">#54</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="audit_citation-catch-cran-rejected-old-style-citation-calls-development-version">
+<code>audit_citation()</code>: catch CRAN-rejected old-style CITATION calls<a class="anchor" aria-label="anchor" href="#audit_citation-catch-cran-rejected-old-style-citation-calls-development-version"></a></h3>
+<ul><li>New <code>audit_citation(pkg)</code> parses <code>inst/CITATION</code> statically (no <code><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval()</a></code>) and surfaces every call to <code><a href="https://rdrr.io/r/utils/personList.html" class="external-link">personList()</a></code>, <code><a href="https://rdrr.io/r/utils/personList.html" class="external-link">as.personList()</a></code> or <code><a href="https://rdrr.io/r/utils/citEntry.html" class="external-link">citEntry()</a></code> that CRAN rejects on submission (<code>Package CITATION file contains call(s) to old-style ...</code>). Returns a tibble with <code>call</code>, <code>line</code> and a one-line <code>suggestion</code> for the modern equivalent (<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> on <code><a href="https://rdrr.io/r/utils/person.html" class="external-link">person()</a></code> objects; <code><a href="https://rdrr.io/r/utils/bibentry.html" class="external-link">bibentry()</a></code> instead of <code><a href="https://rdrr.io/r/utils/citEntry.html" class="external-link">citEntry()</a></code>). Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/62" class="external-link">#62</a>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="audit_globals--fix_globals-skip-vignettes--tests--examples-development-version">

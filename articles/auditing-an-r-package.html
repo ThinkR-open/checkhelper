@@ -137,8 +137,11 @@ file-system snapshots), see the companion vignette
 <span></span>
 <span><span class="co"># 2. Static audits (no extra check needed).</span></span>
 <span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>            <span class="co"># exported funs without @return / internals without @noRd</span></span>
-<span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>           <span class="co"># non-ASCII characters in R/, tests/, vignettes/, man/</span></span>
+<span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>           <span class="co"># non-ASCII characters in R/, tests/, vignettes/, man/, DESCRIPTION, NAMESPACE</span></span>
 <span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>     <span class="co"># datasets in data/ without a roxygen block</span></span>
+<span><span class="fu"><a href="../reference/audit_citation.html">audit_citation</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>        <span class="co"># old-style personList() / citEntry() in inst/CITATION</span></span>
+<span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>         <span class="co"># \dontrun{} blocks in man/*.Rd</span></span>
+<span><span class="fu"><a href="../reference/audit_description.html">audit_description</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>     <span class="co"># unquoted package names in DESCRIPTION's Description field</span></span>
 <span></span>
 <span><span class="co"># 3. Audits that need the check output - pass `chk` to skip a 2nd run.</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
@@ -195,7 +198,7 @@ reuse the result for the whole audit.</p>
 <tr class="even">
 <td><code><a href="../reference/audit_ascii.html">audit_ascii()</a></code></td>
 <td>no</td>
-<td>AST via <code><a href="https://rdrr.io/r/utils/getParseData.html" class="external-link">getParseData()</a></code>
+<td>line-by-line via <code><a href="https://rdrr.io/pkg/stringi/man/stri_enc_isascii.html" class="external-link">stringi::stri_enc_isascii()</a></code>
 </td>
 </tr>
 <tr class="odd">
@@ -205,18 +208,35 @@ reuse the result for the whole audit.</p>
 </td>
 </tr>
 <tr class="even">
+<td><code><a href="../reference/audit_citation.html">audit_citation()</a></code></td>
+<td>no</td>
+<td>static parse of <code>inst/CITATION</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/audit_description.html">audit_description()</a></code></td>
+<td>no</td>
+<td>tokenises DESCRIPTION’s Description</td>
+</tr>
+<tr class="even">
+<td><code><a href="../reference/audit_dontrun.html">audit_dontrun()</a></code></td>
+<td>no</td>
+<td>line-by-line scan of <code>man/*.Rd</code>
+</td>
+</tr>
+<tr class="odd">
 <td><code><a href="../reference/audit_globals.html">audit_globals()</a></code></td>
 <td>
 <strong>yes</strong> (reusable)</td>
 <td>accepts <code>checks =</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="../reference/audit_userspace.html">audit_userspace()</a></code></td>
 <td>yes (own pipeline)</td>
 <td>takes file-system snapshots, separate</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="../reference/audit_check.html">audit_check()</a></code></td>
 <td>yes</td>
 <td>this <strong>is</strong> the check, with CRAN env</td>
@@ -230,16 +250,36 @@ reuse the result for the whole audit.</p>
 <div class="section level3">
 <h3 id="globals-no-visible-binding">Globals (<code>no visible binding</code>)<a class="anchor" aria-label="anchor" href="#globals-no-visible-binding"></a>
 </h3>
-<p><code><a href="../reference/audit_globals.html">audit_globals()</a></code> returns a 2-element list
-(<code>globalVariables</code>, <code>functions</code>) of names CRAN
-flagged. <code>fix_globals(write = TRUE)</code> materializes them into
-<code>R/globals.R</code>:</p>
+<p><code><a href="../reference/audit_globals.html">audit_globals()</a></code> returns a 3-element list of names CRAN
+flagged:</p>
+<ul>
+<li>
+<code>globalVariables</code> - undeclared variables that need a
+<code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">utils::globalVariables()</a></code> declaration.</li>
+<li>
+<code>functions</code> - external functions that need an
+<code>@importFrom</code> line.</li>
+<li>
+<code>operators</code> - NSE tokens, data.table / rlang pronouns
+(<code>:=</code>, <code>.SD</code>, <code>.N</code>, <code>.data</code>,
+<code>!!</code>, …) that also need an <code>@importFrom</code> rather
+than a <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">globalVariables()</a></code> entry.</li>
+</ul>
+<p><code>fix_globals(write = TRUE)</code> writes the
+<code>globalVariables</code> set into <code>R/globals.R</code> (merging
+with whatever names that file already declares - the freshly detected
+names are added on top of the existing ones, deduplicated). The
+operators section is printed on stdout so you wire each one into a
+roxygen <code>@importFrom</code> block by hand:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>When a token is exported by more than one candidate package
+(e.g. <code>:=</code> is exported by both data.table and rlang), every
+candidate is listed and you pick one consciously - no silent
+guessing.</p>
 <p>Without <code>write = TRUE</code>, <code><a href="../reference/fix_globals.html">fix_globals()</a></code> only
-prints the <code>utils::globalVariables(...)</code> block to
-copy-paste.</p>
+prints both blocks to copy-paste.</p>
 </div>
 <div class="section level3">
 <h3 id="missing-roxygen-tags">Missing roxygen tags<a class="anchor" aria-label="anchor" href="#missing-roxygen-tags"></a>
@@ -255,14 +295,15 @@ copy-paste.</p>
 <h3 id="non-ascii-characters">Non-ASCII characters<a class="anchor" aria-label="anchor" href="#non-ascii-characters"></a>
 </h3>
 <p><code><a href="../reference/audit_ascii.html">audit_ascii()</a></code> walks <code>R/</code>,
-<code>tests/</code>, <code>vignettes/</code>, <code>man/</code> and
-DESCRIPTION line-by-line and reports every line containing non-ASCII
-characters (columns: <code>file</code>, <code>line</code>,
-<code>text</code>, <code>n_tokens</code>). <code><a href="../reference/fix_ascii.html">fix_ascii()</a></code> then
-rewrites them - using the parser AST so each token is rewritten per its
-context: string literals become <code>\uXXXX</code> escapes, comments
-and roxygen get <code>Latin-ASCII</code> transliteration. <strong>It
-dry-runs by default</strong>:</p>
+<code>tests/</code>, <code>vignettes/</code>, <code>man/</code>,
+<code>DESCRIPTION</code> and <code>NAMESPACE</code> line-by-line and
+reports every line containing non-ASCII characters (columns:
+<code>file</code>, <code>line</code>, <code>text</code>,
+<code>n_tokens</code>). <code><a href="../reference/fix_ascii.html">fix_ascii()</a></code> then rewrites them -
+using the parser AST so each token is rewritten per its context: string
+literals become <code>\uXXXX</code> escapes, comments and roxygen get
+<code>Latin-ASCII</code> transliteration. <strong>It dry-runs by
+default</strong>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span>
 <span></span>
@@ -295,6 +336,62 @@ per dataset, takes the dataset name):</p>
 column-by-column comments by hand, then re-run
 <code><a href="https://devtools.r-lib.org/reference/document.html" class="external-link">devtools::document()</a></code>.</p>
 </div>
+<div class="section level3">
+<h3 id="old-style-instcitation">Old-style <code>inst/CITATION</code><a class="anchor" aria-label="anchor" href="#old-style-instcitation"></a>
+</h3>
+<p><code><a href="../reference/audit_citation.html">audit_citation()</a></code> parses <code>inst/CITATION</code>
+statically (no <code><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval()</a></code>) and surfaces every call to
+<code><a href="https://rdrr.io/r/utils/personList.html" class="external-link">personList()</a></code>, <code><a href="https://rdrr.io/r/utils/personList.html" class="external-link">as.personList()</a></code> or
+<code><a href="https://rdrr.io/r/utils/citEntry.html" class="external-link">citEntry()</a></code> that CRAN rejects on submission with
+<code>Package CITATION file contains call(s) to old-style ...</code>. It
+returns a tibble with <code>call</code>, <code>line</code> and a
+one-line <code>suggestion</code> for the modern equivalent
+(<code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> on <code><a href="https://rdrr.io/r/utils/person.html" class="external-link">person()</a></code> objects;
+<code><a href="https://rdrr.io/r/utils/bibentry.html" class="external-link">bibentry()</a></code> instead of <code><a href="https://rdrr.io/r/utils/citEntry.html" class="external-link">citEntry()</a></code>):</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_citation.html">audit_citation</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+<p>Read-only - rewriting a CITATION file usually needs editorial
+judgment, so there is no automated <code>fix_citation()</code>.</p>
+</div>
+<div class="section level3">
+<h3 id="unquoted-package-names-in-description">Unquoted package names in <code>Description</code><a class="anchor" aria-label="anchor" href="#unquoted-package-names-in-description"></a>
+</h3>
+<p>CRAN incoming pretest emits
+<code>Package names should be quoted in the Description field</code>
+when a package name (or any software name) appears in the
+<code>Description</code> field of <code>DESCRIPTION</code> without
+surrounding single quotes.</p>
+<p><code><a href="../reference/audit_description.html">audit_description()</a></code> reads the <code>Description</code>
+field, tokenises it, and surfaces every word that matches an installed
+package name yet is not wrapped in single quotes. The package’s own name
+is intentionally skipped, and so are compound forms like
+<code>dplyr-style</code> or <code>httr2-based</code> (a hyphen on either
+side disqualifies the token from being a standalone package reference).
+Returns a tibble with <code>word</code>, <code>position</code> and
+<code>suggestion</code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_description.html">audit_description</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+<p>Read-only - the fix is editorial (decide whether each hit is a real
+package reference or a coincidental word, then wrap with single
+quotes).</p>
+</div>
+<div class="section level3">
+<h3 id="dontrun-blocks-in-examples">
+<code>\dontrun{}</code> blocks in examples<a class="anchor" aria-label="anchor" href="#dontrun-blocks-in-examples"></a>
+</h3>
+<p>CRAN policy is that <code>\dontrun{}</code> should only wrap example
+code that genuinely cannot be executed (missing API key, missing system
+dependency, side effect on the user’s filespace). Otherwise prefer
+<code>\donttest{}</code>, which still gets exercised by
+<code>R CMD check --run-donttest</code> but is skipped by default.</p>
+<p><code><a href="../reference/audit_dontrun.html">audit_dontrun()</a></code> walks <code>man/*.Rd</code> line-by-line
+and surfaces every <code>\dontrun{}</code> opener (commented-out
+<code>% \dontrun{</code> mentions are ignored), with the source Rd file,
+the documented topic, the line number and a one-line suggestion.
+Read-only - the call is your review checklist:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="minimal-end-to-end-on-a-fake-package">Minimal end-to-end on a fake package<a class="anchor" aria-label="anchor" href="#minimal-end-to-end-on-a-fake-package"></a>
@@ -303,7 +400,7 @@ column-by-column comments by hand, then re-run
 deliberately trips each audit. The two <code>with_*</code> flags below
 activate the non-ASCII and undocumented-dataset fixtures so every audit
 has something to surface:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span>with_nonascii <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                          with_undocumented_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -312,6 +409,9 @@ has something to surface:</p>
 <span><span class="fu"><a href="../reference/audit_tags.html">audit_tags</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>             <span class="co"># @return / @noRd issues</span></span>
 <span><span class="fu"><a href="../reference/audit_ascii.html">audit_ascii</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>             <span class="co"># accents in comments / strings</span></span>
 <span><span class="fu"><a href="../reference/audit_dataset_doc.html">audit_dataset_doc</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>       <span class="co"># data/demo_dataset.rda has no doc</span></span>
+<span><span class="fu"><a href="../reference/audit_citation.html">audit_citation</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>          <span class="co"># old-style personList() / citEntry()</span></span>
+<span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>           <span class="co"># \dontrun{} blocks in examples</span></span>
+<span><span class="fu"><a href="../reference/audit_description.html">audit_description</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>       <span class="co"># unquoted package names in Description</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>

@@ -110,8 +110,14 @@ a single check between <code>audit_globals()</code> and <code><a href="fix_globa
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list with two tibbles, <code>globalVariables</code> and <code>functions</code>,
-or <code>NULL</code> if the package has no global notes.</p>
+    <p>A list with three tibbles, <code>globalVariables</code>, <code>functions</code>
+and <code>operators</code>, or <code>NULL</code> if the package has no global notes.
+<code>globalVariables</code> collects names that need a
+<code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">utils::globalVariables()</a></code> declaration; <code>functions</code> collects
+external functions to import via <code>@importFrom</code>; <code>operators</code>
+collects NSE tokens / data.table / rlang pronouns (<code>:=</code>,
+<code>.SD</code>, <code>.data</code>, <code>!!</code>, ...) that also need <code>@importFrom</code> rather
+than a <code><a href="https://rdrr.io/r/utils/globalVariables.html" class="external-link">globalVariables()</a></code> entry.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>

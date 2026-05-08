@@ -100,8 +100,10 @@ R/globals.R. Wraps print_globals()."><meta name="twitter:card" content="summary"
 
 
 <dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>
-<dd><p>If <code>TRUE</code>, <strong>overwrite</strong> <code>&lt;pkg&gt;/R/globals.R</code> with a
-single <code>globalVariables(...)</code> call. Default <code>FALSE</code> (print the
+<dd><p>If <code>TRUE</code>, write a single <code>globalVariables(...)</code> call
+to <code>&lt;pkg&gt;/R/globals.R</code>, <strong>merging</strong> with whatever names that file
+already declares (the freshly detected names are added on top of
+the existing ones, deduplicated). Default <code>FALSE</code> (print the
 block to the console for manual paste).</p></dd>
 
 
