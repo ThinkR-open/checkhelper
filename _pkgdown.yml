@@ -26,6 +26,7 @@ reference:
   - audit_check
   - audit_dataset_doc
   - audit_citation
+  - audit_dontrun
 
 - title: Fix
   desc: >
