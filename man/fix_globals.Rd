@@ -9,8 +9,10 @@ fix_globals(pkg = ".", write = FALSE, checks = NULL)
 \arguments{
 \item{pkg}{Path to the package.}
 
-\item{write}{If \code{TRUE}, \strong{overwrite} \verb{<pkg>/R/globals.R} with a
-single \code{globalVariables(...)} call. Default \code{FALSE} (print the
+\item{write}{If \code{TRUE}, write a single \code{globalVariables(...)} call
+to \verb{<pkg>/R/globals.R}, \strong{merging} with whatever names that file
+already declares (the freshly detected names are added on top of
+the existing ones, deduplicated). Default \code{FALSE} (print the
 block to the console for manual paste).}
 
 \item{checks}{Optional. A pre-computed \code{\link[rcmdcheck:rcmdcheck]{rcmdcheck::rcmdcheck()}} result

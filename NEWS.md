@@ -1,5 +1,15 @@
 # checkhelper (development version)
 
+## `audit_dontrun()`: surface every `\dontrun{}` block in `man/*.Rd`
+
+- New `audit_dontrun(pkg)` walks `man/*.Rd` line by line and surfaces
+  every `\dontrun{}` block, with the source Rd file, the documented
+  topic, the line number and a one-line suggestion to switch to
+  `\donttest{}` unless the example genuinely cannot be executed
+  (missing API key, missing system dependency, side effect on the
+  user's filespace). Detection is purely static: each Rd file is
+  read line-by-line and never sourced. Closes #72.
+
 ## `fix_globals()` separates operators / pronouns from real globals
 
 - `:=`, `.SD`, `.N`, `.I`, `.GRP`, `.BY`, `.EACHI` (data.table),

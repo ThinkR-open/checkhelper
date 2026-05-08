@@ -36,6 +36,7 @@ when an automated fix is safe, one `fix_*()` function. Type
 | `R CMD check` with CRAN settings          | `audit_check()`       | \-                  |
 | Undocumented datasets                     | `audit_dataset_doc()` | `fix_dataset_doc()` |
 | Old-style `inst/CITATION`                 | `audit_citation()`    | \-                  |
+| `\dontrun{}` blocks in examples           | `audit_dontrun()`     | \-                  |
 
 Lower-level helpers (`asciify_file()`, `asciify_r_source()`,
 `find_nonascii_tokens()`, `create_example_pkg()`) are also exported for
