@@ -38,8 +38,10 @@ chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
 
 # 2. Static audits (no extra check needed).
 audit_tags(pkg)            # exported funs without @return / internals without @noRd
-audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man/
+audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man/, DESCRIPTION, NAMESPACE
 audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
+audit_citation(pkg)        # old-style personList() / citEntry() in inst/CITATION
+audit_dontrun(pkg)         # \dontrun{} blocks in man/*.Rd
 
 # 3. Audits that need the check output - pass `chk` to skip a 2nd run.
 audit_globals(pkg, checks = chk)
@@ -82,8 +84,10 @@ The other audits do not need a check at all:
 | Audit                | Needs `R CMD check`?  | Notes                                  |
 |----------------------|-----------------------|----------------------------------------|
 | `audit_tags()`       | no                    | static via roxygen2                    |
-| `audit_ascii()`      | no                    | AST via `getParseData()`               |
+| `audit_ascii()`      | no                    | line-by-line via `stringi::stri_enc_isascii()` |
 | `audit_dataset_doc()`| no                    | inspects `data/` and `R/`              |
+| `audit_citation()`   | no                    | static parse of `inst/CITATION`        |
+| `audit_dontrun()`    | no                    | line-by-line scan of `man/*.Rd`        |
 | `audit_globals()`    | **yes** (reusable)    | accepts `checks =`                     |
 | `audit_userspace()`  | yes (own pipeline)    | takes file-system snapshots, separate  |
 | `audit_check()`      | yes                   | this **is** the check, with CRAN env   |
@@ -92,17 +96,34 @@ The other audits do not need a check at all:
 
 ### Globals (`no visible binding`)
 
-`audit_globals()` returns a 2-element list (`globalVariables`,
-`functions`) of names CRAN flagged. `fix_globals(write = TRUE)`
-materializes them into `R/globals.R`:
+`audit_globals()` returns a 3-element list of names CRAN flagged:
+
+- `globalVariables` - undeclared variables that need a
+  `utils::globalVariables()` declaration.
+- `functions` - external functions that need an `@importFrom` line.
+- `operators` - NSE tokens, data.table / rlang pronouns (`:=`,
+  `.SD`, `.N`, `.data`, `!!`, ...) that also need an `@importFrom`
+  rather than a `globalVariables()` entry.
+
+`fix_globals(write = TRUE)` writes the `globalVariables` set into
+`R/globals.R` (merging with whatever names that file already
+declares - the freshly detected names are added on top of the
+existing ones, deduplicated). The operators section is printed on
+stdout so you wire each one into a roxygen `@importFrom` block by
+hand:
 
 ```{r}
 audit_globals(pkg, checks = chk)
 fix_globals(pkg, checks = chk, write = TRUE)
 ```
 
-Without `write = TRUE`, `fix_globals()` only prints the
-`utils::globalVariables(...)` block to copy-paste.
+When a token is exported by more than one candidate package
+(e.g. `:=` is exported by both data.table and rlang), every
+candidate is listed and you pick one consciously - no silent
+guessing.
+
+Without `write = TRUE`, `fix_globals()` only prints both blocks to
+copy-paste.
 
 ### Missing roxygen tags
 
@@ -116,9 +137,10 @@ audit_tags(pkg)
 
 ### Non-ASCII characters
 
-`audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/` and
-DESCRIPTION line-by-line and reports every line containing
-non-ASCII characters (columns: `file`, `line`, `text`, `n_tokens`).
+`audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/`,
+`DESCRIPTION` and `NAMESPACE` line-by-line and reports every line
+containing non-ASCII characters (columns: `file`, `line`, `text`,
+`n_tokens`).
 `fix_ascii()` then rewrites them - using the parser AST so each
 token is rewritten per its context: string literals become `\uXXXX`
 escapes, comments and roxygen get `Latin-ASCII` transliteration.
@@ -159,6 +181,41 @@ The skeleton is editable: you fill in the description / source /
 column-by-column comments by hand, then re-run
 `devtools::document()`.
 
+### Old-style `inst/CITATION`
+
+`audit_citation()` parses `inst/CITATION` statically (no `eval()`)
+and surfaces every call to `personList()`, `as.personList()` or
+`citEntry()` that CRAN rejects on submission with
+`Package CITATION file contains call(s) to old-style ...`. It
+returns a tibble with `call`, `line` and a one-line `suggestion`
+for the modern equivalent (`c()` on `person()` objects;
+`bibentry()` instead of `citEntry()`):
+
+```{r}
+audit_citation(pkg)
+```
+
+Read-only - rewriting a CITATION file usually needs editorial
+judgment, so there is no automated `fix_citation()`.
+
+### `\dontrun{}` blocks in examples
+
+CRAN policy is that `\dontrun{}` should only wrap example code
+that genuinely cannot be executed (missing API key, missing system
+dependency, side effect on the user's filespace). Otherwise prefer
+`\donttest{}`, which still gets exercised by
+`R CMD check --run-donttest` but is skipped by default.
+
+`audit_dontrun()` walks `man/*.Rd` line-by-line and surfaces every
+`\dontrun{}` opener (commented-out `% \dontrun{` mentions are
+ignored), with the source Rd file, the documented topic, the line
+number and a one-line suggestion. Read-only - the call is your
+review checklist:
+
+```{r}
+audit_dontrun(pkg)
+```
+
 ## Minimal end-to-end on a fake package
 
 `create_example_pkg()` builds a fake package that deliberately trips
@@ -175,6 +232,8 @@ chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
 audit_tags(pkg)             # @return / @noRd issues
 audit_ascii(pkg)             # accents in comments / strings
 audit_dataset_doc(pkg)       # data/demo_dataset.rda has no doc
+audit_citation(pkg)          # old-style personList() / citEntry()
+audit_dontrun(pkg)           # \dontrun{} blocks in examples
 audit_globals(pkg, checks = chk)
 
 fix_globals(pkg, checks = chk, write = TRUE)
