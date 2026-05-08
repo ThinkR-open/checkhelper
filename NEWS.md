@@ -23,6 +23,16 @@
   shape) instead of an exact OS-dependent row count, so the test now
   runs on every OS (#54).
 
+## `audit_citation()`: catch CRAN-rejected old-style CITATION calls
+
+- New `audit_citation(pkg)` parses `inst/CITATION` statically (no
+  `eval()`) and surfaces every call to `personList()`,
+  `as.personList()` or `citEntry()` that CRAN rejects on submission
+  (`Package CITATION file contains call(s) to old-style ...`).
+  Returns a tibble with `call`, `line` and a one-line `suggestion`
+  for the modern equivalent (`c()` on `person()` objects;
+  `bibentry()` instead of `citEntry()`). Closes #62.
+
 ## `audit_globals()` / `fix_globals()` skip vignettes / tests / examples
 
 - The internal `R CMD check` triggered by `audit_globals()` and
