@@ -91,6 +91,8 @@ chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
 audit_tags(pkg)
 audit_ascii(pkg)
 audit_dataset_doc(pkg)
+audit_citation(pkg)
+audit_dontrun(pkg)
 
 # Audits that consume the check - reuse `chk` via the `checks =` argument.
 audit_globals(pkg, checks = chk)
