@@ -43,7 +43,7 @@ audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
 audit_citation(pkg)        # old-style personList() / citEntry() in inst/CITATION
 audit_dontrun(pkg)         # \dontrun{} blocks in man/*.Rd
 audit_description(pkg)     # unquoted package names in DESCRIPTION's Description field
-audit_downloads(pkg)       # network / download calls without an offline-safe guard
+audit_downloads(pkg)       # network / download call sites to review for offline-safe guards
 
 # 3. Audits that need the check output - pass `chk` to skip a 2nd run.
 audit_globals(pkg, checks = chk)
@@ -289,7 +289,7 @@ audit_dataset_doc(pkg)       # data/demo_dataset.rda has no doc
 audit_citation(pkg)          # old-style personList() / citEntry()
 audit_dontrun(pkg)           # \dontrun{} blocks in examples
 audit_description(pkg)       # unquoted package names in Description
-audit_downloads(pkg)         # network calls without an offline-safe guard
+audit_downloads(pkg)         # network call sites to review for offline-safe guards
 audit_globals(pkg, checks = chk)
 
 fix_globals(pkg, checks = chk, write = TRUE)

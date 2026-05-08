@@ -46,7 +46,7 @@ audit_downloads <- function(pkg = ".") {
     return(empty)
   }
 
-  hits$file <- sub(paste0("^", pkg, .Platform$file.sep), "", hits$file)
+  hits$file <- .relative_to_pkg(paths = hits$file, pkg = pkg)
   out <- tibble::as_tibble(hits)
 
   cli::cli_inform(c(
@@ -93,8 +93,32 @@ audit_downloads <- function(pkg = ".") {
   "RCurl::getBinaryURL"
 )
 
-#' List every `.R` / `.Rmd` / `.Rnw` file under the watched
-#' directories of the package.
+#' Render `paths` relative to `pkg` without any regex involvement
+#' (handles Windows backslashes and pkg names with regex
+#' metacharacters such as `.`).
+#' @noRd
+.relative_to_pkg <- function(paths, pkg) {
+  norm_pkg <- normalizePath(pkg, winslash = "/", mustWork = FALSE)
+  norm_pkg <- sub("/+$", "", norm_pkg)
+  norm_paths <- normalizePath(paths, winslash = "/", mustWork = FALSE)
+  prefix <- paste0(norm_pkg, "/")
+  vapply(
+    norm_paths,
+    function(p) {
+      if (startsWith(p, prefix)) {
+        substring(p, first = nchar(prefix) + 1L)
+      } else {
+        p
+      }
+    },
+    FUN.VALUE = character(1L),
+    USE.NAMES = FALSE
+  )
+}
+
+#' List every `.R` / `.Rmd` / `.Rnw` / `.qmd` file under the watched
+#' directories of the package. Lowercase variants of each extension
+#' are also matched.
 #' @noRd
 .download_audit_files <- function(pkg) {
   dirs <- file.path(pkg, c("R", "tests", "vignettes", "inst"))
