@@ -38,7 +38,7 @@ chk <- rcmdcheck::rcmdcheck(pkg, args = "--as-cran")
 
 # 2. Static audits (no extra check needed).
 audit_tags(pkg)            # exported funs without @return / internals without @noRd
-audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man/
+audit_ascii(pkg)           # non-ASCII characters in R/, tests/, vignettes/, man/, DESCRIPTION, NAMESPACE
 audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
 audit_citation(pkg)        # old-style personList() / citEntry() in inst/CITATION
 audit_dontrun(pkg)         # \dontrun{} blocks in man/*.Rd
@@ -84,7 +84,7 @@ The other audits do not need a check at all:
 | Audit                | Needs `R CMD check`?  | Notes                                  |
 |----------------------|-----------------------|----------------------------------------|
 | `audit_tags()`       | no                    | static via roxygen2                    |
-| `audit_ascii()`      | no                    | AST via `getParseData()`               |
+| `audit_ascii()`      | no                    | line-by-line via `stringi::stri_enc_isascii()` |
 | `audit_dataset_doc()`| no                    | inspects `data/` and `R/`              |
 | `audit_citation()`   | no                    | static parse of `inst/CITATION`        |
 | `audit_dontrun()`    | no                    | line-by-line scan of `man/*.Rd`        |
@@ -137,9 +137,10 @@ audit_tags(pkg)
 
 ### Non-ASCII characters
 
-`audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/` and
-DESCRIPTION line-by-line and reports every line containing
-non-ASCII characters (columns: `file`, `line`, `text`, `n_tokens`).
+`audit_ascii()` walks `R/`, `tests/`, `vignettes/`, `man/`,
+`DESCRIPTION` and `NAMESPACE` line-by-line and reports every line
+containing non-ASCII characters (columns: `file`, `line`, `text`,
+`n_tokens`).
 `fix_ascii()` then rewrites them - using the parser AST so each
 token is rewritten per its context: string literals become `\uXXXX`
 escapes, comments and roxygen get `Latin-ASCII` transliteration.
