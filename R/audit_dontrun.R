@@ -59,7 +59,7 @@ audit_dontrun <- function(pkg = ".") {
   out <- tibble::as_tibble(hits)
   n <- nrow(out)
   cli::cli_inform(c(
-    "i" = "audit_dontrun(): {n} `\\\\dontrun{{}}` block{?s} found across {length(unique(out$rd_file))} Rd file{?s}."
+    "i" = "audit_dontrun(): {n} `\\dontrun{{}}` block{?s} found across {length(unique(out$rd_file))} Rd file{?s}."
   ))
   out
 }
