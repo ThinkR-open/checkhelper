@@ -28,6 +28,7 @@ reference:
   - audit_citation
   - audit_description
   - audit_dontrun
+  - audit_downloads
 
 - title: Fix
   desc: >

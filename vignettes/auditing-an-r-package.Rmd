@@ -43,6 +43,7 @@ audit_dataset_doc(pkg)     # datasets in data/ without a roxygen block
 audit_citation(pkg)        # old-style personList() / citEntry() in inst/CITATION
 audit_dontrun(pkg)         # \dontrun{} blocks in man/*.Rd
 audit_description(pkg)     # unquoted package names in DESCRIPTION's Description field
+audit_downloads(pkg)       # network / download calls without an offline-safe guard
 
 # 3. Audits that need the check output - pass `chk` to skip a 2nd run.
 audit_globals(pkg, checks = chk)
@@ -90,6 +91,7 @@ The other audits do not need a check at all:
 | `audit_citation()`   | no                    | static parse of `inst/CITATION`        |
 | `audit_description()`| no                    | tokenises DESCRIPTION's Description    |
 | `audit_dontrun()`    | no                    | line-by-line scan of `man/*.Rd`        |
+| `audit_downloads()`  | no                    | AST walk of `R/`, `tests/`, `vignettes/`, `inst/` |
 | `audit_globals()`    | **yes** (reusable)    | accepts `checks =`                     |
 | `audit_userspace()`  | yes (own pipeline)    | takes file-system snapshots, separate  |
 | `audit_check()`      | yes                   | this **is** the check, with CRAN env   |
@@ -223,6 +225,33 @@ Read-only - the fix is editorial (decide whether each hit is a
 real package reference or a coincidental word, then wrap with
 single quotes).
 
+### Network / download calls
+
+CRAN policy: package code that downloads files or hits the network
+at install or runtime must degrade gracefully when the network is
+unavailable (offline build farms, sandboxed CI, locked-down user
+environment). Common rejection causes: downloads from inside
+`.onLoad()`, `.onAttach()`, vignettes or examples that have no
+`tryCatch()` / `skip_if_offline()` / `\dontrun{}` guard.
+
+`audit_downloads()` walks `R/`, `tests/`, `vignettes/` and `inst/`,
+parses each file, and surfaces every call to a known download or
+HTTP function: `download.file()`, `httr::GET()`, `httr2::req_perform()`,
+`curl::curl_download()`, etc. The call site (file + line) is paired
+with a one-line suggestion. Detection is purely static, so a
+user-defined function that shadows a downloader name
+(`download.file <- function(...) { ... }`) does not trigger a false
+positive on the definition site - only call sites are flagged:
+
+```{r}
+audit_downloads(pkg)
+```
+
+Read-only - the fix is editorial: decide for each call whether the
+right CRAN-safe pattern is `tryCatch()` (continue on offline),
+`testthat::skip_if_offline()` (skip the test), or `\dontrun{}` (drop
+the example from the test surface).
+
 ### `\dontrun{}` blocks in examples
 
 CRAN policy is that `\dontrun{}` should only wrap example code
@@ -260,6 +289,7 @@ audit_dataset_doc(pkg)       # data/demo_dataset.rda has no doc
 audit_citation(pkg)          # old-style personList() / citEntry()
 audit_dontrun(pkg)           # \dontrun{} blocks in examples
 audit_description(pkg)       # unquoted package names in Description
+audit_downloads(pkg)         # network calls without an offline-safe guard
 audit_globals(pkg, checks = chk)
 
 fix_globals(pkg, checks = chk, write = TRUE)
