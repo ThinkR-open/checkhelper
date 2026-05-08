@@ -35,13 +35,13 @@ test_that("audit_description() flags unquoted package names", {
     "Wrapper around jsonlite and 'httr' for the dplyr ecosystem."
   )
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_s3_class(out, "tbl_df")
   expect_named(out, c("word", "position", "suggestion"))
@@ -54,13 +54,13 @@ test_that("audit_description() returns empty tibble when every match is quoted",
     "Wrapper around 'jsonlite' and 'httr'."
   )
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_s3_class(out, "tbl_df")
   expect_named(out, c("word", "position", "suggestion"))
@@ -72,13 +72,13 @@ test_that("audit_description() does not flag words that are not package names", 
     "A toolkit for statistical analysis and reporting."
   )
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_equal(nrow(out), 0L)
 })
@@ -101,13 +101,13 @@ test_that("audit_description() handles a multi-line Description field", {
   )
   pkg <- local_pkg_with_desc(desc)
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_setequal(out$word, c("jsonlite", "httr"))
 })
@@ -117,13 +117,13 @@ test_that("audit_description() reports each occurrence even when the same packag
     "Use jsonlite for parsing. The jsonlite output is then wrapped."
   )
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_equal(nrow(out), 2L)
   expect_true(all(out$word == "jsonlite"))
@@ -134,7 +134,7 @@ test_that("audit_description() emits a cli summary message when hits are found",
   pkg <- local_pkg_with_desc("Wrapper around jsonlite.")
 
   expect_message(
-    with_mocked_bindings(
+    testthat::with_mocked_bindings(
       audit_description(pkg),
       .installed_packages = function() {
         mock_installed
@@ -160,13 +160,13 @@ test_that("audit_description() does not flag the package's own name", {
   )
   writeLines(desc_lines, file.path(pkg, "DESCRIPTION"))
 
-  out <- with_mocked_bindings(
+  out <- suppressMessages(testthat::with_mocked_bindings(
     audit_description(pkg),
     .installed_packages = function() {
       mock_installed
     },
     .package = "checkhelper"
-  )
+  ))
 
   expect_equal(nrow(out), 0L)
 })
