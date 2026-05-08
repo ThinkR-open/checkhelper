@@ -148,11 +148,16 @@ test_that("extract_existing_globals does NOT execute side effects from globals.R
   marker <- tempfile("rce_marker_")
   expect_false(file.exists(marker))
 
+  # Forward slashes only: the path is embedded as a literal R
+  # string, and Windows backslashes would clash with R string
+  # escapes (\U unicode, \R bell, \a alert).
+  marker_in_src <- gsub("\\\\", "/", marker, fixed = FALSE)
+
   globals_path <- tempfile(fileext = ".R")
   writeLines(
     sprintf(
-      'utils::globalVariables(c(if (file.create(%s)) "leaked" else "ok", "real_var"))',
-      shQuote(marker)
+      'utils::globalVariables(c(if (file.create("%s")) "leaked" else "ok", "real_var"))',
+      marker_in_src
     ),
     globals_path
   )
