@@ -141,8 +141,23 @@ test_that("audit_description() emits a cli summary message when hits are found",
       },
       .package = "checkhelper"
     ),
-    regexp = "audit_description"
+    regexp = "unquoted package name"
   )
+})
+
+test_that("audit_description() flags package names that end a sentence (trailing dot)", {
+  pkg <- local_pkg_with_desc("Wrapper around jsonlite.")
+
+  out <- suppressMessages(testthat::with_mocked_bindings(
+    audit_description(pkg),
+    .installed_packages = function() {
+      mock_installed
+    },
+    .package = "checkhelper"
+  ))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out$word, "jsonlite")
 })
 
 test_that("audit_description() does not flag the package's own name", {

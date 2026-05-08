@@ -110,7 +110,11 @@ audit_description <- function(pkg = ".") {
   )
 
   text <- paste(description, collapse = " ")
-  matches <- gregexpr("[A-Za-z][A-Za-z0-9.]*", text, perl = TRUE)[[1L]]
+  matches <- gregexpr(
+    "[A-Za-z](?:[A-Za-z0-9.]*[A-Za-z0-9])?",
+    text,
+    perl = TRUE
+  )[[1L]]
   if (length(matches) == 1L && matches[1L] == -1L) {
     return(empty)
   }
