@@ -11,8 +11,14 @@
 #'   reuses it instead of re-running `R CMD check` on `pkg`. Useful to share
 #'   a single check between [audit_globals()] and [fix_globals()].
 #'
-#' @return A list with two tibbles, `globalVariables` and `functions`,
-#'   or `NULL` if the package has no global notes.
+#' @return A list with three tibbles, `globalVariables`, `functions`
+#'   and `operators`, or `NULL` if the package has no global notes.
+#'   `globalVariables` collects names that need a
+#'   `utils::globalVariables()` declaration; `functions` collects
+#'   external functions to import via `@importFrom`; `operators`
+#'   collects NSE tokens / data.table / rlang pronouns (`:=`,
+#'   `.SD`, `.data`, `!!`, …) that also need `@importFrom` rather
+#'   than a `globalVariables()` entry.
 #' @export
 #' @seealso [fix_globals()], [get_no_visible()].
 #' @examples
@@ -94,12 +100,27 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
 
   printed <- .print_globals(globals = globals, message = FALSE)
 
+  has_operators <- nzchar(printed[["liste_operators"]])
+
   if (!isTRUE(write)) {
     message(printed[["liste_funs"]])
     message(printed[["liste_globals"]])
+    if (has_operators) {
+      message(printed[["liste_operators"]])
+    }
+    # Two destinations: the globalVariables block goes to
+    # R/globals.R; the operators / pronouns block goes to a roxygen
+    # `@importFrom` somewhere in the package (any R file). Keep the
+    # two cli messages separate so the user does not paste NAMESPACE
+    # concerns into globals.R.
     cli::cli_inform(c(
-      "i" = "fix_globals(): paste the block above into R/globals.R, or call fix_globals(write = TRUE)."
+      "i" = "fix_globals(): paste the `utils::globalVariables(...)` block above into R/globals.R, or call fix_globals(write = TRUE)."
     ))
+    if (has_operators) {
+      cli::cli_inform(c(
+        "i" = "fix_globals(): paste the operators / pronouns `@importFrom` lines into a roxygen block in any R file (e.g. R/utils-imports.R), NOT into R/globals.R."
+      ))
+    }
     return(invisible(NULL))
   }
 
@@ -121,12 +142,44 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
   cli::cli_inform(c(
     "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}} (merged with {length(preserved)} previously declared name{?s})."
   ))
+  # Operators / pronouns must NOT go into R/globals.R because they are
+  # exports from another package, not undeclared variables. Surface the
+  # @importFrom suggestions on stdout so the user can wire them into
+  # NAMESPACE explicitly.
+  if (has_operators) {
+    message(printed[["liste_operators"]])
+    cli::cli_inform(c(
+      "i" = "fix_globals(): operators / pronouns above need an `@importFrom` line, NOT a globalVariables() entry — see operators section."
+    ))
+  }
 
   invisible(globals_path)
 }
 
 
 # Internal implementations ---------------------------------------------------
+
+#' Tokens that R CMD check flags as "no visible global ..." but that are
+#' actually exports from another package - the right fix is `@importFrom`,
+#' not a `globalVariables()` entry. Each token maps to the candidate
+#' source package(s); when more than one applies (`:=` is exported by
+#' both data.table and rlang), `.print_globals()` lists every candidate
+#' so the user picks one consciously.
+#'
+#' @noRd
+.known_operators <- list(
+  ":="     = c("data.table", "rlang"),
+  ".SD"    = "data.table",
+  ".N"     = "data.table",
+  ".I"     = "data.table",
+  ".GRP"   = "data.table",
+  ".BY"    = "data.table",
+  ".EACHI" = "data.table",
+  ".data"  = "rlang",
+  ".env"   = "rlang",
+  "!!"     = "rlang",
+  "!!!"    = "rlang"
+)
 
 #' Extract the names already declared by `globalVariables()` calls in
 #' an existing `R/globals.R`. Returns `character(0)` when the file
@@ -302,7 +355,12 @@ merge_globals_block <- function(fresh_block, preserved) {
       filepath = str_extract(notes, "(\\s*\\(.*\\)\\s*){0,1}"),
       filepath = ifelse(filepath == "", "-", filepath),
       fun = purrr::map2_chr(notes, filepath, ~ gsub(.y, "", .x, fixed = TRUE)),
-      fun = str_extract(fun, ".+(?=:)"),
+      # Anchored, non-colon match: capture only up to the *first*
+      # colon. The historical greedy `.+(?=:)` would happily eat past
+      # the colon for e.g. ":=" notes (`fn: no visible global function
+      # definition for ':='`), capturing the entire prose of the note
+      # as the function name and breaking the operators-import path.
+      fun = str_extract(fun, "^[^:]+(?=:)"),
       is_function = grepl("no visible global function definition", notes),
       is_global_variable = grepl("no visible binding for global variable", notes),
       variable = str_extract(notes, "(?<=\\u2018).+(?=\\u2019)|(?<=\\u0027).+(?=\\u0027)"),
@@ -342,13 +400,31 @@ merge_globals_block <- function(fresh_block, preserved) {
   fun_names <- notes %>%
     filter(is_global_variable | is_function) %>%
     select(-importfrom_function, -is_importfrom) %>%
-    left_join(proposed, by = c("variable" = "importfrom_function"))
+    left_join(proposed, by = c("variable" = "importfrom_function")) %>%
+    mutate(is_operator = variable %in% names(.known_operators))
+
+  # Operators / pronouns (`:=`, `.data`, `.SD`, `!!`, ...) get their own
+  # bucket. They will be rendered as `@importFrom <pkg> <token>`
+  # suggestions, never as `globalVariables()` entries (which would be
+  # semantically wrong: they are not undeclared variables, they are
+  # exports from another package).
+  ops_tbl <- fun_names %>%
+    filter(is_operator) %>%
+    select(fun, variable) %>%
+    mutate(source_pkg = vapply(
+      variable,
+      function(v) paste(.known_operators[[v]], collapse = ";"),
+      character(1)
+    ))
 
   list(
     globalVariables = fun_names %>%
-      filter(is_global_variable),
+      filter(is_global_variable & !is_operator) %>%
+      select(-is_operator),
     functions = fun_names %>%
-      filter(is_function)
+      filter(is_function & !is_operator) %>%
+      select(-is_operator),
+    operators = ops_tbl
   )
 }
 
@@ -370,7 +446,8 @@ merge_globals_block <- function(fresh_block, preserved) {
     }
   }
 
-  if (!isTRUE(is.list(globals) & length(globals) == 2)) {
+  required_keys <- c("globalVariables", "functions")
+  if (!is.list(globals) || !all(required_keys %in% names(globals))) {
     stop("globals should be a list as issued from 'get_no_visible()' or empty")
   }
 
@@ -422,13 +499,83 @@ merge_globals_block <- function(fresh_block, preserved) {
     liste_globals_code
   )
 
+  liste_operators <- format_operators_section(globals[["operators"]])
+
   if (isTRUE(message)) {
-    message(glue(liste_funs, "\n", liste_globals))
+    message(glue(liste_funs, "\n", liste_globals, "\n", liste_operators))
   } else {
     list(
       liste_funs = liste_funs,
       liste_globals = liste_globals,
-      liste_globals_code = liste_globals_code
+      liste_globals_code = liste_globals_code,
+      liste_operators = liste_operators
     )
   }
+}
+
+#' Format the third section of `.print_globals()` output: a set of
+#' `@importFrom` lines for the operators / pronouns surfaced by
+#' `.get_no_visible()`. When a token is exported by more than one
+#' candidate package (currently only `:=` from data.table OR rlang),
+#' every candidate is listed and the user picks one consciously — no
+#' silent guessing.
+#' @noRd
+format_operators_section <- function(operators) {
+  if (is.null(operators) || nrow(operators) == 0L) {
+    return("")
+  }
+
+  uniq <- operators[!duplicated(operators$variable), c("variable", "source_pkg")]
+  is_ambiguous <- grepl(";", uniq$source_pkg, fixed = TRUE)
+
+  unambiguous_lines <- character(0)
+  if (any(!is_ambiguous)) {
+    unamb <- uniq[!is_ambiguous, , drop = FALSE]
+    by_pkg <- split(unamb$variable, unamb$source_pkg)
+    unambiguous_lines <- vapply(
+      names(by_pkg),
+      function(pkg) {
+        toks <- sort(unique(by_pkg[[pkg]]))
+        paste0("#' @importFrom ", pkg, " ", paste(toks, collapse = " "))
+      },
+      character(1)
+    )
+  }
+
+  ambiguous_lines <- character(0)
+  if (any(is_ambiguous)) {
+    amb <- uniq[is_ambiguous, , drop = FALSE]
+    for (i in seq_len(nrow(amb))) {
+      sym <- amb$variable[i]
+      candidates <- strsplit(amb$source_pkg[i], ";", fixed = TRUE)[[1]]
+      # `# #'` would be invisible to roxygen2 — pasting verbatim
+       # gives the user zero @importFrom declared. Emit the lines as
+       # real `#'` and add a `# KEEP ONE:` banner so the user knows
+       # to delete every other line.
+      ambiguous_lines <- c(
+        ambiguous_lines,
+        sprintf(
+          "# `%s` is exported by %s - KEEP ONE of the lines below, delete the other:",
+          sym,
+          paste0("'", candidates, "'", collapse = " or ")
+        ),
+        vapply(
+          candidates,
+          function(pkg) paste0("#' @importFrom ", pkg, " ", sym),
+          character(1)
+        )
+      )
+    }
+  }
+
+  # Banners are `#`-prefixed so the whole block survives a verbatim
+  # paste into an R file. Bare `--- ... ---` would parse-error.
+  paste(c(
+    "# --- Operators / pronouns to import via NAMESPACE ---",
+    "# --- add to an R file (e.g. R/utils-imports.R) ---",
+    "",
+    unambiguous_lines,
+    ambiguous_lines,
+    "NULL"
+  ), collapse = "\n")
 }

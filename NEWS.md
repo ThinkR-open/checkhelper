@@ -1,5 +1,28 @@
 # checkhelper (development version)
 
+## `fix_globals()` separates operators / pronouns from real globals
+
+- `:=`, `.SD`, `.N`, `.I`, `.GRP`, `.BY`, `.EACHI` (data.table),
+  `.data`, `.env`, `!!`, `!!!` (rlang) are no longer routed into the
+  `utils::globalVariables(c(...))` block. They are exports from
+  another package - not undeclared variables - and the right fix is
+  an `@importFrom` line, not a `globalVariables()` entry.
+- `audit_globals()` / `.get_no_visible()` now return a third tibble
+  `operators` next to `globalVariables` and `functions`. The token
+  is paired with its candidate source package(s).
+- `fix_globals()` prints a third section
+  *"Operators / pronouns to import via NAMESPACE"* with ready-to-paste
+  `#' @importFrom <pkg> <token>` lines. When the source is ambiguous
+  (`:=` is exported by both data.table and rlang) every candidate is
+  listed and the user picks one consciously - no silent guessing.
+- `fix_globals(write = TRUE)` only writes real globals to
+  `R/globals.R`. The operators section is printed on stdout so the
+  user wires the `@importFrom` lines into NAMESPACE manually.
+- The internal regex that extracts the function name from a check
+  note (`fun = str_extract(fun, ".+(?=:)")`) was greedy and ate the
+  whole prose of `:=` notes. Anchored to the first `:` so it now
+  reports the actual caller.
+
 ## `fix_globals(write = TRUE)` now merges with the existing `R/globals.R`
 
 - Previously, `fix_globals(write = TRUE)` overwrote `R/globals.R`
