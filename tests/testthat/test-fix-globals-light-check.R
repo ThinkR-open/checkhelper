@@ -7,7 +7,7 @@
 # (`* checking R code for possible problems`). They do NOT depend on
 # building vignettes, running tests, running examples, or rendering
 # the manual. The historical default (`rcmdcheck(path)` with no args)
-# triggered all four heavy phases for nothing — on a package with
+# triggered all four heavy phases for nothing - on a package with
 # vignettes, that's minutes of wasted time per call.
 #
 # The contract this test pins down:

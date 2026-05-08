@@ -122,8 +122,8 @@ audit_tags <- function(pkg = ".") {
   ##
   ## We only keep blocks that roxygen2 will actually turn into an Rd
   ## file, i.e. blocks carrying a title. A bare-`@export` method (no
-  ## title, no description) does not generate its own Rd — it just
-  ## contributes a NAMESPACE entry — so CRAN will not ask for `\value`
+  ## title, no description) does not generate its own Rd - it just
+  ## contributes a NAMESPACE entry - so CRAN will not ask for `\value`
   ## on it and we must not flag it.
   func_classes <- c("function", "s3generic", "s3method")
   block_makes_rd <- function(b) {
@@ -135,7 +135,7 @@ audit_tags <- function(pkg = ".") {
     # or it joins an existing Rd via @rdname / @describeIn, or it sets
     # the Rd name explicitly via @name. A bare-`@export` block (no
     # title, no @rdname, no @name) is namespace-only and produces no
-    # Rd, so CRAN never asks for `\value` on it — flagging it would be
+    # Rd, so CRAN never asks for `\value` on it - flagging it would be
     # a false positive.
     # block_has_tags() is vectorised in `tags` and reduces internally
     # via any(); the surrounding any() here is defensive in case a
@@ -265,7 +265,7 @@ audit_tags <- function(pkg = ".") {
 
   # Pull `@return` values from topic-only blocks (`#' @name foo \n NULL`) so
   # aliases that resolve to them via `@rdname` are not flagged as missing
-  # (#82). Topic blocks themselves are not surfaced in the final output —
+  # (#82). Topic blocks themselves are not surfaced in the final output -
   # they only feed the alias propagation below.
   topic_returns <- topic_block_returns(res_topic_only)
   # Join with itself to find common rdname

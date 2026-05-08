@@ -1,4 +1,4 @@
-# `asciify_*` — passe `feat/asciify-pkg`
+# `asciify_*` - passe `feat/asciify-pkg`
 
 Inspiré de [`dreamRs/prefixer`](https://github.com/dreamRs/prefixer)
 (`escape_unicode_script`, `show_nonascii_file`) mais corrigé pour
@@ -8,7 +8,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 
 | Endroit | Règle CRAN | Stratégie appliquée |
 |---|---|---|
-| String literals (`"déjà"`) | NOTE *non-ASCII characters in code* | `\uXXXX` (escape) — sémantique préservée |
+| String literals (`"déjà"`) | NOTE *non-ASCII characters in code* | `\uXXXX` (escape) - sémantique préservée |
 | Commentaires R / roxygen (`# été`, `#' été`) | NOTE | translittération `Latin-ASCII` (`é` → `e`) |
 | Identifiants (`maFonçtion`) | WARNING bloquant | **refus**, ne touche pas (renommer = breaking) |
 | `man/*.Rd` | utilise `\enc{}{}` | hors scope (regénéré par roxygen) |
@@ -31,7 +31,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
   C'est ce que CRAN veut.
 * **`escape`** : tout en `\uXXXX`. Sûr pour des strings, illisible pour
   des commentaires (les `é` ne seraient pas interprétés dans un
-  commentaire — c'est juste 6 caractères ASCII bizarres).
+  commentaire - c'est juste 6 caractères ASCII bizarres).
 * **`translit`** : tout via `Latin-ASCII`. Casse le sens des chaînes
   (`"déjà"` → `"deja"`). À utiliser quand l'utilisateur sait ce qu'il
   fait.
@@ -54,7 +54,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 2. **`escape_str_const(text)` : on n'escape que le contenu** entre les
    délimiteurs `"…"` / `'…'`. `stringi::stri_escape_unicode()`
    échapperait les guillemets eux-mêmes et ferait sortir
-   `\"déjà\"` — du R cassé. Helper `escape_chars_only()`
+   `\"déjà\"` - du R cassé. Helper `escape_chars_only()`
    réimplémente l'escape en ne touchant que les *caractères* non-ASCII.
    Les raw strings R 4.0 (`r"(...)"`, `r"[...]"`, etc.) sont détectées
    séparément.
@@ -75,7 +75,7 @@ respecter la matrice CRAN au lieu d'échapper aveuglément tout le fichier.
 |---|---|---|
 | Identifiant non-ASCII | refus (par défaut) | renommer un export = breaking |
 | Rd écrits à la main (sans roxygen) | hors scope | majorité des packages utilisent roxygen ; rajouter `\enc{}{}` proprement = scanner Rd-syntax-aware |
-| Vignettes Rnw (Sweave) | non supporté en réécriture — les chunks `<<>>= ... @` ne matchent pas le regex knitr utilisé. Routé en lecture seule (count de chars non-ASCII), pas de rewrite. |
+| Vignettes Rnw (Sweave) | non supporté en réécriture - les chunks `<<>>= ... @` ne matchent pas le regex knitr utilisé. Routé en lecture seule (count de chars non-ASCII), pas de rewrite. |
 | Fichiers > `size_limit` (500 ko) dans `find_nonascii_files()` | ignorés | safety net, blob accidentel |
 | Encodage source ≠ UTF-8 | `readLines(encoding = "UTF-8")` | suppose UTF-8 d'entrée ; à élargir si besoin via paramètre |
 

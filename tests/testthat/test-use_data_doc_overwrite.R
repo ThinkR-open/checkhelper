@@ -6,7 +6,7 @@ test_that("use_data_doc() refuses to overwrite by default and respects overwrite
   pkg_dir <- file.path(pkg_path, "pkg.docover")
 
   # Create a fake "my_data.rda" so get_data_info() can read its dimensions.
-  # We don't need realistic data — use_data_doc() only needs the file to exist.
+  # We don't need realistic data - use_data_doc() only needs the file to exist.
   data_dir <- file.path(pkg_dir, "data")
   dir.create(data_dir, showWarnings = FALSE)
   my_data <- data.frame(a = 1:3, b = letters[1:3])

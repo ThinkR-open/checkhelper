@@ -5,7 +5,7 @@ test_that("find_missing_tags() handles a package with no R/ functions (#18)", {
 
   usethis::create_package(file.path(pkg_path, "pkg.empty"), open = FALSE)
   pkg_dir <- file.path(pkg_path, "pkg.empty")
-  # Empty R/ — no functions to document.
+  # Empty R/ - no functions to document.
   unlink(list.files(file.path(pkg_dir, "R"), full.names = TRUE))
 
   # Should not raise.

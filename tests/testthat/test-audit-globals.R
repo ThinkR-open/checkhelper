@@ -14,7 +14,7 @@ test_that("audit_globals() returns either NULL or a list with globalVariables / 
     expect_type(out, "list")
     expect_named(out, c("globalVariables", "functions", "operators"))
   } else {
-    succeed("audit_globals returned NULL — package had no notes")
+    succeed("audit_globals returned NULL - package had no notes")
   }
 })
 

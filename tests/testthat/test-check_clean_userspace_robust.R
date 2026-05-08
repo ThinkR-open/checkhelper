@@ -1,7 +1,7 @@
 # Regression tests for #93: when devtools::run_examples() crashes deep in
 # pkgload (`srcrefs[[1L]]: subscript out of bounds` on @examplesIf with an
 # empty post-strip body, on older R + pkgload), check_clean_userspace()
-# must not abort the whole audit — it must skip the examples step,
+# must not abort the whole audit - it must skip the examples step,
 # surface a clear warning, and STILL run unit tests / full check /
 # vignettes. Plus also call check_clean_userspace internal use the
 # qualified path (checkhelper:::.check_clean_userspace) so the mock
