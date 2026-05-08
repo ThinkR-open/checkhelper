@@ -129,11 +129,30 @@ forçait à `skip_on_os("windows", "mac")` car les artefacts laissés par
   `problem` dans des ensembles connus, les deux fuites seedées sont
   retrouvées). Plus de `skip_on_os` : le test tourne sur tous les OS.
 
+### #92 — `find_missing_tags()` rate les S3 (générique + méthode auto-doc)
+Pour le pattern S3 (`f <- function(...) UseMethod("f")` + `f.classe <-`),
+roxygen2 attribue `class(b$object)[1] = "s3generic"` au générique et
+`"s3method"` à la méthode. Le filtre historique
+`if (class(b$object)[1] == "function")` excluait silencieusement les deux.
+Conséquence : `find_missing_tags()` répond "Good!" alors que CRAN exige
+encore `\value` sur `strand_chr.Rd` (générique) ou
+`dim.gggenomes_layout.Rd` (méthode auto-documentée), comme rapporté pour
+[`gggenomes`](https://github.com/thackl/gggenomes/tree/missing-value-tags).
+
+- **Test** : `tests/testthat/test-s3_missing_value.R` — trois cas :
+  générique sans `@return` (doit être flaggé), méthode avec son propre
+  Rd et sans `@return` (doit être flaggé), méthode `@export` nu sans
+  doc (ne doit **pas** être flaggée — pas de Rd).
+- **Fix** : helper interne `block_makes_rd()` qui élargit le filtre à
+  `c("function", "s3generic", "s3method")` puis ne garde que les blocs
+  qui produisent réellement un fichier Rd (`title` / `rdname` /
+  `describeIn` / `name`). Évite les faux positifs sur les blocs
+  namespace-only (`@export` seul).
+
 ## Issues envisagées mais non traitées dans cette passe
 
 | # | Pourquoi pas |
 |---|---|
-| 92 | Demande la repro complète sur `gggenomes` ; je n'ai pas pu reproduire en l'état avec un cas minimal — à creuser sur le repo cité. |
 | 87 | Demande UX (forcer `interactive() == FALSE`) qui touche au lifecycle de RStudio ; à arbitrer avec mainteneur. |
 | 67, 62, 27, 52, 29 | Features qui demandent une décision design avant code. |
 

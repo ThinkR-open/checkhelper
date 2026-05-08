@@ -37,6 +37,20 @@
   are exposed as `build_args` / `args` arguments to `.get_notes()`
   so a caller can still opt back in if needed.
 
+## `audit_tags()` / `find_missing_tags()` now detect S3 cases
+
+- `audit_tags()` and `find_missing_tags()` now flag missing `@return`
+  on S3 generics and on S3 methods that have their own Rd file
+  (block carrying a title or `@rdname` / `@describeIn` / `@name`).
+  Previously a strict `class(object)[1] == "function"` filter dropped
+  these blocks silently, so packages like the one reported in #92
+  were told "Good!" while CRAN was still asking for `\value` on
+  generics' Rd files (e.g. `strand_chr.Rd`,
+  `dim.gggenomes_layout.Rd`).
+- Bare-`@export` blocks (no title, no `@rdname` / `@describeIn` /
+  `@name`) are intentionally not flagged: they produce no Rd file and
+  CRAN does not ask for `\value` on them.
+
 ## `create_example_pkg()` covers every audit
 
 - `create_example_pkg()` gains two opt-in flags so the same one-line
