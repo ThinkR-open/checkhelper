@@ -336,7 +336,7 @@ char_right <- function(line, from) {
 #'
 #' @param path path to a file. Suffixes `.R`, `.r`, `.Rmd`, `.qmd` are
 #'   handled as R source. `.Rnw` (Sweave) and any other suffix are
-#'   scanned read-only — Sweave's `<<>>= ... @` chunk syntax is not
+#'   scanned read-only - Sweave's `<<>>= ... @` chunk syntax is not
 #'   handled by the rewriter.
 #' @inheritParams asciify_r_source
 #' @param dry_run logical. If `TRUE`, report what would change but do not

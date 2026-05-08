@@ -4,7 +4,7 @@
 # Why: R CMD check filters out names already covered by an existing
 # globalVariables() call. So the second time fix_globals() runs on a
 # package that already has a curated globals.R, the notes only list
-# the *new* uncovered names — overwriting the file would erase the
+# the *new* uncovered names - overwriting the file would erase the
 # previously-declared names and re-flag them on the next check.
 # That's a circular game the user can't win.
 

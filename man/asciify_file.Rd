@@ -14,7 +14,7 @@ asciify_file(
 \arguments{
 \item{path}{path to a file. Suffixes \code{.R}, \code{.r}, \code{.Rmd}, \code{.qmd} are
 handled as R source. \code{.Rnw} (Sweave) and any other suffix are
-scanned read-only — Sweave's \verb{<<>>= ... @} chunk syntax is not
+scanned read-only - Sweave's \verb{<<>>= ... @} chunk syntax is not
 handled by the rewriter.}
 
 \item{strategy}{one of:

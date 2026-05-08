@@ -1,7 +1,7 @@
 # Regression test: fix_globals() must not glue NSE operators / data.table
 # pronouns / rlang quasiquotation tokens into the
 # `utils::globalVariables(c(...))` block. Those are not undeclared
-# variables — they are exports from another package and the right fix
+# variables - they are exports from another package and the right fix
 # is `@importFrom`. See user request: `:=`, `.SD`, `.N`, `.I`, `.GRP`,
 # `.BY`, `.EACHI` (data.table) and `.data`, `.env`, `!!`, `!!!`
 # (rlang).
@@ -98,7 +98,7 @@ test_that("ambiguous source (`:=` from data.table OR rlang) lists both candidate
     message = FALSE
   )
 
-  # Both candidate packages must be visible — never silently pick one.
+  # Both candidate packages must be visible - never silently pick one.
   expect_match(printed$liste_operators, "data.table", fixed = TRUE)
   expect_match(printed$liste_operators, "rlang", fixed = TRUE)
 })

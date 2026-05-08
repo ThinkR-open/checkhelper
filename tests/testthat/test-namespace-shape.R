@@ -1,11 +1,11 @@
 ## test-namespace-shape.R
 ##
 ## Lock the public API surface. Any add / remove / rename of an exported
-## name must be accompanied by an update to the list below — the test fails
+## name must be accompanied by an update to the list below - the test fails
 ## otherwise.
 
 expected_exports <- c(
-  ## Public façades — audit_*
+  ## Public façades - audit_*
   "audit_ascii",
   "audit_check",
   "audit_citation",
@@ -16,7 +16,7 @@ expected_exports <- c(
   "audit_tags",
   "audit_userspace",
 
-  ## Public façades — fix_*
+  ## Public façades - fix_*
   "fix_ascii",
   "fix_dataset_doc",
   "fix_globals",

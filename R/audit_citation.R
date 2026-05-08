@@ -74,7 +74,7 @@ audit_citation <- function(pkg = ".") {
     suggestion = character(0)
   )
   # Surface a parse error as a warning rather than swallowing it
-  # silently — otherwise a syntactically broken CITATION (missing
+  # silently - otherwise a syntactically broken CITATION (missing
   # comma, unclosed paren, ...) would be reported as "no old-style
   # calls detected", which is misleading. Still return the empty
   # tibble so the caller can keep going.
