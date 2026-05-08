@@ -10,6 +10,7 @@ expected_exports <- c(
   "audit_check",
   "audit_citation",
   "audit_dataset_doc",
+  "audit_description",
   "audit_dontrun",
   "audit_globals",
   "audit_tags",

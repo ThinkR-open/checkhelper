@@ -21,7 +21,7 @@ and \code{operators}, or \code{NULL} if the package has no global notes.
 \code{utils::globalVariables()} declaration; \code{functions} collects
 external functions to import via \verb{@importFrom}; \code{operators}
 collects NSE tokens / data.table / rlang pronouns (\verb{:=},
-\code{.SD}, \code{.data}, \verb{!!}, …) that also need \verb{@importFrom} rather
+\code{.SD}, \code{.data}, \verb{!!}, ...) that also need \verb{@importFrom} rather
 than a \code{globalVariables()} entry.
 }
 \description{
