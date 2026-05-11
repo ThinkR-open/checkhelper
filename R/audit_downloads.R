@@ -269,9 +269,6 @@ audit_downloads <- function(pkg = ".") {
     return(paste(readLines(path, warn = FALSE), collapse = "\n"))
   }
   if (ext %in% c("rmd", "qmd", "rnw")) {
-    if (!requireNamespace("knitr", quietly = TRUE)) {
-      return("")
-    }
     out <- tempfile(fileext = ".R")
     on.exit(unlink(out), add = TRUE)
     suppressMessages(suppressWarnings(
