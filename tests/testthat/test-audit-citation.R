@@ -115,3 +115,33 @@ test_that("audit_citation() reports correct line numbers for nested calls", {
   expect_true(citEntry_line == 4L)
   expect_true(personList_line >= 4L)
 })
+
+# --- Edge / coverage tests --------------------------------------------------
+
+local_pkg_with_citation <- function(citation, envir = parent.frame()) {
+  path <- tempfile("pkg-cit-")
+  dir.create(file.path(path, "inst"), recursive = TRUE)
+  writeLines(citation, file.path(path, "inst", "CITATION"))
+  withr::defer(unlink(path, recursive = TRUE), envir = envir)
+  path
+}
+
+test_that("audit_citation() warns and returns empty on a syntactically broken CITATION", {
+  pkg <- local_pkg_with_citation(c(
+    'citEntry(entry = "Manual",',
+    '  title = "no closing paren ever'
+  ))
+
+  expect_warning(
+    out <- audit_citation(pkg),
+    regexp = "Could not parse"
+  )
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_citation() returns empty on an empty CITATION", {
+  pkg <- local_pkg_with_citation(character(0))
+
+  out <- audit_citation(pkg)
+  expect_equal(nrow(out), 0L)
+})
