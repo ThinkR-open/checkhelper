@@ -135,3 +135,44 @@ test_that("audit_dontrun() ignores commented-out \\dontrun mentions", {
   out <- audit_dontrun(pkg)
   expect_equal(nrow(out), 0L)
 })
+
+# --- Edge / coverage tests --------------------------------------------------
+
+test_that("audit_dontrun() handles empty man/ directory (no Rd files)", {
+  pkg <- tempfile("pkg-empty-man-")
+  dir.create(file.path(pkg, "man"), recursive = TRUE)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+
+  expect_message(out <- audit_dontrun(pkg), regexp = "no Rd files")
+  expect_equal(nrow(out), 0L)
+})
+
+test_that(".scan_one_rd_for_dontrun() warns and skips when readLines fails", {
+  # Passing a directory path to readLines() raises an error that the
+  # internal tryCatch must surface as a warning, then return NULL.
+  bad_path <- tempfile("bad-rd-")
+  dir.create(bad_path)
+  on.exit(unlink(bad_path, recursive = TRUE), add = TRUE)
+
+  expect_warning(
+    res <- checkhelper:::.scan_one_rd_for_dontrun(bad_path),
+    regexp = "Could not read"
+  )
+  expect_null(res)
+})
+
+test_that(".scan_one_rd_for_dontrun() returns NULL on empty file", {
+  empty_rd <- tempfile(fileext = ".Rd")
+  file.create(empty_rd)
+  on.exit(unlink(empty_rd), add = TRUE)
+
+  expect_null(checkhelper:::.scan_one_rd_for_dontrun(empty_rd))
+})
+
+test_that(".topic_from_rd() falls back to basename when \\name is missing", {
+  topic <- checkhelper:::.topic_from_rd(
+    lines = c("\\title{x}", "\\examples{}"),
+    fallback = "my_fallback"
+  )
+  expect_equal(topic, "my_fallback")
+})

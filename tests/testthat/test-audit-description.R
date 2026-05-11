@@ -185,3 +185,87 @@ test_that("audit_description() does not flag the package's own name", {
 
   expect_equal(nrow(out), 0L)
 })
+
+# --- Edge / coverage tests --------------------------------------------------
+
+test_that("audit_description() warns when DESCRIPTION cannot be parsed", {
+  pkg <- tempfile("pkg-bad-desc-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  # Garbage DESCRIPTION: a line without `Field:` triggers
+  # "Line starting '...' is malformed!" inside read.dcf.
+  writeLines(c("not a dcf file at all", "random garbage"), file.path(pkg, "DESCRIPTION"))
+
+  expect_warning(
+    out <- suppressMessages(audit_description(pkg)),
+    regexp = "could not parse DESCRIPTION"
+  )
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_description() returns empty when DESCRIPTION has no Description field", {
+  pkg <- tempfile("pkg-no-desc-field-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  writeLines(c("Package: x", "Title: t", "Version: 0.0.0"), file.path(pkg, "DESCRIPTION"))
+
+  out <- suppressMessages(audit_description(pkg))
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_description() returns empty when Description field is empty", {
+  pkg <- tempfile("pkg-empty-desc-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  writeLines(
+    c("Package: x", "Title: t", "Version: 0.0.0", "Description: "),
+    file.path(pkg, "DESCRIPTION")
+  )
+
+  out <- suppressMessages(audit_description(pkg))
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_description() handles DESCRIPTION without Package field (own_name = '')", {
+  # Synthetic: read.dcf still returns a 1-row matrix without a Package column.
+  pkg <- tempfile("pkg-no-package-field-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  writeLines(
+    c("Title: t", "Description: Wrapper around jsonlite for parsing."),
+    file.path(pkg, "DESCRIPTION")
+  )
+
+  out <- suppressMessages(testthat::with_mocked_bindings(
+    audit_description(pkg),
+    .installed_packages = function() c("jsonlite"),
+    .package = "checkhelper"
+  ))
+  expect_equal(out$word, "jsonlite")
+})
+
+test_that(".find_unquoted_pkg_names() returns empty on punctuation-only text", {
+  empty <- checkhelper:::.find_unquoted_pkg_names(
+    description = "...!!!",
+    installed = c("jsonlite")
+  )
+  expect_equal(nrow(empty), 0L)
+})
+
+test_that(".find_unquoted_pkg_names() handles token at start and end of text", {
+  # `jsonlite` at the very start (no `before` char) and `httr` at the very
+  # end (no `after` char). Both must still be flagged.
+  out <- checkhelper:::.find_unquoted_pkg_names(
+    description = "jsonlite is faster than httr",
+    installed = c("jsonlite", "httr")
+  )
+  expect_setequal(out$word, c("jsonlite", "httr"))
+})
+
+test_that(".installed_packages() returns the real catalogue when called unmocked", {
+  out <- checkhelper:::.installed_packages()
+  expect_true(is.character(out))
+  expect_true(length(out) > 0L)
+  # checkhelper itself must be installed during the test run.
+  expect_true("checkhelper" %in% out || "testthat" %in% out)
+})
