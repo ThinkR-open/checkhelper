@@ -443,12 +443,11 @@ audit_downloads <- function(pkg = ".") {
 
 #' Read a source file. For `.R` we read directly; for `.Rmd` / `.qmd`
 #' / `.Rnw` we extract code chunks via `knitr::purl()` so the parser
-#' only sees the R subset. We pass `documentation = 1L` so chunk
-#' headers are preserved as `## ----chunk-label----` comments in the
-#' extracted code: the reported `line` numbers are still relative to
-#' the purled `.R` (the parse table is built from it), but the
-#' surrounding chunk label gives the reader a handle to locate the
-#' call site in the original document.
+#' only sees the R subset. We pass `documentation = 2L` so narrative
+#' text is preserved as roxygen-style comments (`#' ...`) and chunk
+#' headers as `## ----chunk-label----`: this keeps line numbers in
+#' the extracted `.R` aligned with the original document, so the
+#' reported `line` locates the call site directly in the source file.
 #' @noRd
 .read_r_source <- function(path) {
   ext <- tolower(tools::file_ext(path))
@@ -459,7 +458,7 @@ audit_downloads <- function(pkg = ".") {
     out <- tempfile(fileext = ".R")
     on.exit(unlink(out), add = TRUE)
     suppressMessages(suppressWarnings(
-      knitr::purl(input = path, output = out, quiet = TRUE, documentation = 1L)
+      knitr::purl(input = path, output = out, quiet = TRUE, documentation = 2L)
     ))
     if (!file.exists(out)) {
       return("")

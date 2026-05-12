@@ -119,6 +119,28 @@ test_that("audit_downloads() walks tests/ and vignettes/ as well as R/", {
   )
 })
 
+test_that("audit_downloads() reports line numbers relative to the original Rmd source", {
+  pkg <- local_pkg_with_r(list(
+    "vignettes/v.Rmd" = c(
+      "---",                                  # 1
+      "title: v",                             # 2
+      "---",                                  # 3
+      "",                                     # 4
+      "Some narrative.",                      # 5
+      "",                                     # 6
+      "```{r}",                               # 7
+      "x <- 1",                               # 8
+      "utils::download.file('a', 'b')",       # 9
+      "```"                                   # 10
+    )
+  ))
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out$line, 9L)
+})
+
 test_that("audit_downloads() returns empty tibble when no download function is used", {
   pkg <- local_pkg_with_r(list(
     "R/clean.R" = c(
