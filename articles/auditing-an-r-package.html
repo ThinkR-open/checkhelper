@@ -142,6 +142,7 @@ file-system snapshots), see the companion vignette
 <span><span class="fu"><a href="../reference/audit_citation.html">audit_citation</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>        <span class="co"># old-style personList() / citEntry() in inst/CITATION</span></span>
 <span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>         <span class="co"># \dontrun{} blocks in man/*.Rd</span></span>
 <span><span class="fu"><a href="../reference/audit_description.html">audit_description</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>     <span class="co"># unquoted package names in DESCRIPTION's Description field</span></span>
+<span><span class="fu"><a href="../reference/audit_downloads.html">audit_downloads</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>       <span class="co"># network / download call sites to review for offline-safe guards</span></span>
 <span></span>
 <span><span class="co"># 3. Audits that need the check output - pass `chk` to skip a 2nd run.</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
@@ -225,18 +226,25 @@ reuse the result for the whole audit.</p>
 </td>
 </tr>
 <tr class="odd">
+<td><code><a href="../reference/audit_downloads.html">audit_downloads()</a></code></td>
+<td>no</td>
+<td>AST walk of <code>R/</code>, <code>tests/</code>,
+<code>vignettes/</code>, <code>inst/</code>
+</td>
+</tr>
+<tr class="even">
 <td><code><a href="../reference/audit_globals.html">audit_globals()</a></code></td>
 <td>
 <strong>yes</strong> (reusable)</td>
 <td>accepts <code>checks =</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="../reference/audit_userspace.html">audit_userspace()</a></code></td>
 <td>yes (own pipeline)</td>
 <td>takes file-system snapshots, separate</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="../reference/audit_check.html">audit_check()</a></code></td>
 <td>yes</td>
 <td>this <strong>is</strong> the check, with CRAN env</td>
@@ -376,6 +384,33 @@ package reference or a coincidental word, then wrap with single
 quotes).</p>
 </div>
 <div class="section level3">
+<h3 id="network-download-calls">Network / download calls<a class="anchor" aria-label="anchor" href="#network-download-calls"></a>
+</h3>
+<p>CRAN policy: package code that downloads files or hits the network at
+install or runtime must degrade gracefully when the network is
+unavailable (offline build farms, sandboxed CI, locked-down user
+environment). Common rejection causes: downloads from inside
+<code>.onLoad()</code>, <code>.onAttach()</code>, vignettes or examples
+that have no <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> / <code>skip_if_offline()</code> /
+<code>\dontrun{}</code> guard.</p>
+<p><code><a href="../reference/audit_downloads.html">audit_downloads()</a></code> walks <code>R/</code>,
+<code>tests/</code>, <code>vignettes/</code> and <code>inst/</code>,
+parses each file, and surfaces every call to a known download or HTTP
+function: <code><a href="https://rdrr.io/r/utils/download.file.html" class="external-link">download.file()</a></code>, <code><a href="https://httr.r-lib.org/reference/GET.html" class="external-link">httr::GET()</a></code>,
+<code><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">httr2::req_perform()</a></code>, <code><a href="https://jeroen.r-universe.dev/curl/reference/curl_download.html" class="external-link">curl::curl_download()</a></code>,
+etc. The call site (file + line) is paired with a one-line suggestion.
+Detection is purely static, so a user-defined function that shadows a
+downloader name (<code>download.file &lt;- function(...) { ... }</code>)
+does not trigger a false positive on the definition site - only call
+sites are flagged:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_downloads.html">audit_downloads</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
+<p>Read-only - the fix is editorial: decide for each call whether the
+right CRAN-safe pattern is <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> (continue on
+offline), <code><a href="https://testthat.r-lib.org/reference/skip.html" class="external-link">testthat::skip_if_offline()</a></code> (skip the test), or
+<code>\dontrun{}</code> (drop the example from the test surface).</p>
+</div>
+<div class="section level3">
 <h3 id="dontrun-blocks-in-examples">
 <code>\dontrun{}</code> blocks in examples<a class="anchor" aria-label="anchor" href="#dontrun-blocks-in-examples"></a>
 </h3>
@@ -389,7 +424,7 @@ and surfaces every <code>\dontrun{}</code> opener (commented-out
 <code>% \dontrun{</code> mentions are ignored), with the source Rd file,
 the documented topic, the line number and a one-line suggestion.
 Read-only - the call is your review checklist:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -400,7 +435,7 @@ Read-only - the call is your review checklist:</p>
 deliberately trips each audit. The two <code>with_*</code> flags below
 activate the non-ASCII and undocumented-dataset fixtures so every audit
 has something to surface:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_example_pkg.html">create_example_pkg</a></span><span class="op">(</span>with_nonascii <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                          with_undocumented_data <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -412,6 +447,7 @@ has something to surface:</p>
 <span><span class="fu"><a href="../reference/audit_citation.html">audit_citation</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>          <span class="co"># old-style personList() / citEntry()</span></span>
 <span><span class="fu"><a href="../reference/audit_dontrun.html">audit_dontrun</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>           <span class="co"># \dontrun{} blocks in examples</span></span>
 <span><span class="fu"><a href="../reference/audit_description.html">audit_description</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>       <span class="co"># unquoted package names in Description</span></span>
+<span><span class="fu"><a href="../reference/audit_downloads.html">audit_downloads</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span>         <span class="co"># network call sites to review for offline-safe guards</span></span>
 <span><span class="fu"><a href="../reference/audit_globals.html">audit_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/fix_globals.html">fix_globals</a></span><span class="op">(</span><span class="va">pkg</span>, checks <span class="op">=</span> <span class="va">chk</span>, write <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
