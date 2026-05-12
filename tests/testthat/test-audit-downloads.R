@@ -210,3 +210,102 @@ test_that("audit_downloads() scans uppercase extension variants", {
   expect_equal(nrow(out), 1L)
   expect_equal(out[["function"]], "utils::download.file")
 })
+
+# --- Import-aware detection of bare calls -----------------------------------
+
+local_pkg_with_namespace <- function(r_files, namespace_lines, envir = parent.frame()) {
+  path <- tempfile("pkg-ns-")
+  dir.create(path)
+  for (name in names(r_files)) {
+    target <- file.path(path, name)
+    dir.create(dirname(target), recursive = TRUE, showWarnings = FALSE)
+    writeLines(r_files[[name]], target)
+  }
+  writeLines(namespace_lines, file.path(path, "NAMESPACE"))
+  withr::defer(unlink(path, recursive = TRUE), envir = envir)
+  path
+}
+
+test_that("audit_downloads() flags bare GET() when NAMESPACE has importFrom(httr, GET)", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = "f <- function() GET('https://x')"),
+    namespace_lines = c("importFrom(httr, GET)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "httr::GET")
+})
+
+test_that("audit_downloads() flags bare GET() when NAMESPACE has import(httr)", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = "f <- function() GET('https://x')"),
+    namespace_lines = c("import(httr)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "httr::GET")
+})
+
+test_that("audit_downloads() does NOT flag bare GET() when nothing is imported", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = "f <- function() GET('https://x')"),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_downloads() does NOT flag bare GET() defined locally without import", {
+  # The user-defined `GET()` shadow case. With no import, the auditor must
+  # stay quiet. (Without the import-aware guard, the bare token would
+  # produce false positives on every CRUD wrapper / cache helper called GET.)
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/cache.R" = c(
+      "GET <- function(key) cache[[key]]",
+      "g <- function() GET('hit')"
+    )),
+    namespace_lines = c("export(GET)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_downloads() flags importFrom only for the listed symbols", {
+  # `importFrom(httr, GET)` imports `GET` but NOT `POST`. A bare `POST()`
+  # call must remain unflagged because the user has not imported it.
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = c(
+      "f <- function() GET('https://x')",
+      "g <- function() POST('https://x')"
+    )),
+    namespace_lines = c("importFrom(httr, GET)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "httr::GET")
+})
+
+test_that("audit_downloads() still flags bare download.file() without an import (base R utils)", {
+  # `download.file` lives in `utils`, which is attached by default in
+  # every R session. No import is required to call it. The auditor must
+  # keep flagging it regardless of NAMESPACE state.
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/dl.R" = "f <- function() download.file('x', 'y')"),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "download.file")
+})

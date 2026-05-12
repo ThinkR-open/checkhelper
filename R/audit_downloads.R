@@ -38,7 +38,12 @@ audit_downloads <- function(pkg = ".") {
     return(empty)
   }
 
-  hits <- do.call(rbind, lapply(files, .scan_one_file_for_downloads))
+  imports <- .read_pkg_imports(pkg)
+  hits <- do.call(rbind, lapply(
+    files,
+    .scan_one_file_for_downloads,
+    imports = imports
+  ))
   if (is.null(hits) || nrow(hits) == 0L) {
     cli::cli_inform(c(
       "v" = "audit_downloads(): no download / network call detected."
@@ -139,7 +144,7 @@ audit_downloads <- function(pkg = ".") {
 #' to a known download function. Returns NULL when the file does not
 #' parse or contains no hit.
 #' @noRd
-.scan_one_file_for_downloads <- function(path) {
+.scan_one_file_for_downloads <- function(path, imports = .empty_imports()) {
   src <- tryCatch(
     .read_r_source(path),
     error = function(e) {
@@ -169,7 +174,7 @@ audit_downloads <- function(pkg = ".") {
     return(NULL)
   }
 
-  hits <- .find_download_calls(pd)
+  hits <- .find_download_calls(pd, imports = imports)
   if (nrow(hits) == 0L) {
     return(NULL)
   }
@@ -186,18 +191,25 @@ audit_downloads <- function(pkg = ".") {
 #' Walk a `getParseData()` table and return a data.frame of every
 #' call site whose head matches a known download function.
 #'
-#' Two shapes are matched:
-#' - `SYMBOL_FUNCTION_CALL` whose text is the bare name (e.g.
-#'   `download.file`).
-#' - `SYMBOL_PACKAGE NS_GET SYMBOL_FUNCTION_CALL` whose joined text
-#'   is the qualified name (e.g. `utils::download.file`).
+#' Three shapes are matched:
+#' - Qualified call (`pkg::fn` / `pkg:::fn`): flagged when the joined
+#'   text is in `.known_download_functions`.
+#' - Bare base / utils call (`download.file`, `download.packages`):
+#'   flagged unconditionally because the source namespace is always
+#'   on the search path.
+#' - Bare call from a third-party namespace (`GET`, `curl_download`,
+#'   ...): flagged only when `imports` proves the call resolves to
+#'   the watched namespace, i.e. one of:
+#'     * `importFrom(<pkg>, <fn>)` with `<pkg>` a candidate source for
+#'       `<fn>` in `.known_download_functions`, or
+#'     * `import(<pkg>)` with `<pkg>` a candidate source for `<fn>`.
 #'
 #' A `SYMBOL_FUNCTION_CALL` token only appears at a call site, so
-#' `download.file <- function(...)` (the assignment LHS) is a bare
-#' `SYMBOL` and is not matched. That gives the caller a free guard
-#' against shadowing-definitions false positives.
+#' `GET <- function(...)` (the assignment LHS) is a bare `SYMBOL`
+#' and is not matched. That gives the caller a free guard against
+#' shadowing-definition false positives.
 #' @noRd
-.find_download_calls <- function(pd) {
+.find_download_calls <- function(pd, imports = .empty_imports()) {
   empty <- data.frame(
     line = integer(0),
     qualified = character(0),
@@ -208,23 +220,25 @@ audit_downloads <- function(pkg = ".") {
     return(empty)
   }
 
+  bare_candidates <- .bare_download_candidates()
+
   records <- list()
   for (i in which(is_call)) {
     fn <- pd$text[i]
     line <- pd$line1[i]
     pkg <- .qualifying_pkg(pd, fn_row = i)
-    qualified <- if (is.null(pkg)) {
-      fn
+    if (is.null(pkg)) {
+      hit <- .resolve_bare_call(fn = fn, imports = imports, bare_candidates = bare_candidates)
+      if (is.null(hit)) {
+        next
+      }
+      qualified <- hit
     } else {
-      paste0(pkg$pkg, pkg$op, fn)
-    }
-    lookup <- if (is.null(pkg)) {
-      fn
-    } else {
-      paste0(pkg$pkg, "::", fn)
-    }
-    if (!lookup %in% .known_download_functions) {
-      next
+      lookup <- paste0(pkg$pkg, "::", fn)
+      if (!lookup %in% .known_download_functions) {
+        next
+      }
+      qualified <- paste0(pkg$pkg, pkg$op, fn)
     }
     records[[length(records) + 1L]] <- data.frame(
       line = as.integer(line),
@@ -236,6 +250,55 @@ audit_downloads <- function(pkg = ".") {
     return(empty)
   }
   do.call(rbind, records)
+}
+
+#' Resolve a bare `SYMBOL_FUNCTION_CALL`. Returns the qualified form
+#' (`"pkg::fn"`) to flag with, or NULL when the call cannot be
+#' attributed to a watched namespace.
+#' @noRd
+.resolve_bare_call <- function(fn, imports, bare_candidates) {
+  # 1. Bare base / utils names are always on the search path.
+  if (fn %in% .known_download_functions) {
+    return(fn)
+  }
+  # 2. Third-party names need an import. Look up the candidate source
+  #    namespaces for this bare name.
+  candidates <- bare_candidates[[fn]]
+  if (is.null(candidates)) {
+    return(NULL)
+  }
+  # importFrom(<pkg>, <fn>): the symbol is bound to a specific pkg.
+  by_sym <- imports$by_symbol[[fn]]
+  resolved <- intersect(candidates, by_sym)
+  if (length(resolved)) {
+    return(paste0(resolved[1L], "::", fn))
+  }
+  # import(<pkg>): every export of <pkg> is on the namespace.
+  resolved <- intersect(candidates, imports$fully_imported)
+  if (length(resolved)) {
+    return(paste0(resolved[1L], "::", fn))
+  }
+  NULL
+}
+
+#' Derive a map `bare_name -> c(pkg, ...)` from `.known_download_functions`
+#' by stripping the qualifier off every `pkg::fn` entry. Bare entries
+#' (`download.file`, `download.packages`) are intentionally NOT in
+#' this map: they are handled separately as always-available.
+#' @noRd
+.bare_download_candidates <- function() {
+  qualified <- grep("::", .known_download_functions, value = TRUE, fixed = TRUE)
+  parts <- strsplit(qualified, "::", fixed = TRUE)
+  out <- list()
+  for (p in parts) {
+    if (length(p) != 2L) {
+      next
+    }
+    pkg <- p[[1L]]
+    fn <- p[[2L]]
+    out[[fn]] <- unique(c(out[[fn]], pkg))
+  }
+  out
 }
 
 #' For a `SYMBOL_FUNCTION_CALL` row at index `fn_row`, return the
@@ -257,6 +320,71 @@ audit_downloads <- function(pkg = ".") {
     return(NULL)
   }
   list(pkg = pprev$text, op = prev$text)
+}
+
+#' An empty imports record (no `importFrom`, no `import`). Used as the
+#' default when the package has no NAMESPACE or when the file is read
+#' without one. Keeping the shape constant lets `.resolve_bare_call()`
+#' look up keys without arity-checking.
+#' @noRd
+.empty_imports <- function() {
+  list(by_symbol = list(), fully_imported = character(0L))
+}
+
+#' Parse `<pkg>/NAMESPACE` and return the imports the package declares.
+#'
+#' Two shapes are recognised:
+#' - `importFrom(<pkg>, <sym1>, <sym2>, ...)`: every listed symbol is
+#'   bound to `<pkg>`. Stored in `by_symbol` as `<sym> -> c(<pkg>, ...)`
+#'   (a symbol can be importFrom'd from more than one source, though
+#'   in practice that warns at install time).
+#' - `import(<pkg>)`: every export of `<pkg>` is on the namespace.
+#'   Stored in `fully_imported` as a vector of pkg names.
+#'
+#' Other NAMESPACE directives (`export`, `S3method`, `useDynLib`, ...)
+#' are ignored - this helper only models what the *imports* into the
+#' package look like.
+#'
+#' Returns the empty-imports record when NAMESPACE does not exist or
+#' fails to parse.
+#' @noRd
+.read_pkg_imports <- function(pkg) {
+  ns_path <- file.path(pkg, "NAMESPACE")
+  if (!file.exists(ns_path)) {
+    return(.empty_imports())
+  }
+  exprs <- tryCatch(parse(file = ns_path), error = function(e) NULL)
+  if (is.null(exprs)) {
+    return(.empty_imports())
+  }
+  by_symbol <- list()
+  fully_imported <- character(0L)
+  for (i in seq_along(exprs)) {
+    e <- exprs[[i]]
+    if (!is.call(e) || !is.name(e[[1L]])) {
+      next
+    }
+    head <- as.character(e[[1L]])
+    if (head == "importFrom" && length(e) >= 3L) {
+      pkg_name <- as.character(e[[2L]])
+      syms <- vapply(
+        as.list(e)[-c(1L, 2L)],
+        function(s) as.character(s),
+        character(1L)
+      )
+      for (s in syms) {
+        by_symbol[[s]] <- unique(c(by_symbol[[s]], pkg_name))
+      }
+    } else if (head == "import" && length(e) >= 2L) {
+      pkgs <- vapply(
+        as.list(e)[-1L],
+        function(s) as.character(s),
+        character(1L)
+      )
+      fully_imported <- unique(c(fully_imported, pkgs))
+    }
+  }
+  list(by_symbol = by_symbol, fully_imported = fully_imported)
 }
 
 #' Read a source file. For `.R` we read directly; for `.Rmd` / `.qmd`
