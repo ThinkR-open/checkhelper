@@ -229,6 +229,10 @@ audit_downloads <- function(pkg = ".") {
     pkg <- .qualifying_pkg(pd, fn_row = i)
     if (is.null(pkg)) {
       hit <- .resolve_bare_call(fn = fn, imports = imports, bare_candidates = bare_candidates)
+      if (is.null(hit) && fn %in% names(bare_candidates) &&
+            .first_arg_is_url(pd, fn_row = i)) {
+        hit <- paste0(bare_candidates[[fn]][1L], "::", fn)
+      }
       if (is.null(hit)) {
         next
       }
@@ -329,6 +333,51 @@ audit_downloads <- function(pkg = ".") {
 #' @noRd
 .empty_imports <- function() {
   list(by_symbol = list(), fully_imported = character(0L))
+}
+
+#' TRUE when the first positional argument of the call whose head sits
+#' at `pd[fn_row, ]` is a string literal starting with `http://` or
+#' `https://` (case-insensitive). Used to rescue bare HTTP-verb calls
+#' such as `GET("https://x")` whose source package is implicit
+#' (script context, `Depends:` attachment, forgotten `@importFrom`).
+#'
+#' The walk uses the `parent` column of `getParseData()` to find the
+#' first sibling `expr` of the function-name token, then inspects its
+#' children for a `STR_CONST` whose text begins with the URL scheme.
+#' Variables, relative paths and missing arguments all return FALSE.
+#' @noRd
+.first_arg_is_url <- function(pd, fn_row) {
+  # In getParseData(), the SYMBOL_FUNCTION_CALL row's `parent` points
+  # at the *wrapper* expr that holds the function-name token, not at
+  # the surrounding call expression. The call expr is one level up.
+  wrapper_id <- pd$parent[fn_row]
+  if (is.na(wrapper_id) || wrapper_id <= 0L) {
+    return(FALSE)
+  }
+  wrapper_idx <- which(pd$id == wrapper_id)
+  if (length(wrapper_idx) == 0L) {
+    return(FALSE)
+  }
+  call_expr_id <- pd$parent[wrapper_idx]
+  if (is.na(call_expr_id) || call_expr_id <= 0L) {
+    return(FALSE)
+  }
+  call_children <- which(pd$parent == call_expr_id)
+  after_wrapper <- call_children[call_children > wrapper_idx]
+  first_arg_idx <- after_wrapper[pd$token[after_wrapper] == "expr"][1L]
+  if (is.na(first_arg_idx)) {
+    return(FALSE)
+  }
+  first_arg_id <- pd$id[first_arg_idx]
+  arg_children <- which(pd$parent == first_arg_id)
+  for (j in arg_children) {
+    if (identical(pd$token[j], "STR_CONST")) {
+      if (grepl('^["\']https?://', pd$text[j], perl = TRUE, ignore.case = TRUE)) {
+        return(TRUE)
+      }
+    }
+  }
+  FALSE
 }
 
 #' Parse `<pkg>/NAMESPACE` and return the imports the package declares.

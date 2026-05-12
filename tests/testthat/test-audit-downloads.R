@@ -250,9 +250,11 @@ test_that("audit_downloads() flags bare GET() when NAMESPACE has import(httr)", 
   expect_equal(out[["function"]], "httr::GET")
 })
 
-test_that("audit_downloads() does NOT flag bare GET() when nothing is imported", {
+test_that("audit_downloads() does NOT flag bare GET(non-URL) when nothing is imported", {
+  # No import AND no URL literal in the first arg: the auditor cannot
+  # attribute the call to a watched namespace, so it stays quiet.
   pkg <- local_pkg_with_namespace(
-    r_files = list("R/net.R" = "f <- function() GET('https://x')"),
+    r_files = list("R/net.R" = "f <- function(key) GET(key)"),
     namespace_lines = c("export(f)")
   )
 
@@ -278,13 +280,14 @@ test_that("audit_downloads() does NOT flag bare GET() defined locally without im
   expect_equal(nrow(out), 0L)
 })
 
-test_that("audit_downloads() flags importFrom only for the listed symbols", {
-  # `importFrom(httr, GET)` imports `GET` but NOT `POST`. A bare `POST()`
-  # call must remain unflagged because the user has not imported it.
+test_that("audit_downloads() flags importFrom only for the listed symbols (non-URL args)", {
+  # `importFrom(httr, GET)` imports `GET` but NOT `POST`. With non-URL
+  # arguments the auditor cannot fall back to the URL heuristic, so
+  # POST must remain unflagged because the user has not imported it.
   pkg <- local_pkg_with_namespace(
     r_files = list("R/net.R" = c(
-      "f <- function() GET('https://x')",
-      "g <- function() POST('https://x')"
+      "f <- function(req) GET(req)",
+      "g <- function(req) POST(req)"
     )),
     namespace_lines = c("importFrom(httr, GET)")
   )
@@ -308,4 +311,176 @@ test_that("audit_downloads() still flags bare download.file() without an import 
 
   expect_equal(nrow(out), 1L)
   expect_equal(out[["function"]], "download.file")
+})
+
+# --- URL-literal heuristic (no-import bare call with https:// arg) ----------
+
+test_that("audit_downloads() flags bare GET() with an https:// literal argument", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = 'f <- function() GET("https://x.example/y")'),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "httr::GET")
+})
+
+test_that("audit_downloads() flags bare POST() with an http:// literal argument", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = "f <- function() POST('http://x.example')"),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "httr::POST")
+})
+
+test_that("audit_downloads() flags bare curl_download() with an https:// literal argument", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/dl.R" = 'f <- function() curl_download("https://x.example/file", "/tmp/y")'),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 1L)
+  expect_equal(out[["function"]], "curl::curl_download")
+})
+
+test_that("audit_downloads() does NOT flag bare GET() with a relative path argument", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = 'f <- function() GET("/api/users")'),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_downloads() does NOT flag bare GET() with a variable argument", {
+  # The auditor cannot see the runtime value of `url`, so it must stay
+  # quiet rather than guess. This is the case where the URL heuristic
+  # gracefully degrades.
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/net.R" = c(
+      "f <- function(url) GET(url)"
+    )),
+    namespace_lines = c("export(f)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 0L)
+})
+
+test_that("audit_downloads() does NOT flag a local-helper call with a non-URL string", {
+  pkg <- local_pkg_with_namespace(
+    r_files = list("R/cache.R" = c(
+      "GET <- function(key) cache[[key]]",
+      "g <- function() GET('cache-hit')"
+    )),
+    namespace_lines = c("export(GET)")
+  )
+
+  out <- suppressMessages(audit_downloads(pkg))
+
+  expect_equal(nrow(out), 0L)
+})
+
+# --- .first_arg_is_url() direct tests for branch coverage -------------------
+
+test_that(".first_arg_is_url() detects http and https URL literals", {
+  parse_pd <- function(src) {
+    utils::getParseData(parse(text = src, keep.source = TRUE))
+  }
+  find_fn_row <- function(pd, name) {
+    which(pd$token == "SYMBOL_FUNCTION_CALL" & pd$text == name)[1L]
+  }
+
+  pd <- parse_pd('GET("https://x")')
+  expect_true(checkhelper:::.first_arg_is_url(pd, find_fn_row(pd, "GET")))
+
+  pd <- parse_pd("GET('http://x')")
+  expect_true(checkhelper:::.first_arg_is_url(pd, find_fn_row(pd, "GET")))
+
+  pd <- parse_pd('GET("/api")')
+  expect_false(checkhelper:::.first_arg_is_url(pd, find_fn_row(pd, "GET")))
+
+  pd <- parse_pd("GET(url)")
+  expect_false(checkhelper:::.first_arg_is_url(pd, find_fn_row(pd, "GET")))
+})
+
+test_that(".first_arg_is_url() returns FALSE on a no-arg call", {
+  pd <- utils::getParseData(parse(text = "f()", keep.source = TRUE))
+  fn_row <- which(pd$token == "SYMBOL_FUNCTION_CALL" & pd$text == "f")[1L]
+  expect_false(checkhelper:::.first_arg_is_url(pd, fn_row))
+})
+
+# --- Edge branches: .first_arg_is_url() and .read_pkg_imports() -------------
+
+test_that(".first_arg_is_url() returns FALSE when fn_row has no parent (top-level)", {
+  # An artificial pd where the candidate row reports parent = 0 (no
+  # surrounding expr). This shape does not occur in real parse output
+  # but guards against the helper being reused on a hand-built table.
+  pd <- data.frame(
+    id = 1L, parent = 0L, token = "SYMBOL_FUNCTION_CALL",
+    text = "GET", line1 = 1L, terminal = TRUE,
+    stringsAsFactors = FALSE
+  )
+  expect_false(checkhelper:::.first_arg_is_url(pd, fn_row = 1L))
+})
+
+test_that(".first_arg_is_url() returns FALSE when the wrapper id has been pruned", {
+  # Wrapper id 99 has no matching row in pd: the helper must bail out.
+  pd <- data.frame(
+    id = 1L, parent = 99L, token = "SYMBOL_FUNCTION_CALL",
+    text = "GET", line1 = 1L, terminal = TRUE,
+    stringsAsFactors = FALSE
+  )
+  expect_false(checkhelper:::.first_arg_is_url(pd, fn_row = 1L))
+})
+
+test_that(".read_pkg_imports() returns empty record on a syntactically broken NAMESPACE", {
+  pkg <- tempfile("pkg-bad-ns-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  # Unclosed paren: parse() will error and the helper must fall back.
+  writeLines("importFrom(httr, GET", file.path(pkg, "NAMESPACE"))
+
+  imports <- checkhelper:::.read_pkg_imports(pkg)
+  expect_equal(imports$by_symbol, list())
+  expect_equal(imports$fully_imported, character(0L))
+})
+
+test_that(".read_pkg_imports() skips non-call NAMESPACE entries", {
+  pkg <- tempfile("pkg-mixed-ns-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+  # A bare symbol at top level is a syntactically legal expression but
+  # not a call; the helper must skip it without erroring.
+  writeLines(
+    c(
+      "42",
+      "importFrom(httr, GET)"
+    ),
+    file.path(pkg, "NAMESPACE")
+  )
+
+  imports <- checkhelper:::.read_pkg_imports(pkg)
+  expect_equal(imports$by_symbol[["GET"]], "httr")
+})
+
+test_that(".read_pkg_imports() returns empty record when NAMESPACE is missing", {
+  pkg <- tempfile("pkg-no-ns-")
+  dir.create(pkg)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+
+  imports <- checkhelper:::.read_pkg_imports(pkg)
+  expect_equal(imports$by_symbol, list())
+  expect_equal(imports$fully_imported, character(0L))
 })
