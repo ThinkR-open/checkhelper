@@ -20,8 +20,9 @@ URL: https://thinkr-open.github.io/checkhelper/,
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Depends:
     R (>= 4.0)
-Imports: 
+Imports:
     cli,
+    covr,
     desc,
     devtools,
     dplyr,

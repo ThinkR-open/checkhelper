@@ -21,7 +21,7 @@ library(checkhelper)
 
 Once the dev-time audits described in
 `vignette("auditing-an-r-package", package = "checkhelper")` are clean,
-two heavier audits remain. They both have their **own pipeline** -
+three heavier audits remain. They each have their **own pipeline** -
 they cannot reuse the shared `chk` object - and you typically run
 them last, just before `devtools::release()`.
 
@@ -29,6 +29,7 @@ them last, just before `devtools::release()`.
 |----------------------|--------------------------------------------------------|------------------------|
 | `audit_check()`      | `R CMD check` with the full CRAN incoming environment  | final gate             |
 | `audit_userspace()`  | Detects files left behind by tests / examples / vignettes | before tagging a release |
+| `check_n_covr()`     | `R CMD check` plus code coverage in one test pass      | every release candidate |
 
 ## `audit_check()` - check with CRAN settings
 
@@ -58,6 +59,27 @@ utils::browseURL(check_output)
 The settings are originally tuned for the Linux pretest, so
 `audit_check()` will run on any OS but the env it reproduces is the
 Linux one.
+
+## `check_n_covr()` - check plus coverage in one pass
+
+Both `R CMD check` and `covr::package_coverage()` run the unit
+test suite. On a package with a slow suite, running them in
+sequence doubles the wait.
+
+`check_n_covr()` splits the work: it runs `R CMD check` with
+`--no-tests` (every step except the test runner), then runs the
+test suite **once** under `covr`'s line-trace instrumentation.
+The return value carries both halves.
+
+```{r}
+res <- check_n_covr(".")
+res$check                                # CRAN errors / warnings / notes
+covr::percent_coverage(res$coverage)     # global percentage
+```
+
+Use this during the late dev cycle - by the time you want a
+coverage number you usually want a clean CRAN check too, and you
+no longer want to pay the test cost twice.
 
 ## `audit_userspace()` - no files left after check
 
