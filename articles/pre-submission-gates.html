@@ -119,7 +119,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span></code></pre></div>
 <p>Once the dev-time audits described in
 <code><a href="../articles/auditing-an-r-package.html">vignette("auditing-an-r-package", package = "checkhelper")</a></code>
-are clean, two heavier audits remain. They both have their <strong>own
+are clean, three heavier audits remain. They each have their <strong>own
 pipeline</strong> - they cannot reuse the shared <code>chk</code> object
 - and you typically run them last, just before
 <code><a href="https://devtools.r-lib.org/reference/release.html" class="external-link">devtools::release()</a></code>.</p>
@@ -146,6 +146,12 @@ environment</td>
 <td><code><a href="../reference/audit_userspace.html">audit_userspace()</a></code></td>
 <td>Detects files left behind by tests / examples / vignettes</td>
 <td>before tagging a release</td>
+</tr>
+<tr class="odd">
+<td><code><a href="../reference/check_n_covr.html">check_n_covr()</a></code></td>
+<td>
+<code>R CMD check</code> plus code coverage in one test pass</td>
+<td>every release candidate</td>
 </tr>
 </tbody>
 </table>
@@ -179,6 +185,27 @@ development.</p>
 is the Linux one.</p>
 </div>
 <div class="section level2">
+<h2 id="check_n_covr---check-plus-coverage-in-one-pass">
+<code>check_n_covr()</code> - check plus coverage in one pass<a class="anchor" aria-label="anchor" href="#check_n_covr---check-plus-coverage-in-one-pass"></a>
+</h2>
+<p>Both <code>R CMD check</code> and
+<code><a href="http://covr.r-lib.org/reference/package_coverage.html" class="external-link">covr::package_coverage()</a></code> run the unit test suite. On a
+package with a slow suite, running them in sequence doubles the
+wait.</p>
+<p><code><a href="../reference/check_n_covr.html">check_n_covr()</a></code> splits the work: it runs
+<code>R CMD check</code> with <code>--no-tests</code> (every step except
+the test runner), then runs the test suite <strong>once</strong> under
+<code>covr</code>’s line-trace instrumentation. The return value carries
+both halves.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/check_n_covr.html">check_n_covr</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">check</span>                                <span class="co"># CRAN errors / warnings / notes</span></span>
+<span><span class="fu">covr</span><span class="fu">::</span><span class="fu"><a href="http://covr.r-lib.org/reference/percent_coverage.html" class="external-link">percent_coverage</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">coverage</span><span class="op">)</span>     <span class="co"># global percentage</span></span></code></pre></div>
+<p>Use this during the late dev cycle - by the time you want a coverage
+number you usually want a clean CRAN check too, and you no longer want
+to pay the test cost twice.</p>
+</div>
+<div class="section level2">
 <h2 id="audit_userspace---no-files-left-after-check">
 <code>audit_userspace()</code> - no files left after check<a class="anchor" aria-label="anchor" href="#audit_userspace---no-files-left-after-check"></a>
 </h2>
@@ -197,7 +224,7 @@ directory. (Files created elsewhere - <code>~/.cache</code>,
 <code>~/.config</code>, etc. - are out of scope; CRAN’s “non-standard
 things in the check directory” NOTE only catches package-local leaks,
 which is exactly what this audit targets.)</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">leaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/audit_userspace.html">audit_userspace</a></span><span class="op">(</span>pkg <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
 <span><span class="va">leaks</span></span></code></pre></div>
 <p>Each row points to the source (<code>tests</code>,
