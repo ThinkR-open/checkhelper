@@ -38,6 +38,7 @@ when an automated fix is safe, one `fix_*()` function. Type
 | Old-style `inst/CITATION`                 | `audit_citation()`    | \-                  |
 | `\dontrun{}` blocks in examples           | `audit_dontrun()`     | \-                  |
 | Unquoted package names in DESCRIPTION's Description field | `audit_description()` | \-      |
+| Network / download calls (CRAN-offline-safe pattern) | `audit_downloads()` | \-          |
 
 Lower-level helpers (`asciify_file()`, `asciify_r_source()`,
 `find_nonascii_tokens()`, `create_example_pkg()`) are also exported for
@@ -95,6 +96,7 @@ audit_dataset_doc(pkg)
 audit_citation(pkg)
 audit_dontrun(pkg)
 audit_description(pkg)
+audit_downloads(pkg)
 
 # Audits that consume the check - reuse `chk` via the `checks =` argument.
 audit_globals(pkg, checks = chk)

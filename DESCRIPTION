@@ -26,6 +26,7 @@ Imports:
     devtools,
     dplyr,
     glue,
+    knitr,
     lifecycle,
     magrittr,
     pkgbuild,
@@ -40,10 +41,9 @@ Imports:
     utils,
     whisker (>= 0.4),
     withr
-Suggests: 
+Suggests:
     attachment,
     callr,
-    knitr,
     rmarkdown,
     testthat,
     usethis

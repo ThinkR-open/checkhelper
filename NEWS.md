@@ -1,5 +1,26 @@
 # checkhelper (development version)
 
+## `audit_downloads()`: surface network / download calls in package code
+
+- New `audit_downloads(pkg)` walks `R/`, `tests/`, `vignettes/` and
+  `inst/`, parses every `.R` / `.Rmd` / `.qmd` / `.Rnw` file, and
+  surfaces every call to a known download or HTTP function:
+  `download.file()` / `download.packages()` (base / utils),
+  `httr::GET()` / `POST` / `PUT` / `PATCH` / `DELETE` / `HEAD`,
+  `httr2::req_perform()` / `req_perform_parallel` /
+  `req_perform_iterative`, `curl::curl_download()` /
+  `curl_fetch_memory` / `curl_fetch_disk` / `curl_fetch_stream`,
+  and the `RCurl::getURL` / `getURI` / `getBinaryURL` legacy set.
+  Each hit is paired with a `suggestion` to wrap the call in
+  `tryCatch()` / `skip_if_offline()` (tests) or move it to
+  `\dontrun{}` (examples) so the package degrades gracefully on
+  offline build farms. Detection is purely static (AST walk via
+  `getParseData()`), so user-defined functions that shadow a known
+  downloader (`download.file <- function(...) { ... }`) do not
+  trigger a false positive on the definition site - only call
+  sites are flagged. Returns a tibble with `file`, `line`,
+  `function` and `suggestion`. Closes #27.
+
 ## `audit_description()`: catch unquoted package names in DESCRIPTION
 
 - New `audit_description(pkg)` reads the `Description` field of
