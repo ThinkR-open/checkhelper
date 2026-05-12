@@ -1,5 +1,14 @@
 # checkhelper (development version)
 
+## `check_n_covr()`: check plus coverage in a single test pass
+
+- New `check_n_covr(pkg)` runs `R CMD check` (via
+  `devtools::check(args = "--no-tests")`) and code coverage (via
+  `covr::package_coverage(type = "tests")`) without running the
+  unit test suite twice. Returns a named list `list(check, coverage)`.
+  Closes #67.
+- `covr` is now in Imports.
+
 ## `audit_downloads()`: surface network / download calls in package code
 
 - New `audit_downloads(pkg)` walks `R/`, `tests/`, `vignettes/` and

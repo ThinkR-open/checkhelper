@@ -29,6 +29,7 @@ reference:
   - audit_description
   - audit_dontrun
   - audit_downloads
+  - check_n_covr
 
 - title: Fix
   desc: >

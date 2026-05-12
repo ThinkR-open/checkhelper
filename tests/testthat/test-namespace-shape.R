@@ -27,6 +27,7 @@ expected_exports <- c(
   "asciify_r_source",
   "find_nonascii_tokens",
   "create_example_pkg",
+  "check_n_covr",
 
   ## Deprecated wrappers (lifecycle::deprecate_warn at top of body)
   "asciify_pkg",
