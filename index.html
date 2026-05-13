@@ -188,23 +188,33 @@
 <p>The 10 historic functions (<code><a href="reference/get_no_visible.html">get_no_visible()</a></code>, <code><a href="reference/find_missing_tags.html">find_missing_tags()</a></code>, <code><a href="reference/asciify_pkg.html">asciify_pkg()</a></code>, <code><a href="reference/check_as_cran.html">check_as_cran()</a></code>, …) remain callable but emit a <code><a href="https://lifecycle.r-lib.org/reference/deprecate_soft.html" class="external-link">lifecycle::deprecate_warn()</a></code> and delegate to the new façades - see <code>NEWS.md</code> for the full mapping.</p>
 </div>
 <div class="section level2">
+<h2 id="faster-local-check-check_n_covr">Faster local check: <code>check_n_covr()</code>
+<a class="anchor" aria-label="anchor" href="#faster-local-check-check_n_covr"></a>
+</h2>
+<p><code>check_n_covr(pkg)</code> runs <code>R CMD check</code> (via <code>devtools::check(args = "--no-tests")</code>) and code coverage (via <code>covr::package_coverage(type = "tests")</code>) without running the unit-test suite twice. On a package with a slow test suite this roughly halves the wait. Returns a named list <code>list(check = ..., coverage = ...)</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/check_n_covr.html">check_n_covr</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span>
+<span><span class="va">res</span><span class="op">$</span><span class="va">check</span></span>
+<span><span class="fu">covr</span><span class="fu">::</span><span class="fu"><a href="http://covr.r-lib.org/reference/percent_coverage.html" class="external-link">percent_coverage</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">coverage</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>From CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"checkhelper"</span><span class="op">)</span></span></code></pre></div>
 <p>Latest from r-universe:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"checkhelper"</span>, repos <span class="op">=</span> <span class="st">"https://thinkr-open.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 <p>From GitHub:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"thinkr-open/checkhelper"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <p>The recommended dev-time workflow runs <code>R CMD check</code> <strong>once</strong> and reuses the result across every audit that accepts a <code>checks =</code> argument. <code><a href="reference/create_example_pkg.html">create_example_pkg()</a></code> ships a fake package that trips every audit when you opt into the full set of fixtures - use it to feel the flow end to end:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/checkhelper/">checkhelper</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># `with_nonascii = TRUE` adds a file with French accents in comments</span></span>
@@ -281,8 +291,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Sebastien Rochette <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-1565-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Vincent Guyader <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-0671-9270" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Vincent Guyader <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-0671-9270" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Sebastien Rochette <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-1565-9313" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Arthur Bréant <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-1668-0963" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Murielle Delmotte <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-1339-2424" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li><a href="authors.html">More about authors...</a></li>
@@ -297,7 +307,7 @@
 
       <footer><div class="thinkr">
   <p></p>
-<p>Developed by Sebastien Rochette, Vincent Guyader, Arthur Bréant, Murielle Delmotte.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Developed by Vincent Guyader, Sebastien Rochette, Arthur Bréant, Murielle Delmotte.</p>,<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
 <div class="author">
