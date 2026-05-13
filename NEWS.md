@@ -1,4 +1,4 @@
-# checkhelper (development version)
+# checkhelper 1.0.0
 
 ## `check_n_covr()`: check plus coverage in a single test pass
 
@@ -235,9 +235,7 @@ The 10 historic functions remain callable but emit
   list element: the count of non-ASCII characters in the original
   file. `n_tokens` (number of source locations to rewrite) is kept.
 
-# checkhelper 1.0.0
-
-## New features
+## `asciify_*()` family: rewrite non-ASCII characters AST-aware
 
 - `asciify_pkg()`, `asciify_file()`, `asciify_r_source()`,
   `find_nonascii_tokens()` and `find_nonascii_files()` rewrite
