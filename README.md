@@ -55,7 +55,7 @@ The 10 historic functions (`get_no_visible()`, `find_missing_tags()`,
 `devtools::check(args = "--no-tests")`) and code coverage (via
 `covr::package_coverage(type = "tests")`) without running the unit-test
 suite twice. On a package with a slow test suite this roughly halves the
-wait. Returns a named list `list(check, coverage)`.
+wait. Returns a named list `list(check = ..., coverage = ...)`.
 
 ``` r
 res <- check_n_covr(".")
