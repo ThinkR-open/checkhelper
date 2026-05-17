@@ -75,11 +75,21 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/v1.0.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ThinkR-open/checkhelper/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.0.0" id="checkhelper-100">checkhelper 1.0.0<a class="anchor" aria-label="anchor" href="#checkhelper-100"></a></h2>
+<h2 class="page-header" data-toc-text="development version" id="checkhelper-development-version">checkhelper (development version)<a class="anchor" aria-label="anchor" href="#checkhelper-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code>fix_globals(write = TRUE)</code> no longer flattens the per-function <code># &lt;fun&gt;:</code> grouping comments of an existing <code>R/globals.R</code> when a second run has nothing new to declare. When R CMD check surfaces only function / operator notes (no remaining variable notes) and <code>R/globals.R</code> already covers every preserved name, the file is now left untouched. Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/123" class="external-link">#123</a>.</li>
+<li>
+<code>fix_globals(write = TRUE)</code> no longer creates a degenerate empty <code>utils::globalVariables(unique(c()))</code> shell on a virgin package whose only notes are function / operator ones. When there is no variable to declare, no <code>R/globals.R</code> is written.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.0.0" id="checkhelper-100">checkhelper 1.0.0<small>2026-05-13</small><a class="anchor" aria-label="anchor" href="#checkhelper-100"></a></h2>
 <div class="section level3">
 <h3 id="check_n_covr-check-plus-coverage-in-a-single-test-pass-1-0-0">
 <code>check_n_covr()</code>: check plus coverage in a single test pass<a class="anchor" aria-label="anchor" href="#check_n_covr-check-plus-coverage-in-a-single-test-pass-1-0-0"></a></h3>
