@@ -1,4 +1,4 @@
-# checkhelper 1.0.0.9000
+# checkhelper 1.0.0.9000 (development version, GitHub only)
 
 ## Bug fixes
 
@@ -19,7 +19,7 @@
   `summarise`, `first`, `str_detect`, `bind_cols`, ...) that still
   needed manual `@importFrom` wiring. Closes #124.
 
-# checkhelper 1.0.0
+# checkhelper 1.0.0 (CRAN release)
 
 ## `check_n_covr()`: check plus coverage in a single test pass
 
