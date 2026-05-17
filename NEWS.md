@@ -1,3 +1,14 @@
+# checkhelper (development version)
+
+## Bug fixes
+
+- `fix_globals(write = TRUE)` no longer flattens the per-function
+  `# <fun>:` grouping comments of an existing `R/globals.R` when a
+  second run has nothing new to declare. When R CMD check surfaces
+  only function / operator notes (no remaining variable notes) and
+  `R/globals.R` already covers every preserved name, the file is
+  now left untouched. Closes #123.
+
 # checkhelper 1.0.0
 
 ## `check_n_covr()`: check plus coverage in a single test pass

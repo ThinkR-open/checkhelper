@@ -136,12 +136,28 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
   # set and re-flag those names on the very next check - a circular
   # game the user can never win.
   preserved <- extract_existing_globals(globals_path)
-  merged_block <- merge_globals_block(printed[["liste_globals_code"]], preserved)
+  fresh_is_empty <- is_empty_globals_body(printed[["liste_globals_code"]])
 
-  writeLines(merged_block, globals_path)
-  cli::cli_inform(c(
-    "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}} (merged with {length(preserved)} previously declared name{?s})."
-  ))
+  if (fresh_is_empty && length(preserved) > 0L) {
+    # R CMD check surfaced only function / operator notes (no
+    # `is_global_variable` rows), and `globals.R` already declares
+    # everything else. Rewriting would just flatten the per-function
+    # `# <fun>:` grouping the user produced on the previous run into a
+    # single `# previously declared:` chunk - a regression of the file's
+    # readability. Leave the file untouched.
+    cli::cli_inform(c(
+      "v" = "fix_globals(): no new globals to declare, {.file {globals_path}} left untouched ({length(preserved)} previously declared name{?s})."
+    ))
+  } else {
+    merged_block <- merge_globals_block(
+      printed[["liste_globals_code"]],
+      preserved = preserved
+    )
+    writeLines(merged_block, con = globals_path)
+    cli::cli_inform(c(
+      "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}} (merged with {length(preserved)} previously declared name{?s})."
+    ))
+  }
   # Operators / pronouns must NOT go into R/globals.R because they are
   # exports from another package, not undeclared variables. Surface the
   # @importFrom suggestions on stdout so the user can wire them into
@@ -259,6 +275,21 @@ is_globalVariables_call <- function(e) {
   FALSE
 }
 
+#' TRUE when `fresh_block` is the freshly generated
+#' `utils::globalVariables(unique(c(\n\n)))` shape with no names inside
+#' the `c()` body - i.e. R CMD check surfaced only function /
+#' operator notes, not a single new variable. Used both by
+#' `merge_globals_block()` (to pick the rebuild-from-scratch path) and
+#' by `fix_globals()` (to skip the rewrite entirely when there's
+#' nothing new to declare on top of an existing curated `globals.R`).
+#' @noRd
+is_empty_globals_body <- function(fresh_block) {
+  grepl(
+    "utils::globalVariables\\(unique\\(c\\(\\s*\\n\\s*\\n\\s*\\)\\)\\)$",
+    fresh_block
+  )
+}
+
 #' Inject the previously-declared names into the freshly generated
 #' `globalVariables(unique(c(...)))` block so that the rewrite is a
 #' superset of the existing declarations.
@@ -283,11 +314,7 @@ merge_globals_block <- function(fresh_block, preserved) {
   # Naively prepending a `,` then injecting yields `c(, "a", "b")`,
   # which parses but errors at eval with "argument 1 is empty".
   # Detect the empty-body shape and rebuild from scratch.
-  is_empty_body <- grepl(
-    "utils::globalVariables\\(unique\\(c\\(\\s*\\n\\s*\\n\\s*\\)\\)\\)$",
-    fresh_block
-  )
-  if (is_empty_body) {
+  if (is_empty_globals_body(fresh_block)) {
     return(paste0(
       "utils::globalVariables(unique(c(\n",
       preserved_chunk,

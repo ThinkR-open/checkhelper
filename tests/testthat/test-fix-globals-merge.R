@@ -205,3 +205,71 @@ test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
   expect_true(file.exists(globals_path))
   expect_match(paste(readLines(globals_path), collapse = "\n"), "first_var")
 })
+
+test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run with no new variables (#123)", {
+  # Why: the 1st run produces a `globals.R` that groups names under
+  # per-function `# <fun>:` comments (see `.print_globals()`). The user
+  # then re-runs `fix_globals(write = TRUE)` after R CMD check still
+  # reports operator / function notes (e.g. `:=`, `where`) but no new
+  # variable notes (because the 1st-run globals.R covered them all).
+  # The merge path used to rebuild the file from scratch under a single
+  # `# previously declared:` header, throwing away the per-function
+  # grouping. This regression assertion locks that grouping in.
+  path <- local_pkg_with_globals()
+  globals_path <- file.path(path, "R", "globals.R")
+
+  multi_fun_globals <- list(
+    globalVariables = tibble::tibble(
+      fun = c("basecout_siips_export", "basecout_siips_export",
+              "calculer_duree_sejour", "calculer_duree_sejour"),
+      variable = c("dsclin", "dsrea", "dsp", "finess")
+    ),
+    functions = tibble::tibble(
+      fun = character(0), variable = character(0), proposed = character(0)
+    )
+  )
+
+  empty_fresh_globals <- list(
+    globalVariables = tibble::tibble(
+      fun = character(0), variable = character(0)
+    ),
+    functions = tibble::tibble(
+      fun = "calculer_duree_sejour", variable = "where",
+      proposed = NA_character_
+    )
+  )
+
+  testthat::with_mocked_bindings(
+    fix_globals(pkg = path, write = TRUE),
+    .get_no_visible = function(...) multi_fun_globals,
+    .package = "checkhelper"
+  )
+
+  first_run <- paste(readLines(globals_path), collapse = "\n")
+  expect_match(first_run, "# basecout_siips_export:",
+    info = "1st run must produce a per-function `# <fun>:` comment"
+  )
+  expect_match(first_run, "# calculer_duree_sejour:",
+    info = "1st run must produce a per-function `# <fun>:` comment for every fun"
+  )
+
+  testthat::with_mocked_bindings(
+    fix_globals(pkg = path, write = TRUE),
+    .get_no_visible = function(...) empty_fresh_globals,
+    .package = "checkhelper"
+  )
+
+  second_run <- paste(readLines(globals_path), collapse = "\n")
+  expect_match(second_run, "# basecout_siips_export:",
+    info = "2nd run must NOT flatten the 1st-run per-function comments"
+  )
+  expect_match(second_run, "# calculer_duree_sejour:",
+    info = "2nd run must keep every per-function `# <fun>:` group intact"
+  )
+  expect_match(second_run, "dsclin",
+    info = "every previously-declared name must still be present"
+  )
+  expect_match(second_run, "finess",
+    info = "every previously-declared name must still be present"
+  )
+})
