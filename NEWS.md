@@ -12,6 +12,12 @@
   `utils::globalVariables(unique(c()))` shell on a virgin package
   whose only notes are function / operator ones. When there is no
   variable to declare, no `R/globals.R` is written.
+- `fix_globals(write = TRUE)` now also prints the
+  *"Functions to add in NAMESPACE (with @importFrom ?)"* section.
+  Previously only the operators / pronouns block was surfaced in
+  write mode, leaving the user blind to bare-function notes (`where`,
+  `summarise`, `first`, `str_detect`, `bind_cols`, ...) that still
+  needed manual `@importFrom` wiring. Closes #124.
 
 # checkhelper 1.0.0
 

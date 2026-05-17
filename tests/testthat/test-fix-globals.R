@@ -39,6 +39,54 @@ test_that("fix_globals(write = TRUE) writes a parseable R/globals.R", {
                info = "no banner header should land in the source file")
 })
 
+test_that("fix_globals(write = TRUE) still surfaces the functions-to-import list", {
+  # Why: in `write = FALSE` mode, `fix_globals()` prints three
+  # sections: the functions to import (`liste_funs`), the
+  # `globalVariables()` block (`liste_globals`), and the operators /
+  # pronouns block (`liste_operators` if any). In `write = TRUE` mode
+  # the functions-to-import section was silently dropped, leaving the
+  # user blind to the bare-function notes (`where`, `summarise`,
+  # `first`, ...) they still had to wire up via `@importFrom`. Pin
+  # the contract: in write mode the captured messages must include
+  # every detected function name AND a hint pointing at `@importFrom`
+  # / NAMESPACE so the user knows where to put them.
+  fake_checks <- list(
+    notes = c(
+      paste(
+        "checking R code for possible problems ... NOTE",
+        "my_fun: no visible binding for global variable ‘foo’",
+        "my_fun: no visible global function definition for ‘where’",
+        sep = "\n"
+      )
+    )
+  )
+
+  pkg <- tempfile("fixg-funs-")
+  dir.create(file.path(pkg, "R"), recursive = TRUE)
+  on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
+
+  msgs <- testthat::with_mocked_bindings(
+    rcmdcheck = function(...) {
+      stop("rcmdcheck must NOT be called when checks= is supplied")
+    },
+    .package = "checkhelper",
+    {
+      testthat::capture_messages(
+        fix_globals(pkg = pkg, write = TRUE, checks = fake_checks)
+      )
+    }
+  )
+
+  expect_true(
+    any(grepl("where", msgs, fixed = TRUE)),
+    info = "the function name `where` must surface in fix_globals(write = TRUE) output"
+  )
+  expect_true(
+    any(grepl("@importFrom|NAMESPACE", msgs)),
+    info = "the surfaced section must mention NAMESPACE / @importFrom"
+  )
+})
+
 test_that("fix_globals(checks = ...) reuses a precomputed rcmdcheck and writes a parseable globals.R", {
   fake_checks <- list(
     notes = c(
