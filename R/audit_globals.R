@@ -138,16 +138,24 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
   preserved <- extract_existing_globals(globals_path)
   fresh_is_empty <- is_empty_globals_body(printed[["liste_globals_code"]])
 
-  if (fresh_is_empty && length(preserved) > 0L) {
-    # R CMD check surfaced only function / operator notes (no
-    # `is_global_variable` rows), and `globals.R` already declares
-    # everything else. Rewriting would just flatten the per-function
-    # `# <fun>:` grouping the user produced on the previous run into a
-    # single `# previously declared:` chunk - a regression of the file's
-    # readability. Leave the file untouched.
-    cli::cli_inform(c(
-      "v" = "fix_globals(): no new globals to declare, {.file {globals_path}} left untouched ({length(preserved)} previously declared name{?s})."
-    ))
+  if (fresh_is_empty) {
+    # R CMD check surfaced only function / operator notes - there is
+    # no variable to declare. Either `globals.R` already covers
+    # everything (rewriting would flatten the curated per-function
+    # `# <fun>:` grouping into a single `# previously declared:` chunk
+    # and lose readability) or there is genuinely nothing to declare
+    # (writing an empty `globalVariables(unique(c()))` shell would
+    # bloat the package with a no-op file). In both cases, leave the
+    # package untouched.
+    if (length(preserved) > 0L) {
+      cli::cli_inform(c(
+        "v" = "fix_globals(): no new globals to declare, {.file {globals_path}} left untouched ({length(preserved)} previously declared name{?s})."
+      ))
+    } else {
+      cli::cli_inform(c(
+        "v" = "fix_globals(): no globals to declare."
+      ))
+    }
   } else {
     merged_block <- merge_globals_block(
       printed[["liste_globals_code"]],

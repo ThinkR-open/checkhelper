@@ -206,7 +206,7 @@ test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
   expect_match(paste(readLines(globals_path), collapse = "\n"), "first_var")
 })
 
-test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run with no new variables (#123)", {
+test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run with no new variables", {
   # Why: the 1st run produces a `globals.R` that groups names under
   # per-function `# <fun>:` comments (see `.print_globals()`). The user
   # then re-runs `fix_globals(write = TRUE)` after R CMD check still
@@ -271,5 +271,38 @@ test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run w
   )
   expect_match(second_run, "finess",
     info = "every previously-declared name must still be present"
+  )
+})
+
+test_that("fix_globals(write = TRUE) does not create a degenerate empty globals.R on a virgin package", {
+  # Why: when R CMD check surfaces only function / operator notes (no
+  # variable notes) AND `R/globals.R` does not exist yet, the fresh
+  # block is `utils::globalVariables(unique(c(\n\n)))` and `preserved`
+  # is empty. The historical fall-through wrote that empty shell to
+  # disk - a meaningless `globalVariables(unique(c()))` with zero
+  # names, which `R CMD check` then has to re-process forever. The
+  # function must instead leave the package untouched and surface a
+  # `cli_inform` saying there is nothing to declare.
+  path <- local_pkg_with_globals()
+  globals_path <- file.path(path, "R", "globals.R")
+  expect_false(file.exists(globals_path))
+
+  fun_only_globals <- list(
+    globalVariables = tibble::tibble(
+      fun = character(0), variable = character(0)
+    ),
+    functions = tibble::tibble(
+      fun = "my_fun", variable = "where", proposed = NA_character_
+    )
+  )
+
+  testthat::with_mocked_bindings(
+    fix_globals(pkg = path, write = TRUE),
+    .get_no_visible = function(...) fun_only_globals,
+    .package = "checkhelper"
+  )
+
+  expect_false(file.exists(globals_path),
+    info = "no globals.R must be created when there is no variable to declare"
   )
 })

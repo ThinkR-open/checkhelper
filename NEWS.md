@@ -8,6 +8,10 @@
   only function / operator notes (no remaining variable notes) and
   `R/globals.R` already covers every preserved name, the file is
   now left untouched. Closes #123.
+- `fix_globals(write = TRUE)` no longer creates a degenerate empty
+  `utils::globalVariables(unique(c()))` shell on a virgin package
+  whose only notes are function / operator ones. When there is no
+  variable to declare, no `R/globals.R` is written.
 
 # checkhelper 1.0.0
 
