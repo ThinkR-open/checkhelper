@@ -166,6 +166,18 @@ fix_globals <- function(pkg = ".", write = FALSE, checks = NULL) {
       "v" = "fix_globals(): wrote globalVariables block to {.file {globals_path}} (merged with {length(preserved)} previously declared name{?s})."
     ))
   }
+  # Bare external functions (`where`, `summarise`, `first`,
+  # `str_detect`, `bind_cols`, ...) must NOT go into R/globals.R - they
+  # are exports from another package, not undeclared variables, and the
+  # right fix is an `@importFrom` line. Symmetric with the operators /
+  # pronouns branch below.
+  has_functions <- nrow(globals[["functions"]]) > 0L
+  if (has_functions) {
+    message(printed[["liste_funs"]])
+    cli::cli_inform(c(
+      "i" = "fix_globals(): the functions above need an `@importFrom <pkg> <fn>` line in a roxygen block, NOT a globalVariables() entry."
+    ))
+  }
   # Operators / pronouns must NOT go into R/globals.R because they are
   # exports from another package, not undeclared variables. Surface the
   # @importFrom suggestions on stdout so the user can wire them into
