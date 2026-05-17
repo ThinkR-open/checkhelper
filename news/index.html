@@ -86,6 +86,8 @@
 <code>fix_globals(write = TRUE)</code> no longer flattens the per-function <code># &lt;fun&gt;:</code> grouping comments of an existing <code>R/globals.R</code> when a second run has nothing new to declare. When R CMD check surfaces only function / operator notes (no remaining variable notes) and <code>R/globals.R</code> already covers every preserved name, the file is now left untouched. Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/123" class="external-link">#123</a>.</li>
 <li>
 <code>fix_globals(write = TRUE)</code> no longer creates a degenerate empty <code>utils::globalVariables(unique(c()))</code> shell on a virgin package whose only notes are function / operator ones. When there is no variable to declare, no <code>R/globals.R</code> is written.</li>
+<li>
+<code>fix_globals(write = TRUE)</code> now also prints the <em>“Functions to add in NAMESPACE (with <a href="https://github.com/importFrom" class="external-link">@importFrom</a> ?)”</em> section. Previously only the operators / pronouns block was surfaced in write mode, leaving the user blind to bare-function notes (<code>where</code>, <code>summarise</code>, <code>first</code>, <code>str_detect</code>, <code>bind_cols</code>, …) that still needed manual <code>@importFrom</code> wiring. Closes <a href="https://github.com/ThinkR-open/checkhelper/issues/124" class="external-link">#124</a>.</li>
 </ul></div>
 </div>
     <div class="section level2">
