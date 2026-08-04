@@ -1,6 +1,8 @@
-path <- suppressWarnings(create_example_pkg())
+path <- quiet_create_example_pkg()
 
 test_that("use_doc_data", {
+  local_quiet_deprecation()
+  local_quiet()
   path_data <- file.path(path, "data")
   suppressWarnings(dir.create(path_data))
   path_rda <- file.path(path_data, "iris.rda")

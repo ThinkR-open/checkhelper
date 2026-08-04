@@ -7,7 +7,8 @@ test_that("audit_userspace() emits a cli message (smoke)", {
   skip_on_cran()
   skip_on_ci()
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   expect_message(
     suppressWarnings(audit_userspace(path)),
@@ -29,8 +30,8 @@ test_that("audit_userspace() returns a tibble with the documented columns + summ
   )
   testthat::local_mocked_bindings(.check_clean_userspace = function(...) fake)
 
-  out <- expect_message(
-    audit_userspace("."),
+  expect_message(
+    out <- audit_userspace("."),
     regexp = "2 files leaked"
   )
   expect_s3_class(out, "tbl_df")
@@ -47,6 +48,6 @@ test_that("audit_userspace() handles the no-leak case (0 files)", {
   )
   testthat::local_mocked_bindings(.check_clean_userspace = function(...) fake)
 
-  out <- expect_message(audit_userspace("."), regexp = "0 files leaked")
+  expect_message(out <- audit_userspace("."), regexp = "0 files leaked")
   expect_equal(nrow(out), 0L)
 })

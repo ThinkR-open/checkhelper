@@ -5,7 +5,8 @@
 # entry merged with the generic's Rd).
 
 local_s3_pkg <- function(envir = parent.frame()) {
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet(envir = envir)
+  path <- quiet_create_example_pkg()
   unlink(list.files(file.path(path, "R"), full.names = TRUE))
   unlink(list.files(file.path(path, "man"), full.names = TRUE))
   withr::defer(unlink(path, recursive = TRUE), envir = envir)

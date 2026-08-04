@@ -147,7 +147,7 @@ test_that("asciify_r_source(identifiers='skip') stays silent and unchanged", {
 
 test_that("asciify_r_source rewrites strings even in a file with a non-ASCII id (warn)", {
   src <- "fa\u00e7on <- \"caf\u00e9\""
-  out <- expect_warning(asciify_r_source(src, identifiers = "warn"))
+  expect_warning(out <- asciify_r_source(src, identifiers = "warn"))
   # the string was escaped
   expect_match(out, "\\\\u00e9", fixed = FALSE)
   # the identifier stays
@@ -240,6 +240,8 @@ test_that("asciify_file rewrites only the R chunks of an Rmd, leaving prose alon
 # ---- asciify_pkg ------------------------------------------------------------
 
 test_that("asciify_pkg(dry_run = TRUE) reports without writing", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
@@ -257,6 +259,8 @@ test_that("asciify_pkg(dry_run = TRUE) reports without writing", {
 })
 
 test_that("asciify_pkg(dry_run = FALSE) actually rewrites every R file in scope", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
@@ -288,6 +292,8 @@ test_that("asciify_pkg(dry_run = FALSE) actually rewrites every R file in scope"
 })
 
 test_that("asciify_pkg leaves a pure-ASCII file alone", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
@@ -300,6 +306,7 @@ test_that("asciify_pkg leaves a pure-ASCII file alone", {
 # ---- find_nonascii_files ----------------------------------------------------
 
 test_that("find_nonascii_files returns one row per offending line", {
+  local_quiet_deprecation()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
@@ -314,6 +321,7 @@ test_that("find_nonascii_files returns one row per offending line", {
 })
 
 test_that("find_nonascii_files returns an empty frame when there is nothing to flag", {
+  local_quiet_deprecation()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)

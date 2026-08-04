@@ -5,6 +5,7 @@
 # audit_globals(): NULL path when the checker returns nothing -----------------
 
 test_that("audit_globals() returns NULL with a verbose message when no globals", {
+  local_quiet()
   expect_message(
     out <- testthat::with_mocked_bindings(
       audit_globals("/tmp/anywhere"),
@@ -19,6 +20,7 @@ test_that("audit_globals() returns NULL with a verbose message when no globals",
 # fix_globals(write = FALSE): print path -------------------------------------
 
 test_that("fix_globals(write = FALSE) prints both blocks and operators block", {
+  local_quiet()
   globals <- list(
     globalVariables = tibble::tibble(fun = "f", variable = "var_a"),
     functions = tibble::tibble(fun = "f", variable = "extern_fn", proposed = "ns::extern_fn"),
@@ -37,6 +39,7 @@ test_that("fix_globals(write = FALSE) prints both blocks and operators block", {
 # fix_globals(write = TRUE) without an R/ directory --------------------------
 
 test_that("fix_globals(write = TRUE) creates R/ when it does not exist", {
+  local_quiet()
   pkg <- tempfile("pkg-no-r-")
   dir.create(pkg)
   on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
@@ -63,6 +66,7 @@ test_that("fix_globals(write = TRUE) creates R/ when it does not exist", {
 # fix_globals(write = TRUE) with operators -----------------------------------
 
 test_that("fix_globals(write = TRUE) prints the operators block and informs", {
+  local_quiet()
   pkg <- tempfile("pkg-ops-")
   dir.create(file.path(pkg, "R"), recursive = TRUE)
   on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
@@ -88,6 +92,7 @@ test_that("fix_globals(write = TRUE) prints the operators block and informs", {
 # fix_globals(): NULL globals path -------------------------------------------
 
 test_that("fix_globals() returns invisibly with no-op message when no globals", {
+  local_quiet()
   expect_message(
     res <- testthat::with_mocked_bindings(
       fix_globals("/tmp/anywhere"),
@@ -142,6 +147,7 @@ test_that("is_globalVariables_call() recognises both bare and utils:: forms", {
 })
 
 test_that("is_globalVariables_call() returns FALSE for other namespaced calls", {
+  local_quiet()
   expect_false(checkhelper:::is_globalVariables_call(quote(other::fn(x))))
   expect_false(checkhelper:::is_globalVariables_call(quote(utils::other_fn(x))))
   expect_false(checkhelper:::is_globalVariables_call(quote(some_fn(x))))
@@ -150,6 +156,7 @@ test_that("is_globalVariables_call() returns FALSE for other namespaced calls", 
 # .print_globals(): malformed input ------------------------------------------
 
 test_that(".print_globals() errors on a malformed globals list", {
+  local_quiet()
   expect_error(
     checkhelper:::.print_globals(globals = list()),
     regexp = "globals should be a list"
@@ -157,6 +164,7 @@ test_that(".print_globals() errors on a malformed globals list", {
 })
 
 test_that(".print_globals() fetches globals when called without the globals arg", {
+  local_quiet()
   res <- testthat::with_mocked_bindings(
     checkhelper:::.print_globals(path = "/tmp/anywhere", message = FALSE),
     .get_no_visible = function(path, ...) NULL,
@@ -166,6 +174,7 @@ test_that(".print_globals() fetches globals when called without the globals arg"
 })
 
 test_that(".print_globals() emits 'no globalVariable detected' when message = TRUE", {
+  local_quiet()
   expect_message(
     res <- testthat::with_mocked_bindings(
       checkhelper:::.print_globals(path = "/tmp/anywhere"),
@@ -180,6 +189,7 @@ test_that(".print_globals() emits 'no globalVariable detected' when message = TR
 # .get_notes(): importfrom branch (line 372) ---------------------------------
 
 test_that(".get_notes() extracts importfrom_function names from quoted suggestions", {
+  local_quiet()
   fake_check <- list(
     notes = c(paste(
       "* checking R code for possible problems ... NOTE",
@@ -198,6 +208,7 @@ test_that(".get_notes() extracts importfrom_function names from quoted suggestio
 # deprecated::print_globals(): bare call path (line 119) ---------------------
 
 test_that("deprecated print_globals() forwards to .print_globals when no globals arg", {
+  local_quiet()
   withr::local_options(lifecycle_verbosity = "quiet")
   res <- testthat::with_mocked_bindings(
     suppressMessages(suppressWarnings(print_globals(path = "/tmp/anywhere"))),

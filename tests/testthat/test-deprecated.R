@@ -5,12 +5,13 @@
 ##     "lifecycle_warning_deprecated")
 ##   - calling it still returns a result of the expected shape
 ##
-## The deprecation warning is gated by `lifecycle_verbosity`, which is set to
-## "quiet" in helpers.R to keep other test files clean. Each test below
-## locally bumps it to "warning".
+## The deprecation warning is gated by `lifecycle_verbosity`. Tests elsewhere
+## opt out of it with `local_quiet_deprecation()` (see helpers.R); each test
+## below opts in, pinning it to "warning".
 
 setup_pkg <- function() {
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet(envir = parent.frame())
+  path <- quiet_create_example_pkg()
   withr::defer_parent(unlink(path, recursive = TRUE))
   path
 }
@@ -52,6 +53,7 @@ test_that("get_no_visible() is deprecated", {
 })
 
 test_that("print_globals() is deprecated", {
+  local_quiet()
   withr::local_options(lifecycle_verbosity = "warning")
   expect_warning(
     tryCatch(print_globals(NULL), error = function(e) NULL),
@@ -69,18 +71,22 @@ test_that("find_missing_tags() is deprecated", {
 
 test_that("check_as_cran() is deprecated", {
   withr::local_options(lifecycle_verbosity = "warning")
-  expect_warning(
+  # The bogus path also makes the wrapped function warn on its own; only the
+  # deprecation is under test, so let the rest go.
+  suppressWarnings(expect_warning(
     tryCatch(check_as_cran("nonexistent_path_xyz"), error = function(e) NULL),
     class = "lifecycle_warning_deprecated"
-  )
+  ))
 })
 
 test_that("check_clean_userspace() is deprecated", {
+  local_quiet()
   withr::local_options(lifecycle_verbosity = "warning")
-  expect_warning(
+  # As above: the bogus path produces its own warnings on the way through.
+  suppressWarnings(expect_warning(
     tryCatch(check_clean_userspace("nonexistent_path_xyz"), error = function(e) NULL),
     class = "lifecycle_warning_deprecated"
-  )
+  ))
 })
 
 test_that("get_data_info() is deprecated", {

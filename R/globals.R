@@ -1,4 +1,4 @@
-globalVariables(
+utils::globalVariables(
   unique(
     c(
       "is_importfrom", "importfrom_function", "is_global_variable",

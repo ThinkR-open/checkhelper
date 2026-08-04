@@ -1,5 +1,6 @@
 
 test_that("check_clean_userspace works", {
+  local_quiet_deprecation()
   # Invariants instead of an exact row count: R CMD check leaks slightly
   # different platform-specific artefacts (callr-*, foo.o, symbols.rds,
   # DESCRIPTION rewrite by document(), ...) so the historical cascade
@@ -8,7 +9,8 @@ test_that("check_clean_userspace works", {
   # promises: the two seeded leaks are caught, every row has the right
   # shape, and any extra rows live in known noise locations.
 
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   dir.create(file.path(path, "tests", "testthat"), recursive = TRUE)
   # A test that leaks a file in the testthat dir
   cat(

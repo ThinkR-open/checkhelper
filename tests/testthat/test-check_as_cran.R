@@ -1,7 +1,8 @@
 
 test_that("check_as_cran works", {
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   check_output <- tempfile("example")
 
   if (interactive()) {

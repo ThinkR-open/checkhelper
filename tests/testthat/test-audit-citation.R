@@ -16,6 +16,7 @@ local_pkg_with_citation <- function(content, envir = parent.frame()) {
 }
 
 test_that("audit_citation() flags personList(), as.personList() and citEntry()", {
+  local_quiet()
   pkg <- local_pkg_with_citation(c(
     'citEntry(',
     '  entry  = "Manual",',
@@ -47,6 +48,7 @@ test_that("audit_citation() flags personList(), as.personList() and citEntry()",
 })
 
 test_that("audit_citation() flags as.personList() too", {
+  local_quiet()
   pkg <- local_pkg_with_citation(c(
     'bibentry(',
     '  bibtype = "Manual",',
@@ -62,6 +64,7 @@ test_that("audit_citation() flags as.personList() too", {
 })
 
 test_that("audit_citation() returns an empty tibble when CITATION is modern", {
+  local_quiet()
   pkg <- local_pkg_with_citation(c(
     'bibentry(',
     '  bibtype = "Manual",',
@@ -80,6 +83,7 @@ test_that("audit_citation() returns an empty tibble when CITATION is modern", {
 })
 
 test_that("audit_citation() handles a missing inst/CITATION gracefully", {
+  local_quiet()
   pkg <- tempfile("pkg-no-cit-")
   dir.create(pkg)
   on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
@@ -90,11 +94,13 @@ test_that("audit_citation() handles a missing inst/CITATION gracefully", {
 })
 
 test_that("audit_citation() emits a cli summary message", {
+  local_quiet()
   pkg <- local_pkg_with_citation('citEntry(entry = "Manual")')
   expect_message(audit_citation(pkg), regexp = "audit_citation")
 })
 
 test_that("audit_citation() reports correct line numbers for nested calls", {
+  local_quiet()
   pkg <- local_pkg_with_citation(c(
     '# header comment',
     'citHeader("My pkg")',
@@ -127,6 +133,7 @@ local_pkg_with_citation <- function(citation, envir = parent.frame()) {
 }
 
 test_that("audit_citation() warns and returns empty on a syntactically broken CITATION", {
+  local_quiet()
   pkg <- local_pkg_with_citation(c(
     'citEntry(entry = "Manual",',
     '  title = "no closing paren ever'
@@ -140,6 +147,7 @@ test_that("audit_citation() warns and returns empty on a syntactically broken CI
 })
 
 test_that("audit_citation() returns empty on an empty CITATION", {
+  local_quiet()
   pkg <- local_pkg_with_citation(character(0))
 
   out <- audit_citation(pkg)

@@ -8,8 +8,9 @@ test_that("fix_ascii() exists with the expected signature", {
 })
 
 test_that("fix_ascii(dry_run = TRUE) does not modify files", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   target <- file.path(path, "R", "nonascii.R")
   writeLines("x <- \"café\"", target)
   before <- readLines(target)
@@ -19,8 +20,9 @@ test_that("fix_ascii(dry_run = TRUE) does not modify files", {
 })
 
 test_that("fix_ascii(dry_run = FALSE) rewrites non-ASCII literals", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   target <- file.path(path, "R", "nonascii.R")
   writeLines("x <- \"café\"", target)
   suppressMessages(fix_ascii(path, dry_run = FALSE))
@@ -29,7 +31,8 @@ test_that("fix_ascii(dry_run = FALSE) rewrites non-ASCII literals", {
 })
 
 test_that("fix_ascii() emits a cli message", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   expect_message(fix_ascii(path, dry_run = TRUE), regexp = "ASCII|ascii")
 })
