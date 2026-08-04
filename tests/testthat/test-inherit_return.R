@@ -1,4 +1,6 @@
 test_that("find_missing_tags() does not flag @inherit X return (#84)", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)

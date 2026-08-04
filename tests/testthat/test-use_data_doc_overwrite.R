@@ -1,4 +1,6 @@
 test_that("use_data_doc() refuses to overwrite by default and respects overwrite = TRUE (#19)", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)

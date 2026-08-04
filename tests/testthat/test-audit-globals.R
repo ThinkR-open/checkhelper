@@ -7,7 +7,8 @@ test_that("audit_globals() exists with the expected signature", {
 test_that("audit_globals() returns either NULL or a list with globalVariables / functions / operators", {
   skip_on_cran()
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   out <- suppressMessages(suppressWarnings(audit_globals(path)))
   if (!is.null(out)) {
@@ -21,7 +22,8 @@ test_that("audit_globals() returns either NULL or a list with globalVariables / 
 test_that("audit_globals() emits a cli message", {
   skip_on_cran()
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   expect_message(
     suppressWarnings(audit_globals(path)),

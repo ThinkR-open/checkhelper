@@ -1,24 +1,25 @@
-test_that("Package version required", {
+# Silence expected lifecycle deprecations for the current test.
+local_quiet_deprecation <- function(envir = parent.frame()) {
+  withr::local_options(lifecycle_verbosity = "quiet", .local_envir = envir)
+}
 
-  # Check the version of the package roxygen2 to take into account the breaking change.
-  expect_true(packageVersion("roxygen2") > "7.1.2")
+# Discard output and messages for the current test.
+# For file-scope fixtures, use `quiet_create_example_pkg()` instead.
+local_quiet <- function(envir = parent.frame()) {
+  if (sink.number(type = "message") == 2L) {
+    withr::local_message_sink(nullfile(), .local_envir = envir)
+  }
+  withr::local_output_sink(nullfile(), .local_envir = envir)
+  invisible()
+}
 
-})
+# Create the example package without toolchain output or expected warnings.
+quiet_create_example_pkg <- function(...) {
+  local_quiet(environment())
+  suppressWarnings(create_example_pkg(...))
+}
 
-# Silence lifecycle deprecation warnings globally; tests that explicitly
-# exercise the deprecation layer override this with `withr::local_options()`.
-options(lifecycle_verbosity = "quiet")
-
-# Snapshot tempdir() at test entry and unlink anything new at teardown.
-# Use this in tests that call rcmdcheck (audit_globals/fix_globals path)
-# so they don't leak artefacts that downstream tests
-# (test-check_clean_userspace) detect as pre-existing files.
-#
-# `envir` defaults to the caller's frame, which is the right thing inside
-# a `test_that()` block. When called at FILE scope (e.g. before any
-# `test_that` runs), pass `envir = testthat::teardown_env()` so the
-# deferred cleanup ties to the file's documented teardown environment
-# rather than to the source frame's lifetime.
+# Remove files added to `tempdir()` when the test or file completes.
 local_tempdir_clean <- function(envir = parent.frame()) {
   before <- list.files(tempdir(), all.files = TRUE, no.. = TRUE)
   withr::defer(

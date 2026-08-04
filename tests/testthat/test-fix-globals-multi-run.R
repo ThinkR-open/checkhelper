@@ -54,6 +54,7 @@ declared_names <- function(path) {
 # every 1st-run name still declared, every new name added, no
 # duplicate at runtime.
 test_that("multi-run A: 2nd run with new vars accumulates without losing 1st-run names", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
 
@@ -100,6 +101,7 @@ test_that("multi-run A: 2nd run with new vars accumulates without losing 1st-run
 # set that R CMD check actually sees, which `eval()` of the
 # `globalVariables(unique(c(...)))` body gives back deduplicated.
 test_that("multi-run B: overlap between runs collapses at runtime via the unique() wrapper", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
 
@@ -146,6 +148,7 @@ test_that("multi-run B: overlap between runs collapses at runtime via the unique
 # the post-#125 early-return as idempotent across consecutive no-op
 # passes.
 test_that("multi-run C: consecutive no-op runs yield byte-identical globals.R (idempotence)", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
 
@@ -186,6 +189,7 @@ test_that("multi-run C: consecutive no-op runs yield byte-identical globals.R (i
 # Comment preservation is NOT promised by the current AST-based
 # extractor; assert it explicitly so the contract is visible.
 test_that("multi-run D: user-curated names survive a subsequent fix_globals run", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
 
@@ -248,7 +252,8 @@ test_that("multi-run D: user-curated names survive a subsequent fix_globals run"
 test_that("multi-run E: real round-trip with create_example_pkg converges on the 2nd pass", {
   skip_on_cran()
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   on.exit(unlink(path, recursive = TRUE), add = TRUE)
   globals_path <- file.path(path, "R", "globals.R")
 
@@ -269,6 +274,7 @@ test_that("multi-run E: real round-trip with create_example_pkg converges on the
 # created and `liste_funs` (and `liste_operators` if present) must
 # be surfaced on every run.
 test_that("multi-run F: function-only notes on N consecutive runs never write globals.R", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
 
