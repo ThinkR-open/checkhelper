@@ -77,7 +77,15 @@ test_that("find_missing_tags works", {
 
   usethis::with_project(path, {
     usethis::use_package_doc()
-    usethis::use_pipe()
+    # No `usethis::use_pipe()` here: it re-exported the magrittr `%>%` purely
+    # as test scaffolding, but roxygen2 8.x migrates `RoxygenNote` to
+    # `Config/roxygen2/version`, which usethis (<= 3.2.1) does not recognise in
+    # `uses_roxygen()`. `use_pipe()` therefore aborts with "does not use
+    # roxygen2" on any package documented by roxygen2 8.x. The pipe reexport was
+    # never part of the asserted 12-function contract below, and the fixture
+    # functions are only defined, never executed by the audit (which parses
+    # source rather than resolving `%>%` at runtime), so dropping it changes no
+    # assertion. Modern packages use the native `|>`, which needs no setup.
     usethis::use_data(iris)
     use_data_doc("iris")
 
