@@ -1,26 +1,23 @@
 ## Submission summary
 
-This is a feature release of {checkhelper} (1.0.0). The previous CRAN
-version was 0.1.0. The release introduces a uniform `audit_*` /
-`fix_*` API for CRAN-blocking issues (globals, roxygen tags,
-non-ASCII, userspace leaks, CRAN-settings checks, undocumented
-datasets, old-style CITATION, `\dontrun{}` blocks, unquoted package
-names in DESCRIPTION, network/download calls) plus a one-pass
-`check_n_covr()` helper. The 10 historic functions remain callable
-behind `lifecycle::deprecate_warn()` and delegate to the new
-facades, so no reverse dependency breaks. See `NEWS.md` for the
-full mapping.
+This is a patch release of {checkhelper} (1.0.1). The previous CRAN
+version was 1.0.0.
 
-The maintainer changes from Sebastien Rochette to Vincent Guyader.
-Sebastien Rochette stays in `Authors@R` with a `previous maintainer`
-note in `comment =`.
+It fixes the test failure on the r-devel Fedora flavors that
+triggered the CRAN archival notice. The failure was caused by
+{roxygen2} 8.0.0 migrating the `RoxygenNote` DESCRIPTION field to
+`Config/roxygen2/version`, which broke a {usethis}-based test
+scaffolding step. The test suite has been fixed, a regression test
+added, and the declared dependencies aligned ({roxygen2} >= 7.3.0,
+R >= 4.1). The test suite passes with both {roxygen2} 8.1.0 and
+7.3.3. See `NEWS.md` for details.
 
 ## Test environments
 
-* local: Ubuntu Linux, R-release
-* GitHub Actions: ubuntu-latest, macos-latest, windows-latest
-  (R-release and R-devel)
-* win-builder: R-release and R-devel
+* local: Ubuntu Linux, R-release, roxygen2 8.1.0
+* GitHub Actions: ubuntu-latest (R-devel, R-release, R-oldrel),
+  macos-latest (R-release), windows-latest (R-release)
+* win-builder: R-devel
 
 ## R CMD check results
 
@@ -28,7 +25,5 @@ note in `comment =`.
 
 ## Reverse dependencies
 
-We checked the reverse dependencies of {checkhelper} on CRAN. No
-breakage detected: the deprecated functions still dispatch to the
-new facades with a `lifecycle::deprecate_warn()` and an unchanged
-return shape.
+No API change in this release: only tests, documentation, and
+declared dependency floors were touched.

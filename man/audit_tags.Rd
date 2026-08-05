@@ -18,9 +18,10 @@ functions that lack \verb{@noRd} (these trigger CRAN's
 \verb{Please add \\value to .Rd files} message). Wraps \code{\link[=find_missing_tags]{find_missing_tags()}}.
 }
 \examples{
-\dontrun{
-pkg <- create_example_pkg()
-audit_tags(pkg)
+if (requireNamespace("usethis", quietly = TRUE) &&
+  requireNamespace("attachment", quietly = TRUE)) {
+  pkg <- create_example_pkg()
+  audit_tags(pkg)
 }
 }
 \seealso{

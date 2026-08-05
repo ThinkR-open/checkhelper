@@ -1,12 +1,21 @@
 # checkhelper 1.0.1
 
+## Breaking changes
+
+- {checkhelper} now requires R >= 4.1: the {roxygen2} 8.x series
+  shipped by CRAN requires it, so the previous `R (>= 4.0)` claim was
+  not installable in practice with current dependencies. {roxygen2}
+  >= 7.3.0 (the oldest version the test suite supports) is now
+  declared explicitly in `Imports`.
+
 ## Bug fixes
 
 - Compatibility with roxygen2 8.x. roxygen2 8.0.0 migrates the
   DESCRIPTION `RoxygenNote` field to `Config/roxygen2/version`. On the
   CRAN r-devel Fedora flavors (which ship roxygen2 8.x) this made a
   `find_missing_tags()` test abort: it used `usethis::use_pipe()` as
-  scaffolding, and `usethis::uses_roxygen()` still detects roxygen via
+  scaffolding, and usethis's internal roxygen detection
+  (`usethis:::uses_roxygen()`) still relies on
   the now-removed `RoxygenNote` field, so `use_pipe()` failed with
   *"Package ... does not use roxygen2"*. The scaffolding re-exported the
   magrittr `%>%` purely to add functions to the fixture; it was never

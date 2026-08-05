@@ -74,7 +74,13 @@ test_that("check_as_cran() is deprecated", {
   # The bogus path also makes the wrapped function warn on its own; only the
   # deprecation is under test, so let the rest go.
   suppressWarnings(expect_warning(
-    tryCatch(check_as_cran("nonexistent_path_xyz"), error = function(e) NULL),
+    tryCatch(
+      check_as_cran(
+        "nonexistent_path_xyz",
+        check_output = tempfile("check_output")
+      ),
+      error = function(e) NULL
+    ),
     class = "lifecycle_warning_deprecated"
   ))
 })

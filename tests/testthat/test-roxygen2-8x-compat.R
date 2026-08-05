@@ -1,13 +1,7 @@
-# Regression guard for the roxygen2 8.x archival-triggering failure (CRAN
-# 2026-08). roxygen2 8.x migrates the DESCRIPTION `RoxygenNote` field to
-# `Config/roxygen2/version`. Two consequences broke checkhelper on the Fedora
-# r-devel CRAN flavors:
-#   1. `usethis::use_pipe()` (<= 3.2.1) checks `has_fields("RoxygenNote")` in
-#      `uses_roxygen()`, so on an 8.x-documented package it aborts with
-#      "does not use roxygen2" -- this is what failed test-find_missing_values.R.
-#   2. audit_tags.R reimplements the roxygenise() pipeline via roxygen2
-#      internals; a future roxygen2 change could break it silently.
-# This file pins both invariants so the class of failure cannot creep back in.
+# Regression guards for roxygen2 8.x: the DESCRIPTION field migration
+# (RoxygenNote -> Config/roxygen2/version) must not break usethis-based
+# scaffolding, and the getFromNamespace-based audit pipeline must keep
+# working end-to-end on a package documented by the installed roxygen2.
 
 test_that("create_example_pkg produces a roxygen2-managed package regardless of field migration", {
   skip_if_not_installed("usethis")

@@ -19,7 +19,7 @@ test_that("audit_userspace() emits a cli message (smoke)", {
 test_that("audit_userspace() returns a tibble with the documented columns + summary attr", {
   # Mocked path: the rcmdcheck-driven internal is replaced by a fake that
   # returns the same shape `.check_clean_userspace()` does. Verifies the
-  # façade's contract (tibble + summary attr + cli line) without paying
+  # facade's contract (tibble + summary attr + cli line) without paying
   # the rcmdcheck cost. Runs on CI where the real path is skipped.
   fake <- data.frame(
     source  = c("Unit tests", "Run examples"),

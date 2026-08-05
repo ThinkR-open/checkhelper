@@ -1,4 +1,5 @@
 path <- quiet_create_example_pkg()
+withr::defer(unlink(dirname(path), recursive = TRUE), teardown_env())
 
 test_that("use_doc_data", {
   local_quiet_deprecation()

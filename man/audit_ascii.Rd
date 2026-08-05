@@ -29,9 +29,10 @@ CRAN raises a NOTE when source code or documentation contains non-ASCII
 characters that are not properly escaped. Wraps \code{\link[=find_nonascii_files]{find_nonascii_files()}}.
 }
 \examples{
-\dontrun{
-pkg <- create_example_pkg()
-audit_ascii(pkg)
+if (requireNamespace("usethis", quietly = TRUE) &&
+  requireNamespace("attachment", quietly = TRUE)) {
+  pkg <- create_example_pkg()
+  audit_ascii(pkg)
 }
 }
 \seealso{

@@ -13,9 +13,10 @@
 #' @export
 #' @seealso [fix_ascii()] to apply the rewrite, [find_nonascii_files()].
 #' @examples
-#' \dontrun{
-#' pkg <- create_example_pkg()
-#' audit_ascii(pkg)
+#' if (requireNamespace("usethis", quietly = TRUE) &&
+#'   requireNamespace("attachment", quietly = TRUE)) {
+#'   pkg <- create_example_pkg()
+#'   audit_ascii(pkg)
 #' }
 audit_ascii <- function(pkg = ".",
                         scope = c("R", "tests", "vignettes", "man",
@@ -64,9 +65,10 @@ audit_ascii <- function(pkg = ".",
 #' @export
 #' @seealso [audit_ascii()], [asciify_pkg()].
 #' @examples
-#' \dontrun{
-#' pkg <- create_example_pkg()
-#' fix_ascii(pkg, dry_run = TRUE)
+#' if (requireNamespace("usethis", quietly = TRUE) &&
+#'   requireNamespace("attachment", quietly = TRUE)) {
+#'   pkg <- create_example_pkg()
+#'   fix_ascii(pkg, dry_run = TRUE)
 #' }
 fix_ascii <- function(pkg = ".",
                       scope = c("R", "tests", "vignettes"),
