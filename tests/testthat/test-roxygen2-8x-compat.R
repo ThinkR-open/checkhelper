@@ -12,14 +12,14 @@ test_that("create_example_pkg produces a roxygen2-managed package regardless of 
 
   d <- desc::desc(file.path(path, "DESCRIPTION"))
 
-  if (packageVersion("roxygen2") >= "8.0.0") {
-    # roxygen2 8.x records the version under Config/roxygen2/version and drops
-    # the legacy RoxygenNote field. The example package must still be
-    # recognisable as roxygen-managed through the new field.
-    expect_true(d$has_fields("Config/roxygen2/version"))
-  } else {
-    expect_true(d$has_fields("RoxygenNote"))
-  }
+  # Which of the two version fields ends up in the scaffolded DESCRIPTION
+  # depends on the whole roxygen2/usethis/attachment combination on the
+  # machine, not on the roxygen2 version alone. The invariant checkhelper
+  # relies on is the same one usethis uses: the package counts as
+  # roxygen-managed when EITHER field is present.
+  expect_true(
+    any(d$has_fields(c("RoxygenNote", "Config/roxygen2/version")))
+  )
 })
 
 test_that("find_missing_tags audits an 8.x-documented example package without error", {
