@@ -28,28 +28,36 @@ export(get_no_visible)
 export(get_notes)
 export(print_globals)
 export(use_data_doc)
-importFrom(dplyr,filter)
-importFrom(dplyr,first)
-importFrom(dplyr,group_by)
-importFrom(dplyr,if_else)
-importFrom(dplyr,left_join)
-importFrom(dplyr,mutate)
-importFrom(dplyr,n)
-importFrom(dplyr,pull)
-importFrom(dplyr,rename)
-importFrom(dplyr,select)
-importFrom(dplyr,summarise)
-importFrom(dplyr,tibble)
-importFrom(dplyr,ungroup)
-importFrom(glue,glue)
-importFrom(glue,glue_collapse)
+importFrom(dplyr,
+  filter,
+  first,
+  group_by,
+  if_else,
+  left_join,
+  mutate,
+  n,
+  pull,
+  rename,
+  select,
+  summarise,
+  tibble,
+  ungroup
+)
+importFrom(glue,
+  glue,
+  glue_collapse
+)
 importFrom(lifecycle,deprecated)
 importFrom(magrittr,"%>%")
-importFrom(purrr,compact)
-importFrom(purrr,keep)
-importFrom(purrr,map)
-importFrom(purrr,walk)
+importFrom(purrr,
+  compact,
+  keep,
+  map,
+  walk
+)
 importFrom(rcmdcheck,rcmdcheck)
-importFrom(stringr,str_extract)
-importFrom(stringr,str_extract_all)
+importFrom(stringr,
+  str_extract,
+  str_extract_all
+)
 importFrom(utils,getFromNamespace)

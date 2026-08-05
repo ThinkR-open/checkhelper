@@ -1,7 +1,22 @@
-# checkhelper 1.0.0.9000 (development version, GitHub only)
+# checkhelper 1.0.1
 
 ## Bug fixes
 
+- Compatibility with roxygen2 8.x. roxygen2 8.0.0 migrates the
+  DESCRIPTION `RoxygenNote` field to `Config/roxygen2/version`. On the
+  CRAN r-devel Fedora flavors (which ship roxygen2 8.x) this made a
+  `find_missing_tags()` test abort: it used `usethis::use_pipe()` as
+  scaffolding, and `usethis::uses_roxygen()` still detects roxygen via
+  the now-removed `RoxygenNote` field, so `use_pipe()` failed with
+  *"Package ... does not use roxygen2"*. The scaffolding re-exported the
+  magrittr `%>%` purely to add functions to the fixture; it was never
+  part of the asserted contract, so it has been removed (modern packages
+  use the native `|>`, which needs no setup). The audit pipeline itself
+  (`audit_tags()` / `find_missing_tags()`), which reimplements
+  `roxygenise()` through roxygen2 internals, was verified to remain
+  correct under roxygen2 8.1.0. A dedicated regression test
+  (`test-roxygen2-8x-compat.R`) now guards the whole audit flow against
+  the roxygen2 8.x field migration and block-classification changes.
 - `fix_globals(write = TRUE)` no longer flattens the per-function
   `# <fun>:` grouping comments of an existing `R/globals.R` when a
   second run has nothing new to declare. When R CMD check surfaces
