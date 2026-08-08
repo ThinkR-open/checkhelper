@@ -10,7 +10,14 @@ We are open to any contribution, from typos to new features. We will guide you t
 
 ## Package versions required to develop
 
-- `{roxygen2}`: Version > `7.1.2` is required.
+- `{roxygen2}`: Version `>= 7.3.0` is required, and the package is
+  documented with the version declared in `Config/roxygen2/version`.
+  Note that a package documented by `{roxygen2}` 8.x carries
+  `Config/roxygen2/version` instead of `RoxygenNote`, and that
+  `{usethis}` (<= 3.2.1) only looks at `RoxygenNote`: `usethis::use_pipe()`,
+  `use_import_from()`, `use_lifecycle()` and their siblings therefore
+  abort with "does not use roxygen2" on this repository. Edit
+  `NAMESPACE` roxygen tags by hand instead.
 
 ## Fixing typos
 

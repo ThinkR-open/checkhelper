@@ -11,8 +11,10 @@
 ## Bug fixes
 
 - Compatibility with roxygen2 8.x. roxygen2 8.0.0 migrates the
-  DESCRIPTION `RoxygenNote` field to `Config/roxygen2/version`. On the
-  CRAN r-devel Fedora flavors (which ship roxygen2 8.x) this made a
+  DESCRIPTION `RoxygenNote` field to `Config/roxygen2/version`. On
+  every CRAN flavor that has picked up roxygen2 8.x (the four r-devel
+  Linux flavors, r-patched-linux, r-release-windows and
+  r-oldrel-windows) this made a
   `find_missing_tags()` test abort: it used `usethis::use_pipe()` as
   scaffolding, and usethis's internal roxygen detection
   (`usethis:::uses_roxygen()`) still relies on

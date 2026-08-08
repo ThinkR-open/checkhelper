@@ -20,6 +20,47 @@ test_that("create_example_pkg produces a roxygen2-managed package regardless of 
   expect_true(
     any(d$has_fields(c("RoxygenNote", "Config/roxygen2/version")))
   )
+
+  # Where the toolchain did migrate the fixture, the migration must be
+  # complete: roxygen2 8.x replaces `RoxygenNote`, it does not duplicate it.
+  # A DESCRIPTION carrying both fields would mean the scaffolding is not
+  # exercising the 8.x path at all, and would silently weaken this file.
+  if (d$has_fields("Config/roxygen2/version")) {
+    expect_false(d$has_fields("RoxygenNote"))
+  }
+})
+
+test_that("find_missing_tags audits a package carrying only Config/roxygen2/version", {
+  skip_if_not_installed("usethis")
+  skip_if_not_installed("attachment")
+
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(dirname(path), recursive = TRUE), add = TRUE)
+
+  # Force the post-8.x DESCRIPTION shape by hand instead of hoping the
+  # installed roxygen2/usethis/attachment combination produces it. This is
+  # the exact state that broke the suite on CRAN, and writing it explicitly
+  # makes the guard deterministic on every flavor, including the ones whose
+  # scaffolding still lands on the legacy `RoxygenNote` field.
+  desc_path <- file.path(path, "DESCRIPTION")
+  d <- desc::desc(desc_path)
+  d$del("RoxygenNote")
+  d$set("Config/roxygen2/version" = as.character(packageVersion("roxygen2")))
+  d$write(desc_path)
+
+  migrated <- desc::desc(desc_path)
+  expect_false(migrated$has_fields("RoxygenNote"))
+  expect_true(migrated$has_fields("Config/roxygen2/version"))
+
+  out <- suppressWarnings(suppressMessages(find_missing_tags(path)))
+
+  expect_named(out, c("package_doc", "data", "functions"))
+  expect_true(
+    "my_long_fun_name_for_multiple_lines_globals" %in% out[["functions"]][["topic"]]
+  )
+  expect_true(
+    any(out[["functions"]][["test_has_export_and_return"]] == "not_ok")
+  )
 })
 
 test_that("find_missing_tags audits an 8.x-documented example package without error", {

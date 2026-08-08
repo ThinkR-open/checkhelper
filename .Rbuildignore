@@ -19,3 +19,4 @@
 ^CRAN-SUBMISSION$
 ^CONTRIBUTING\.md$
 ^\.claude$
+^.*\.stackdump$
