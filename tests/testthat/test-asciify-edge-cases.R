@@ -96,6 +96,7 @@ test_that("asciify_file is byte-equivalent on a no-op pure-ASCII input", {
 # ---- return shape: n_tokens populated --------------------------------------
 
 test_that("find_nonascii_files reports a real n_tokens for parseable R files", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(
@@ -113,6 +114,7 @@ test_that("find_nonascii_files reports a real n_tokens for parseable R files", {
 })
 
 test_that("find_nonascii_files sorts its output by file then line", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     # Three files, intentionally created in non-alphabetical order
@@ -137,6 +139,7 @@ test_that("find_nonascii_files sorts its output by file then line", {
 })
 
 test_that("find_nonascii_files survives a NA file.size (e.g. broken symlink)", {
+  local_quiet_deprecation()
   skip_on_os("windows")  # symlinks need elevated perms on Windows
   withr::with_tempdir({
     dir.create("R")
@@ -213,6 +216,7 @@ test_that("asciify_file on a .Rnw reports a real n_tokens (Sweave routed read-on
 # ---- return shape: asciify_pkg returns invisibly ---------------------------
 
 test_that("asciify_pkg() returns its summary invisibly", {
+  local_quiet_deprecation()
   pkg_path <- tempfile(pattern = "asciify-pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)
@@ -232,6 +236,7 @@ test_that("asciify_pkg() returns its summary invisibly", {
 # ---- interactive feedback: summary message ---------------------------------
 
 test_that("asciify_pkg() emits a 'would change' message in dry_run", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -243,6 +248,7 @@ test_that("asciify_pkg() emits a 'would change' message in dry_run", {
 })
 
 test_that("asciify_pkg() emits a 'rewrote' message in apply mode", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -254,6 +260,7 @@ test_that("asciify_pkg() emits a 'rewrote' message in apply mode", {
 })
 
 test_that("asciify_pkg() summary message reports correct counts", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f1.R", useBytes = FALSE)
@@ -266,6 +273,7 @@ test_that("asciify_pkg() summary message reports correct counts", {
 })
 
 test_that("asciify_pkg() summary counts every non-ASCII character, not parser tokens", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     a <- "\u00e0"; e2 <- "\u00e9"; c2 <- "\u00e7"; e3 <- "\u00e8"
@@ -281,6 +289,7 @@ test_that("asciify_pkg() summary counts every non-ASCII character, not parser to
 })
 
 test_that("asciify_pkg() message is silenceable", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -291,6 +300,7 @@ test_that("asciify_pkg() message is silenceable", {
 })
 
 test_that("asciify_pkg() hints to re-run with dry_run = FALSE in dry-run with changes", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -302,6 +312,7 @@ test_that("asciify_pkg() hints to re-run with dry_run = FALSE in dry-run with ch
 })
 
 test_that("asciify_pkg() hints how to inspect the invisible result when there are changes", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -313,6 +324,7 @@ test_that("asciify_pkg() hints how to inspect the invisible result when there ar
 })
 
 test_that("asciify_pkg() does not show the apply hint when in apply mode", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines(paste0("x <- \"caf", e, "\""), "R/f.R", useBytes = FALSE)
@@ -322,6 +334,7 @@ test_that("asciify_pkg() does not show the apply hint when in apply mode", {
 })
 
 test_that("asciify_pkg() does not show hints when nothing would change", {
+  local_quiet_deprecation()
   withr::with_tempdir({
     dir.create("R")
     writeLines("x <- 1", "R/f.R", useBytes = FALSE)  # ASCII-clean

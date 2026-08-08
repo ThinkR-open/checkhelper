@@ -1,26 +1,31 @@
 ## Submission summary
 
-This is a feature release of {checkhelper} (1.0.0). The previous CRAN
-version was 0.1.0. The release introduces a uniform `audit_*` /
-`fix_*` API for CRAN-blocking issues (globals, roxygen tags,
-non-ASCII, userspace leaks, CRAN-settings checks, undocumented
-datasets, old-style CITATION, `\dontrun{}` blocks, unquoted package
-names in DESCRIPTION, network/download calls) plus a one-pass
-`check_n_covr()` helper. The 10 historic functions remain callable
-behind `lifecycle::deprecate_warn()` and delegate to the new
-facades, so no reverse dependency breaks. See `NEWS.md` for the
-full mapping.
+This is a patch release of {checkhelper} (1.0.1). The previous CRAN
+version was 1.0.0.
 
-The maintainer changes from Sebastien Rochette to Vincent Guyader.
-Sebastien Rochette stays in `Authors@R` with a `previous maintainer`
-note in `comment =`.
+It fixes the test failure that triggered the archival notice. The
+failure is not flavor specific: it is currently reported on the four
+r-devel Linux flavors (debian and fedora, clang and gcc),
+r-patched-linux-x86_64, r-release-windows-x86_64 and
+r-oldrel-windows-x86_64, that is on every flavor that has already
+picked up {roxygen2} 8.x.
+
+The cause is {roxygen2} 8.0.0 migrating the `RoxygenNote` DESCRIPTION
+field to `Config/roxygen2/version`. {usethis} (<= 3.2.1) still detects
+roxygen through the old field, so a {usethis}-based test scaffolding
+step aborted with "does not use roxygen2". The test suite has been
+fixed, a regression test added, and the declared dependencies aligned
+({roxygen2} >= 7.3.0, R >= 4.1). The test suite passes with both
+{roxygen2} 8.1.0 and 7.3.3. See `NEWS.md` for details.
 
 ## Test environments
 
-* local: Ubuntu Linux, R-release
-* GitHub Actions: ubuntu-latest, macos-latest, windows-latest
-  (R-release and R-devel)
-* win-builder: R-release and R-devel
+* local: Windows 11, R 4.5.0, checked twice, once with roxygen2 7.3.3
+  and once with roxygen2 8.1.0
+* GitHub Actions: ubuntu-latest (R-devel, R-release, R-oldrel),
+  macos-latest (R-release), windows-latest (R-release), all with
+  roxygen2 8.1.0
+* win-builder: R-devel
 
 ## R CMD check results
 
@@ -28,7 +33,5 @@ note in `comment =`.
 
 ## Reverse dependencies
 
-We checked the reverse dependencies of {checkhelper} on CRAN. No
-breakage detected: the deprecated functions still dispatch to the
-new facades with a `lifecycle::deprecate_warn()` and an unchanged
-return shape.
+No API change in this release: only tests, documentation, and
+declared dependency floors were touched.

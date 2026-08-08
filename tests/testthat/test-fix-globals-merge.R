@@ -30,6 +30,7 @@ fake_globals <- function(vars) {
 }
 
 test_that("fix_globals(write = TRUE) preserves previously declared globals", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
   writeLines(
@@ -55,6 +56,7 @@ test_that("fix_globals(write = TRUE) preserves previously declared globals", {
 })
 
 test_that("fix_globals(write = TRUE) deduplicates across old / new", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
   writeLines(
@@ -81,6 +83,7 @@ test_that("fix_globals(write = TRUE) deduplicates across old / new", {
 })
 
 test_that("fix_globals(write = TRUE) handles empty fresh + non-empty preserved", {
+  local_quiet()
   # When R CMD check surfaces only function notes (no
   # `is_global_variable` rows), the freshly built
   # `globalVariables(unique(c(\n\n)))` body is empty. A naive merge
@@ -134,6 +137,7 @@ test_that("fix_globals(write = TRUE) handles empty fresh + non-empty preserved",
 })
 
 test_that("extract_existing_globals does NOT execute side effects from globals.R (RCE guard)", {
+  local_quiet()
   # Sanity guard against a known RCE shape: if extract_existing_globals
   # ever fell back to `eval()` under `baseenv()` (which exposes
   # `file.create`, `system`, `library`, `file`, ...), a malicious or
@@ -175,6 +179,7 @@ test_that("extract_existing_globals does NOT execute side effects from globals.R
 })
 
 test_that("extract_existing_globals tolerates `globalVariables()` with no arguments", {
+  local_quiet()
   # Degenerate but legal call shape: a `globals.R` containing just
   # `utils::globalVariables()` (no args) used to crash the extractor
   # with `subscript out of bounds` on `e[[2]]`, aborting the entire
@@ -192,6 +197,7 @@ test_that("extract_existing_globals tolerates `globalVariables()` with no argume
 })
 
 test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
+  local_quiet()
   path <- local_pkg_with_globals()
   globals_path <- file.path(path, "R", "globals.R")
   expect_false(file.exists(globals_path))
@@ -207,6 +213,7 @@ test_that("fix_globals(write = TRUE) handles the no-existing-file case", {
 })
 
 test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run with no new variables", {
+  local_quiet()
   # Why: the 1st run produces a `globals.R` that groups names under
   # per-function `# <fun>:` comments (see `.print_globals()`). The user
   # then re-runs `fix_globals(write = TRUE)` after R CMD check still
@@ -275,6 +282,7 @@ test_that("fix_globals(write = TRUE) preserves per-function grouping on re-run w
 })
 
 test_that("fix_globals(write = TRUE) does not create a degenerate empty globals.R on a virgin package", {
+  local_quiet()
   # Why: when R CMD check surfaces only function / operator notes (no
   # variable notes) AND `R/globals.R` does not exist yet, the fresh
   # block is `utils::globalVariables(unique(c(\n\n)))` and `preserved`

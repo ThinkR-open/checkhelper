@@ -14,7 +14,10 @@
 #' @export
 #' @return Path where the example package is stored.
 #' @examples
-#' create_example_pkg()
+#' if (requireNamespace("usethis", quietly = TRUE) &&
+#'   requireNamespace("attachment", quietly = TRUE)) {
+#'   create_example_pkg()
+#' }
 create_example_pkg <- function(path = tempfile(pattern = "pkg-"),
                                with_functions = TRUE,
                                with_extra_notes = FALSE,

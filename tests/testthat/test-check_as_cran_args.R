@@ -9,7 +9,7 @@ test_that("check_as_cran() exposes a `repos` argument and a sensible default che
   # check_output default should resolve to a directory adjacent to `pkg`,
   # not the session tempdir, so the user can find their logs (#85).
   default_out <- paste(deparse(fmls[["check_output"]]), collapse = " ")
-  # We accept either dirname(pkg) or file.path(pkg, …) - anything that
+  # We accept either dirname(pkg) or file.path(pkg, ...) - anything that
   # references `pkg` works. The point is: not a session-only tempfile.
   expect_true(grepl("pkg", default_out, fixed = TRUE),
     info = "default check_output should reference the package path")

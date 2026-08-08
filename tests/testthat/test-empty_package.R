@@ -1,4 +1,6 @@
 test_that("find_missing_tags() handles a package with no R/ functions (#18)", {
+  local_quiet_deprecation()
+  local_quiet()
   pkg_path <- tempfile(pattern = "pkg-")
   dir.create(pkg_path)
   on.exit(unlink(pkg_path, recursive = TRUE), add = TRUE)

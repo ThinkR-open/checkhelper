@@ -34,5 +34,8 @@ Path where the example package is stored.
 Create a package example producing notes and errors
 }
 \examples{
-create_example_pkg()
+if (requireNamespace("usethis", quietly = TRUE) &&
+  requireNamespace("attachment", quietly = TRUE)) {
+  create_example_pkg()
+}
 }

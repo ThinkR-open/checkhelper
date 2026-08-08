@@ -15,8 +15,8 @@ test_that("audit_check() summarises ERROR/WARNING/NOTE counts and returns the rc
   )
   testthat::local_mocked_bindings(.check_as_cran = function(...) fake)
 
-  out <- expect_message(
-    audit_check("."),
+  expect_message(
+    out <- audit_check("."),
     regexp = "1 ERROR.*2 WARNING.*3 NOTE"
   )
   expect_identical(out, fake)
@@ -26,8 +26,8 @@ test_that("audit_check() handles the all-clean case (0/0/0) without choking on p
   fake <- list(errors = character(), warnings = character(), notes = character())
   testthat::local_mocked_bindings(.check_as_cran = function(...) fake)
 
-  out <- expect_message(
-    audit_check("."),
+  expect_message(
+    out <- audit_check("."),
     regexp = "0 ERRORs.*0 WARNINGs.*0 NOTEs"
   )
   expect_identical(out, fake)

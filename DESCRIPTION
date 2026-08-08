@@ -1,6 +1,6 @@
 Package: checkhelper
 Title: Deal with Check Outputs
-Version: 1.0.0.9000
+Version: 1.0.1
 Authors@R: c(
     person("Vincent", "Guyader", , "vincent@thinkr.fr", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0671-9270")),
@@ -19,7 +19,7 @@ URL: https://thinkr-open.github.io/checkhelper/,
     https://github.com/ThinkR-open/checkhelper
 BugReports: https://github.com/ThinkR-open/checkhelper/issues
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     cli,
     covr,
@@ -34,7 +34,7 @@ Imports:
     pkgload,
     purrr,
     rcmdcheck,
-    roxygen2,
+    roxygen2 (>= 7.3.0),
     stringi,
     stringr,
     tibble,
@@ -51,8 +51,10 @@ Suggests:
 VignetteBuilder: 
     knitr
 Config/Needs/website: ThinkR-open/thinkrtemplate
+Config/testthat/edition: 3
+Config/testthat/start-first: checkhelper, fix-globals*, audit-globals,
+    check_as_cran, check_clean_userspace*, check_n_covr, audit-userspace
 Encoding: UTF-8
 Language: en-US
-LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

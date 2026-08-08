@@ -9,7 +9,8 @@
 
 test_that(".check_clean_userspace() survives a run_examples() crash and continues", {
   local_tempdir_clean()
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet()
+  path <- quiet_create_example_pkg()
   suppressWarnings(attachment::att_amend_desc(path = path))
 
   # Counter env: each fake collaborator records that it was called so
@@ -45,11 +46,12 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
     NULL
   }
 
-  # The header contract is "surface a clear warning". Assert it
-  # explicitly with expect_warning() rather than swallowing it
-  # under suppressWarnings / suppressMessages.
-  out <- expect_warning(
-    suppressMessages(
+  # The header contract is "surface a clear warning". Assert that one
+  # explicitly rather than swallowing it under suppressWarnings /
+  # suppressMessages; the outer suppressWarnings only drops the *other*
+  # warning the run emits, about the file the fake leaked on purpose.
+  suppressWarnings(expect_warning(
+    out <- suppressMessages(
       testthat::with_mocked_bindings(
         testthat::with_mocked_bindings(
           checkhelper:::.check_clean_userspace(pkg = path, check_output = tempfile("check_output")),
@@ -63,7 +65,7 @@ test_that(".check_clean_userspace() survives a run_examples() crash and continue
       )
     ),
     regexp = "Skipping the 'Run examples' step"
-  )
+  ))
 
   expect_s3_class(out, "tbl_df")
   expect_true(all(c("source", "problem", "where", "file") %in% names(out)))

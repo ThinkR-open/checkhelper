@@ -33,9 +33,10 @@ check. Dry-run by default: pass \code{dry_run = FALSE} to actually rewrite
 files. Wraps \code{\link[=asciify_pkg]{asciify_pkg()}}.
 }
 \examples{
-\dontrun{
-pkg <- create_example_pkg()
-fix_ascii(pkg, dry_run = TRUE)
+if (requireNamespace("usethis", quietly = TRUE) &&
+  requireNamespace("attachment", quietly = TRUE)) {
+  pkg <- create_example_pkg()
+  fix_ascii(pkg, dry_run = TRUE)
 }
 }
 \seealso{

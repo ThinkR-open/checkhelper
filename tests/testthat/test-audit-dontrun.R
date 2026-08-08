@@ -18,6 +18,7 @@ local_pkg_with_rd <- function(rd_files, envir = parent.frame()) {
 }
 
 test_that("audit_dontrun() flags every \\dontrun{} block", {
+  local_quiet()
   pkg <- local_pkg_with_rd(list(
     "foo.Rd" = c(
       "\\name{foo}",
@@ -55,6 +56,7 @@ test_that("audit_dontrun() flags every \\dontrun{} block", {
 })
 
 test_that("audit_dontrun() returns empty tibble when no \\dontrun is present", {
+  local_quiet()
   pkg <- local_pkg_with_rd(list(
     "modern.Rd" = c(
       "\\name{modern}",
@@ -75,6 +77,7 @@ test_that("audit_dontrun() returns empty tibble when no \\dontrun is present", {
 })
 
 test_that("audit_dontrun() handles a missing man/ directory gracefully", {
+  local_quiet()
   pkg <- tempfile("pkg-no-man-")
   dir.create(pkg)
   on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
@@ -85,6 +88,7 @@ test_that("audit_dontrun() handles a missing man/ directory gracefully", {
 })
 
 test_that("audit_dontrun() emits a cli summary message", {
+  local_quiet()
   pkg <- local_pkg_with_rd(list(
     "foo.Rd" = c(
       "\\name{foo}",
@@ -101,6 +105,7 @@ test_that("audit_dontrun() emits a cli summary message", {
 })
 
 test_that("audit_dontrun() reports correct line numbers", {
+  local_quiet()
   pkg <- local_pkg_with_rd(list(
     "foo.Rd" = c(
       "\\name{foo}",        # 1
@@ -120,6 +125,7 @@ test_that("audit_dontrun() reports correct line numbers", {
 })
 
 test_that("audit_dontrun() ignores commented-out \\dontrun mentions", {
+  local_quiet()
   # A `% \dontrun{` (Rd comment) must not trigger a false positive.
   pkg <- local_pkg_with_rd(list(
     "foo.Rd" = c(
@@ -139,6 +145,7 @@ test_that("audit_dontrun() ignores commented-out \\dontrun mentions", {
 # --- Edge / coverage tests --------------------------------------------------
 
 test_that("audit_dontrun() handles empty man/ directory (no Rd files)", {
+  local_quiet()
   pkg <- tempfile("pkg-empty-man-")
   dir.create(file.path(pkg, "man"), recursive = TRUE)
   on.exit(unlink(pkg, recursive = TRUE), add = TRUE)
@@ -154,10 +161,12 @@ test_that(".scan_one_rd_for_dontrun() warns and skips when readLines fails", {
   dir.create(bad_path)
   on.exit(unlink(bad_path, recursive = TRUE), add = TRUE)
 
-  expect_warning(
+  # readLines() itself warns twice before erroring; the contract under test is
+  # the "Could not read" warning the internal turns that error into.
+  suppressWarnings(expect_warning(
     res <- checkhelper:::.scan_one_rd_for_dontrun(bad_path),
     regexp = "Could not read"
-  )
+  ))
   expect_null(res)
 })
 

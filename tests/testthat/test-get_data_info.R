@@ -1,4 +1,5 @@
 test_that("my_function works properly", {
+  local_quiet_deprecation()
   temp_dir <- tempdir()
   path_data <- file.path(temp_dir, "data")
   suppressWarnings(dir.create(path_data))
@@ -10,7 +11,7 @@ test_that("my_function works properly", {
       result <- get_data_info("iris", "Iris data frame", source = "Thinkr")
     }
   )
-  expect_is(result, "list")
+  expect_type(result, "list")
   expect_equal(length(result), 6)
   expect_true(all(c("name", "description", "rows", "cols", "items", "source") %in% names(result)), 6)
 })

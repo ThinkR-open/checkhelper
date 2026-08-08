@@ -1,5 +1,6 @@
 
 test_that("create_example_pkg works", {
+  local_quiet()
   expect_error(pkgdir <- create_example_pkg(), regexp = NA)
 
   if (requireNamespace("usethis", quietly = TRUE) &
@@ -14,20 +15,22 @@ test_that("create_example_pkg works", {
 # --- Coverage tests for the with_* flags ------------------------------------
 
 test_that("create_example_pkg(with_nonascii = TRUE) copies the non-ASCII fixture", {
+  local_quiet()
   skip_if_not_installed("usethis")
   skip_if_not_installed("attachment")
 
-  pkgdir <- suppressMessages(create_example_pkg(with_nonascii = TRUE))
+  pkgdir <- quiet_create_example_pkg(with_nonascii = TRUE)
   on.exit(unlink(dirname(pkgdir), recursive = TRUE), add = TRUE)
 
   expect_true(file.exists(file.path(pkgdir, "R", "nonascii.R")))
 })
 
 test_that("create_example_pkg(with_undocumented_data = TRUE) writes a data/*.rda", {
+  local_quiet()
   skip_if_not_installed("usethis")
   skip_if_not_installed("attachment")
 
-  pkgdir <- suppressMessages(create_example_pkg(with_undocumented_data = TRUE))
+  pkgdir <- quiet_create_example_pkg(with_undocumented_data = TRUE)
   on.exit(unlink(dirname(pkgdir), recursive = TRUE), add = TRUE)
 
   expect_true(file.exists(file.path(pkgdir, "data", "demo_dataset.rda")))

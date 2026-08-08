@@ -10,9 +10,10 @@
 #' @export
 #' @seealso [find_missing_tags()]
 #' @examples
-#' \dontrun{
-#' pkg <- create_example_pkg()
-#' audit_tags(pkg)
+#' if (requireNamespace("usethis", quietly = TRUE) &&
+#'   requireNamespace("attachment", quietly = TRUE)) {
+#'   pkg <- create_example_pkg()
+#'   audit_tags(pkg)
 #' }
 audit_tags <- function(pkg = ".") {
   out <- .find_missing_tags(package.dir = pkg)

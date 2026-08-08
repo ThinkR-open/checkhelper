@@ -5,7 +5,7 @@
 ## otherwise.
 
 expected_exports <- c(
-  ## Public façades - audit_*
+  ## Public facades - audit_*
   "audit_ascii",
   "audit_check",
   "audit_citation",
@@ -17,7 +17,7 @@ expected_exports <- c(
   "audit_tags",
   "audit_userspace",
 
-  ## Public façades - fix_*
+  ## Public facades - fix_*
   "fix_ascii",
   "fix_dataset_doc",
   "fix_globals",

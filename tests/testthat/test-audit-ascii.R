@@ -7,16 +7,18 @@ test_that("audit_ascii() exists with the expected signature", {
 })
 
 test_that("audit_ascii() on an ASCII-clean fixture returns an empty data frame", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   out <- suppressMessages(audit_ascii(path))
   expect_s3_class(out, "data.frame")
   expect_equal(nrow(out), 0L)
 })
 
 test_that("audit_ascii() flags non-ASCII bytes when present", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   writeLines(
     "x <- \"café\"",
     file.path(path, "R", "nonascii.R")
@@ -27,7 +29,8 @@ test_that("audit_ascii() flags non-ASCII bytes when present", {
 })
 
 test_that("audit_ascii() emits a cli message", {
-  path <- suppressWarnings(create_example_pkg())
-  on.exit(unlink(path, recursive = TRUE))
+  local_quiet()
+  path <- quiet_create_example_pkg()
+  on.exit(unlink(path, recursive = TRUE), add = TRUE)
   expect_message(audit_ascii(path), regexp = "ASCII|ascii")
 })

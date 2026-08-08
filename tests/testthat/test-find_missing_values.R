@@ -2,17 +2,18 @@
 # from downstream tempdir-snapshot tests. File-scope call needs the
 # explicit teardown env (see helpers.R).
 local_tempdir_clean(envir = testthat::teardown_env())
-
-path <- suppressWarnings(create_example_pkg())
+path <- quiet_create_example_pkg()
 
 test_that("find_missing_tags works", {
+  local_quiet_deprecation()
+  local_quiet()
 
   # Check that the information transmitted by roxygen2 is correctly retransmitted by checkhelper
 
   if (packageVersion("roxygen2") >= "7.3.0") {
     # roxygen > 7.3.0 only generates messages
-    out <- expect_message(
-      find_missing_tags(path),
+    expect_message(
+      out <- find_missing_tags(path),
       "my_long_fun_name_for_multiple_lines_globals"
     )
 
@@ -24,8 +25,8 @@ test_that("find_missing_tags works", {
   } else {
     # roxygen > 7.1.2 generates warnings and messages
     expect_warning(
-      out <- expect_message(
-        find_missing_tags(path),
+      expect_message(
+        out <- find_missing_tags(path),
         "my_long_fun_name_for_multiple_lines_globals"
       ),
       regexp = "@return"
@@ -76,7 +77,9 @@ test_that("find_missing_tags works", {
 
   usethis::with_project(path, {
     usethis::use_package_doc()
-    usethis::use_pipe()
+    # No usethis::use_pipe() scaffolding here: it aborts on packages
+    # documented by roxygen2 8.x, and the pipe reexport is not part of the
+    # asserted contract below (the audit parses source without executing it).
     usethis::use_data(iris)
     use_data_doc("iris")
 
@@ -135,8 +138,8 @@ the_other_alias3 <- the_function",
   if (packageVersion("roxygen2") >= "7.3.0") {
     # roxygen > 7.3.0 only generates messages
 
-    out <- expect_message(
-      find_missing_tags(path),
+    expect_message(
+      out <- find_missing_tags(path),
       "my_long_fun_name_for_multiple_lines_globals"
     )
 
@@ -149,8 +152,8 @@ the_other_alias3 <- the_function",
     # roxygen > 7.1.2 generates warnings and messages
 
     expect_warning(
-      out <- expect_message(
-        find_missing_tags(path),
+      expect_message(
+        out <- find_missing_tags(path),
         "my_long_fun_name_for_multiple_lines_globals"
       ),
       regexp = "@return"

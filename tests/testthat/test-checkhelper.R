@@ -4,9 +4,14 @@
 # file's teardown env (file-scope call needs the explicit envir; see
 # helpers.R).
 local_tempdir_clean(envir = testthat::teardown_env())
+# Every entry point exercised here (get_notes / get_no_visible /
+# print_globals) is a deprecated wrapper; this file tests that they still
+# work, not that they warn. Testthat resets the option per test, so the
+# blocks below opt out again individually.
+local_quiet_deprecation(envir = testthat::teardown_env())
 
 # Warnings are ok with new version o
-path <- suppressWarnings(create_example_pkg())
+path <- quiet_create_example_pkg()
 
 # get_no_visible ----
 # Get globals
@@ -38,6 +43,7 @@ globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran
 # })
 
 test_that("get_no_visible works", {
+  local_quiet_deprecation()
   # glue("\"", paste(globals$globalVariables$fun, collapse = "\", \""), "\"")
   expect_equal(
     globals$globalVariables$fun,
@@ -58,6 +64,7 @@ test_that("get_no_visible works", {
 print_outputs <- print_globals(globals, message = FALSE)
 
 test_that("print_outputs works", {
+  local_quiet_deprecation()
   expect_equal(
     print_outputs$liste_funs,
     "--- Functions to add in NAMESPACE (with @importFrom ?) ---\n\nmy_long_fun_name_for_multiple_lines_globals: %>%, aes, geom_point, ggplot, mutate\nmy_plot: %>%, aes, geom_point, ggplot, mutate\nmy_plot_rdname: %>%, aes, geom_point, ggplot, mutate\n"
@@ -73,11 +80,12 @@ test_that("print_outputs works", {
 unlink(path, recursive = TRUE)
 
 # Test when no notes at all ----
-path <- create_example_pkg(with_functions = FALSE, with_extra_notes = FALSE)
+path <- quiet_create_example_pkg(with_functions = FALSE, with_extra_notes = FALSE)
 globals <- get_no_visible(path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 print_outputs <- print_globals(globals, message = FALSE)
 
 test_that("no notes works", {
+  local_quiet_deprecation()
   expect_null(globals)
   expect_null(print_outputs)
   expect_message(print_globals(globals, message = TRUE), "no globalVariable")
@@ -87,8 +95,8 @@ unlink(path, recursive = TRUE)
 
 
 # Test when only extra notes ----
-path <- create_example_pkg(with_functions = FALSE, with_extra_notes = TRUE)
-notes <- get_notes(path = path, args = c("--no-manual", "--as-cran"))
+path <- quiet_create_example_pkg(with_functions = FALSE, with_extra_notes = TRUE)
+notes <- get_notes(path = path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 
 test_that("extra notes only works", {
   expect_null(notes)
@@ -97,7 +105,7 @@ test_that("extra notes only works", {
 unlink(path, recursive = TRUE)
 
 # Test when checks done before ----
-path <- suppressWarnings(create_example_pkg())
+path <- quiet_create_example_pkg()
 checks <- rcmdcheck::rcmdcheck(path = path, quiet = TRUE, args = c("--no-manual", "--as-cran"))
 notes <- get_notes(path = path, checks = checks)
 
@@ -137,6 +145,7 @@ unlink(path, recursive = TRUE)
 # x[1]: iple_lines_globals"
 
 test_that("Check with path in outputs works", {
+  local_quiet_deprecation()
   notes_with_globals <-
     "checking R code for possible problems ... NOTE\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for \u2018%>%\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for \u2018mutate\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for \u2018ggplot\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for \u2018aes\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable \u2018x\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable \u2018y\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible binding for\n  global variable \u2018new_col\u2019\nmy_long_fun_name_for_multiple_lines_globals: no visible global function\n  definition for \u2018geom_point\u2019\nmy_plot: no visible global function definition for \u2018%>%\u2019\nmy_plot: no visible global function definition for \u2018mutate\u2019\nmy_plot: no visible global function definition for \u2018ggplot\u2019\nmy_plot: no visible global function definition for \u2018aes\u2019\nmy_plot: no visible binding for global variable \u2018x\u2019\nmy_plot: no visible binding for global variable \u2018y\u2019\nmy_plot: no visible binding for global variable \u2018new_col2\u2019\nmy_plot: no visible global function definition for \u2018geom_point\u2019\nmy_plot_rdname: no visible global function definition for \u2018%>%\u2019\nmy_plot_rdname: no visible global function definition for \u2018mutate\u2019\nmy_plot_rdname: no visible global function definition for \u2018ggplot\u2019\nmy_plot_rdname: no visible global function definition for \u2018aes\u2019\nmy_plot_rdname: no visible binding for global variable \u2018x\u2019\nmy_plot_rdname: no visible binding for global variable \u2018y\u2019\nmy_plot_rdname: no visible binding for global variable \u2018new_col2\u2019\nmy_plot_rdname: no visible global function definition for \u2018geom_point\u2019\nUndefined global functions or variables:\n  %>% aes geom_point ggplot mutate new_col new_col2 x y"
 

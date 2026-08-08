@@ -1,11 +1,12 @@
 # Regression tests for #92: find_missing_tags() / audit_tags() must report
 # missing @return on S3 generics and on S3 methods that have their own Rd
 # file (block carries a title / description). It must NOT flag methods
-# whose block is just `@export` (no doc → no own Rd, just a NAMESPACE
+# whose block is just `@export` (no doc -> no own Rd, just a NAMESPACE
 # entry merged with the generic's Rd).
 
 local_s3_pkg <- function(envir = parent.frame()) {
-  path <- suppressWarnings(create_example_pkg())
+  local_quiet(envir = envir)
+  path <- quiet_create_example_pkg()
   unlink(list.files(file.path(path, "R"), full.names = TRUE))
   unlink(list.files(file.path(path, "man"), full.names = TRUE))
   withr::defer(unlink(path, recursive = TRUE), envir = envir)
